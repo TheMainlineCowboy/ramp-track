@@ -1,0 +1,3 @@
+service : {
+  _initializeAccessControlWithSecret: (_token: text) -> ();
+}

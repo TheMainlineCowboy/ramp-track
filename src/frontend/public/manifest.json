@@ -1,0 +1,50 @@
+{
+  "id": "/",
+  "name": "Ramp Track",
+  "short_name": "RampTrack",
+  "description": "Ramp Track helps airport ground operators manage equipment check-ins, check-outs, and issue reporting with scanning, GPS, and photo capture.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1e3a8a",
+  "background_color": "#0f172a",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {
+      "src": "/assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "/assets/operator-home-screenshot.png",
+      "sizes": "718x1425",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/assets/admin-dashboard-screenshot.png",
+      "sizes": "718x1426",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
