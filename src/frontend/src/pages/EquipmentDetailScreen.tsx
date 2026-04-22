@@ -222,8 +222,35 @@ export default function EquipmentDetailScreen({
                           <p className="text-sm" style={{ color: "#cbd5f5" }}>
                             <span className="font-medium">Location:</span>{" "}
                             {ev.location}
+                            {ev.outsideArea && (
+                              <span
+                                className="ml-2 inline-block px-1.5 py-0.5 rounded text-xs font-semibold"
+                                style={{
+                                  background: "rgba(217,119,6,0.2)",
+                                  color: "#fb923c",
+                                  border: "1px solid rgba(217,119,6,0.4)",
+                                }}
+                              >
+                                Out of designated area
+                              </span>
+                            )}
                           </p>
                         )}
+                        {ev.lat !== undefined &&
+                          ev.lon !== undefined &&
+                          ev.lat !== 0 &&
+                          ev.lon !== 0 && (
+                            <a
+                              href={`https://www.google.com/maps?q=${ev.lat},${ev.lon}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-medium"
+                              style={{ color: "#0078D2" }}
+                              data-ocid={`equipdetail.history.maps_link.${ev.id}`}
+                            >
+                              📍 Open in Maps
+                            </a>
+                          )}
                         {ev.notes && (
                           <p className="text-sm" style={{ color: "#cbd5f5" }}>
                             <span className="font-medium">Notes:</span>{" "}

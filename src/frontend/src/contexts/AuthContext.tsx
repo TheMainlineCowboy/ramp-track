@@ -39,6 +39,44 @@ const USERS = [
     roles: ["agent"],
     name: "Demo Agent",
   },
+  // Manager demo accounts
+  {
+    username: "906779",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Ramon",
+  },
+  {
+    username: "259254",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Geoffrey",
+  },
+  {
+    username: "255580",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Ernie",
+  },
+  {
+    username: "812329",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Joshua",
+  },
+  {
+    username: "933130",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Wendy",
+  },
+  // Generic agent demo account
+  {
+    username: "agent@ramptrack.com",
+    password: "test123",
+    roles: ["agent"],
+    name: "Agent",
+  },
 ];
 
 const STORAGE_KEY = "ramptrack_auth_state";

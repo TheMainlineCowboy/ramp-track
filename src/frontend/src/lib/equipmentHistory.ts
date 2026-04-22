@@ -8,6 +8,9 @@ export interface EquipmentEvent {
   timestamp: number;
   location?: string;
   notes?: string;
+  lat?: number;
+  lon?: number;
+  outsideArea?: boolean;
 }
 
 const STORAGE_KEY = "ramptrack_history";

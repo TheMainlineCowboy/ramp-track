@@ -19,7 +19,7 @@ import {
   findById,
   updateEquipment,
 } from "../lib/equipmentRegistry";
-import { getLocationString } from "../lib/gateLocator";
+import { getLocationWithGeofence } from "../lib/gateLocator";
 
 export default function CheckOutScreen({
   onBack,
@@ -29,6 +29,7 @@ export default function CheckOutScreen({
   const [isProcessing, setIsProcessing] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [locationLabel, setLocationLabel] = useState<string | null>(null);
+  const [outsideArea, setOutsideArea] = useState(false);
   const [blockedId, setBlockedId] = useState<string | null>(null);
   const [successInfo, setSuccessInfo] = useState<{
     id: string;
@@ -53,22 +54,26 @@ export default function CheckOutScreen({
     if (!selected) return;
     setIsProcessing(true);
     try {
-      const location = await getLocationString();
-      setLocationLabel(location);
+      const geoResult = await getLocationWithGeofence();
+      setLocationLabel(geoResult.locationLabel);
+      setOutsideArea(!geoResult.insideArea);
       recordEvent({
         equipmentId: selected.id,
         eventType: "CHECK_OUT",
         operator: currentUser.badge,
         timestamp: Date.now(),
-        location,
+        location: geoResult.locationLabel,
+        lat: geoResult.lat,
+        lon: geoResult.lon,
+        outsideArea: !geoResult.insideArea,
       });
       updateEquipment(selected.id, {
         status: "ASSIGNED",
         lastOperator: currentUser.badge,
         checkoutTime: Date.now(),
-        location,
+        location: geoResult.locationLabel,
       });
-      setSuccessInfo({ id: selected.id, location });
+      setSuccessInfo({ id: selected.id, location: geoResult.locationLabel });
     } catch {
       toast.error("Failed to check out equipment");
     } finally {
@@ -271,6 +276,23 @@ export default function CheckOutScreen({
                   <p style={{ color: "#94a3b8" }} className="text-sm">
                     📍 {locationLabel}
                   </p>
+                )}
+                {outsideArea && (
+                  <div
+                    data-ocid="checkout.outside_area_warning"
+                    className="flex items-start gap-2 p-3 rounded-lg text-sm"
+                    style={{
+                      background: "rgba(217,119,6,0.15)",
+                      border: "1px solid rgba(217,119,6,0.5)",
+                      color: "#fbbf24",
+                    }}
+                  >
+                    <span className="mt-0.5">⚠️</span>
+                    <span>
+                      You are outside the designated area. The transaction will
+                      still be saved.
+                    </span>
+                  </div>
                 )}
                 <div className="flex gap-3">
                   <Button

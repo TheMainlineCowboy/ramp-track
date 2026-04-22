@@ -173,10 +173,10 @@ export default function SignInScreen({
             <div className="text-center text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
               <p className="font-medium mb-1">Demo Credentials:</p>
               <p className="font-mono text-xs">
-                Operator: operator@demo.com / test123
+                Agent: agent@ramptrack.com / test123
               </p>
               <p className="font-mono text-xs mt-1">
-                Management: 970251 / admin123
+                Management: Employee ID / admin123
               </p>
             </div>
           </CardContent>

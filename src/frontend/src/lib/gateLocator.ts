@@ -237,3 +237,54 @@ export function getLocationString(): Promise<string> {
     );
   });
 }
+
+export interface LocationWithGeofence {
+  lat: number;
+  lon: number;
+  locationLabel: string;
+  insideArea: boolean;
+}
+
+/**
+ * Gets the current GPS position, resolves the nearest gate label, and checks
+ * whether the user is within 500 m of any known gate (soft geofence).
+ * Never rejects — on any failure returns a safe default with insideArea: true
+ * so transactions are never blocked.
+ */
+export function getLocationWithGeofence(): Promise<LocationWithGeofence> {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve({
+        lat: 0,
+        lon: 0,
+        locationLabel: "Location unavailable",
+        insideArea: true,
+      });
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        const locationLabel = getNearestGate(lat, lon);
+        // Check if within 500 m of any gate
+        let insideArea = false;
+        for (const gate of GATES) {
+          if (haversineMeters(lat, lon, gate.lat, gate.lon) <= 500) {
+            insideArea = true;
+            break;
+          }
+        }
+        resolve({ lat, lon, locationLabel, insideArea });
+      },
+      () => {
+        resolve({
+          lat: 0,
+          lon: 0,
+          locationLabel: "Location unavailable",
+          insideArea: true,
+        });
+      },
+      { timeout: 10000, maximumAge: 30000 },
+    );
+  });
+}

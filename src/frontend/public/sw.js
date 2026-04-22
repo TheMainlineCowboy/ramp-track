@@ -37,6 +37,9 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
+  // BYPASS: pass /.well-known/* directly to the network, no SW interception
+  if (url.pathname.startsWith('/.well-known/')) return;
+
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(event.request).then((cached) => {

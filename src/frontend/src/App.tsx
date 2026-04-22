@@ -7,6 +7,7 @@ import AdminMenuScreen from "./pages/AdminMenuScreen";
 import CheckInScreen from "./pages/CheckInScreen";
 import CheckOutScreen from "./pages/CheckOutScreen";
 import EquipmentDetailScreen from "./pages/EquipmentDetailScreen";
+import EquipmentMapScreen from "./pages/EquipmentMapScreen";
 import LandingScreen from "./pages/LandingScreen";
 import ManageEquipmentScreen from "./pages/ManageEquipmentScreen";
 import OperatorHomeScreen from "./pages/OperatorHomeScreen";
@@ -24,7 +25,8 @@ type View =
   | "report-issue"
   | "admin-menu"
   | "manage-equipment"
-  | "equipment-detail";
+  | "equipment-detail"
+  | "equipment-map";
 
 function AppContent() {
   const { auth, logout } = useAuth();
@@ -143,6 +145,7 @@ function AppContent() {
             setSelectedEquipmentId(id);
             navigate("equipment-detail");
           }}
+          onViewMap={() => navigate("equipment-map")}
           onBack={() => navigate("signon")}
           onLogout={handleLogout}
         />
@@ -154,6 +157,21 @@ function AppContent() {
         <EquipmentDetailScreen
           equipmentId={selectedEquipmentId || ""}
           onBack={() => navigate("admin-menu")}
+        />
+      );
+    case "equipment-map":
+      if (!auth.roles?.includes("admin")) {
+        navigate("admin-menu");
+        return null;
+      }
+      return (
+        <EquipmentMapScreen
+          currentUser={auth}
+          onBack={() => navigate("admin-menu")}
+          onViewEquipmentDetail={(id) => {
+            setSelectedEquipmentId(id);
+            navigate("equipment-detail");
+          }}
         />
       );
     default:

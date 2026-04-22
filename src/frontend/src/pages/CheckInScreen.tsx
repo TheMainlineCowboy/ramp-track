@@ -19,7 +19,7 @@ import {
   findById,
   updateEquipment,
 } from "../lib/equipmentRegistry";
-import { getLocationString } from "../lib/gateLocator";
+import { getLocationWithGeofence } from "../lib/gateLocator";
 
 export default function CheckInScreen({
   onBack,
@@ -29,6 +29,7 @@ export default function CheckInScreen({
   const [isProcessing, setIsProcessing] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [locationLabel, setLocationLabel] = useState<string | null>(null);
+  const [outsideArea, setOutsideArea] = useState(false);
   const [successId, setSuccessId] = useState<string | null>(null);
 
   // Auto-open scanner on mount
@@ -49,19 +50,23 @@ export default function CheckInScreen({
     if (!selected) return;
     setIsProcessing(true);
     try {
-      const location = await getLocationString();
-      setLocationLabel(location);
+      const geoResult = await getLocationWithGeofence();
+      setLocationLabel(geoResult.locationLabel);
+      setOutsideArea(!geoResult.insideArea);
       recordEvent({
         equipmentId: selected.id,
         eventType: "CHECK_IN",
         operator: currentUser.badge,
         timestamp: Date.now(),
-        location,
+        location: geoResult.locationLabel,
+        lat: geoResult.lat,
+        lon: geoResult.lon,
+        outsideArea: !geoResult.insideArea,
       });
       updateEquipment(selected.id, {
         status: "AVAILABLE",
         returnTime: Date.now(),
-        location,
+        location: geoResult.locationLabel,
       });
       setSuccessId(selected.id);
     } catch {
@@ -207,6 +212,23 @@ export default function CheckInScreen({
                   <p style={{ color: "#94a3b8" }} className="text-sm">
                     📍 {locationLabel}
                   </p>
+                )}
+                {outsideArea && (
+                  <div
+                    data-ocid="checkin.outside_area_warning"
+                    className="flex items-start gap-2 p-3 rounded-lg text-sm"
+                    style={{
+                      background: "rgba(217,119,6,0.15)",
+                      border: "1px solid rgba(217,119,6,0.5)",
+                      color: "#fbbf24",
+                    }}
+                  >
+                    <span className="mt-0.5">⚠️</span>
+                    <span>
+                      You are outside the designated area. The transaction will
+                      still be saved.
+                    </span>
+                  </div>
                 )}
                 <div className="flex gap-3">
                   <Button

@@ -50,12 +50,14 @@ const TYPE_FILTERS: { label: string; value: TypeFilterType }[] = [
 export default function AdminMenuScreen({
   onManageEquipment,
   onViewEquipment,
+  onViewMap,
   onBack,
   onLogout,
   currentUser,
 }: {
   onManageEquipment: () => void;
   onViewEquipment: (id: string) => void;
+  onViewMap: () => void;
   onBack: () => void;
   onLogout: () => void;
   currentUser: {
@@ -216,6 +218,14 @@ export default function AdminMenuScreen({
                 onClick={() => equipment[0] && onViewEquipment(equipment[0].id)}
               >
                 &#128203; View Equipment Details
+              </Button>
+              <Button
+                data-ocid="admin.equipment_map.button"
+                className="h-16 text-lg md:col-span-2"
+                style={{ background: "rgba(0,120,210,0.85)" }}
+                onClick={onViewMap}
+              >
+                &#128506; Equipment Map
               </Button>
             </CardContent>
           </Card>
@@ -393,8 +403,35 @@ export default function AdminMenuScreen({
                             style={{ color: "#94a3b8" }}
                           >
                             &#128205; {ev.location}
+                            {ev.outsideArea && (
+                              <span
+                                className="ml-2 inline-block px-1.5 py-0.5 rounded text-xs font-semibold"
+                                style={{
+                                  background: "rgba(217,119,6,0.2)",
+                                  color: "#fb923c",
+                                  border: "1px solid rgba(217,119,6,0.4)",
+                                }}
+                              >
+                                Out of designated area
+                              </span>
+                            )}
                           </p>
                         )}
+                        {ev.lat !== undefined &&
+                          ev.lon !== undefined &&
+                          ev.lat !== 0 &&
+                          ev.lon !== 0 && (
+                            <a
+                              href={`https://www.google.com/maps?q=${ev.lat},${ev.lon}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-medium"
+                              style={{ color: "#0078D2" }}
+                              data-ocid={`admin.events.maps_link.${i + 1}`}
+                            >
+                              &#128205; Open in Maps
+                            </a>
+                          )}
                         {ev.notes && (
                           <p
                             className="text-xs mt-1"
