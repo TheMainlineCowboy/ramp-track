@@ -119,6 +119,7 @@ export default function SignInScreen({
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoggingIn}
                   placeholder="Enter your ID or email"
+                  className="placeholder:text-white/75"
                 />
               </div>
               <div className="space-y-2">
@@ -132,6 +133,7 @@ export default function SignInScreen({
                   disabled={isLoggingIn}
                   placeholder="Enter your password"
                   onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  className="placeholder:text-white/75"
                 />
               </div>
               {error && (
@@ -170,13 +172,15 @@ export default function SignInScreen({
                 Scan Badge
               </Button>
             </div>
-            <div className="text-center text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-              <p className="font-medium mb-1">Demo Credentials:</p>
-              <p className="font-mono text-xs">
-                Agent: agent@ramptrack.com / test123
+            <div className="text-center text-sm text-white/90 bg-black/50 rounded-lg p-3">
+              <p className="font-medium mb-1 text-white">Demo Credentials:</p>
+              <p className="font-mono text-xs text-white/85">
+                <span className="font-semibold text-[#0078D2]">Agent</span>:
+                agent@ramptrack.com / test123
               </p>
-              <p className="font-mono text-xs mt-1">
-                Management: Employee ID / admin123
+              <p className="font-mono text-xs mt-1 text-white/85">
+                <span className="font-semibold text-[#0078D2]">Management</span>
+                : Employee ID / admin123
               </p>
             </div>
           </CardContent>
