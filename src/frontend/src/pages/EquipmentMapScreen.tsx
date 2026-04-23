@@ -1,9 +1,31 @@
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import { ChevronLeft, MapPin, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
+import {
+  CircleMarker,
+  MapContainer,
+  Popup,
+  TileLayer,
+  useMap,
+} from "react-leaflet";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { type EquipmentEvent, getAllEvents } from "../lib/equipmentHistory";
 import { formatOperatorName } from "../lib/formatOperatorName";
+
+// Fix Leaflet default marker icon path (Vite build issue)
+// biome-ignore lint/performance/noDelete: required to patch Leaflet's internal icon resolution
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: new URL(
+    "leaflet/dist/images/marker-icon-2x.png",
+    import.meta.url,
+  ).href,
+  iconUrl: new URL("leaflet/dist/images/marker-icon.png", import.meta.url).href,
+  shadowUrl: new URL("leaflet/dist/images/marker-shadow.png", import.meta.url)
+    .href,
+});
 
 type MapFilter = "ALL" | "CHECK_IN" | "CHECK_OUT" | "OUTSIDE_AREA";
 const FILTERS: { label: string; value: MapFilter }[] = [
@@ -12,6 +34,10 @@ const FILTERS: { label: string; value: MapFilter }[] = [
   { label: "Checked Out", value: "CHECK_OUT" },
   { label: "Out of Area", value: "OUTSIDE_AREA" },
 ];
+
+// JFK Airport default center
+const DEFAULT_CENTER: [number, number] = [40.6413, -73.7781];
+const DEFAULT_ZOOM = 15;
 
 function getPinColor(ev: EquipmentEvent): string {
   if (ev.outsideArea) return "#f97316";
@@ -35,20 +61,6 @@ function formatTs(ts: number): string {
   });
 }
 
-// Mercator lat to normalized y (0=top, 1=bottom)
-function latToY(lat: number, minLat: number, maxLat: number): number {
-  const mercY = (l: number) =>
-    Math.log(Math.tan(Math.PI / 4 + (l * Math.PI) / 360));
-  const yMin = mercY(minLat);
-  const yMax = mercY(maxLat);
-  const y = mercY(lat);
-  return 1 - (y - yMin) / (yMax - yMin);
-}
-
-function lonToX(lon: number, minLon: number, maxLon: number): number {
-  return (lon - minLon) / (maxLon - minLon);
-}
-
 interface PinGroup {
   key: string;
   lat: number;
@@ -57,10 +69,19 @@ interface PinGroup {
   color: string;
 }
 
-const SVG_W = 800;
-const SVG_H = 500;
-const PADDING = 0.12;
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Re-centers the map when pins change
+function MapRecenter({
+  center,
+  zoom,
+}: { center: [number, number]; zoom: number }) {
+  const map = useMap();
+  useMemo(() => {
+    map.setView(center, zoom, { animate: false });
+  }, [map, center, zoom]);
+  return null;
+}
 
 export default function EquipmentMapScreen({
   currentUser,
@@ -124,25 +145,12 @@ export default function EquipmentMapScreen({
     }));
   }, [filteredEvents]);
 
-  const positions = useMemo<{ x: number; y: number }[]>(() => {
-    if (pinGroups.length === 0) return [];
-    if (pinGroups.length === 1) return [{ x: SVG_W / 2, y: SVG_H / 2 }];
-    const lats = pinGroups.map((p) => p.lat);
-    const lons = pinGroups.map((p) => p.lon);
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-    const minLon = Math.min(...lons);
-    const maxLon = Math.max(...lons);
-    const padLat = (maxLat - minLat || 0.01) * PADDING;
-    const padLon = (maxLon - minLon || 0.01) * PADDING;
-    const bMinLat = minLat - padLat;
-    const bMaxLat = maxLat + padLat;
-    const bMinLon = minLon - padLon;
-    const bMaxLon = maxLon + padLon;
-    return pinGroups.map((p) => ({
-      x: lonToX(p.lon, bMinLon, bMaxLon) * SVG_W,
-      y: latToY(p.lat, bMinLat, bMaxLat) * SVG_H,
-    }));
+  // Compute map center from pin centroid, fall back to JFK
+  const mapCenter = useMemo<[number, number]>(() => {
+    if (pinGroups.length === 0) return DEFAULT_CENTER;
+    const avgLat = pinGroups.reduce((s, p) => s + p.lat, 0) / pinGroups.length;
+    const avgLon = pinGroups.reduce((s, p) => s + p.lon, 0) / pinGroups.length;
+    return [avgLat, avgLon];
   }, [pinGroups]);
 
   if (!isAdmin) {
@@ -167,7 +175,7 @@ export default function EquipmentMapScreen({
     >
       {/* Header */}
       <header
-        className="flex items-center gap-3 px-4 py-3 border-b"
+        className="flex items-center gap-3 px-4 py-3 border-b flex-shrink-0"
         style={{ background: "#1e293b", borderColor: "rgba(255,255,255,0.1)" }}
       >
         <button
@@ -204,7 +212,7 @@ export default function EquipmentMapScreen({
 
       {/* Search + Filters */}
       <div
-        className="px-4 pt-3 pb-2 space-y-2"
+        className="px-4 pt-3 pb-2 space-y-2 flex-shrink-0"
         style={{
           background: "#1e293b",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
@@ -230,7 +238,7 @@ export default function EquipmentMapScreen({
         </div>
         <div
           className="flex gap-2 overflow-x-auto pb-1"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
         >
           {FILTERS.map((f) => (
             <button
@@ -257,23 +265,11 @@ export default function EquipmentMapScreen({
         </div>
       </div>
 
-      {/* Map */}
-      <div
-        className="flex-1 relative overflow-hidden"
-        style={{ minHeight: "300px" }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(0,120,210,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,120,210,0.06) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-
-        {pinGroups.length === 0 ? (
+      {/* Map container */}
+      <div className="flex-1 relative" style={{ minHeight: "300px" }}>
+        {pinGroups.length === 0 && (
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 pointer-events-none"
             data-ocid="equipment-map.empty_state"
           >
             <MapPin className="w-12 h-12" style={{ color: "#334155" }} />
@@ -286,113 +282,165 @@ export default function EquipmentMapScreen({
                 : "Check-in/out with GPS enabled to see pins here"}
             </p>
           </div>
-        ) : (
-          <svg
-            viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-            className="w-full h-full"
-            style={{ display: "block" }}
-            role="img"
-            aria-label="Map showing equipment transaction pin locations"
-          >
-            <title>Equipment transaction locations</title>
-            <rect width={SVG_W} height={SVG_H} fill="rgba(0,120,210,0.04)" />
-
-            {pinGroups.length > 1 &&
-              positions.map((pos, i) =>
-                i > 0 ? (
-                  <line
-                    key={`line-${pinGroups[i].key}`}
-                    x1={positions[i - 1].x}
-                    y1={positions[i - 1].y}
-                    x2={pos.x}
-                    y2={pos.y}
-                    stroke="rgba(0,120,210,0.12)"
-                    strokeWidth="1"
-                    strokeDasharray="4 6"
-                  />
-                ) : null,
-              )}
-
-            {pinGroups.map((pin, i) => {
-              const pos = positions[i];
-              if (!pos) return null;
-              const { x, y } = pos;
-              const isSelected = selectedPin?.key === pin.key;
-              const count = pin.events.length;
-              return (
-                <g
-                  key={pin.key}
-                  transform={`translate(${x},${y})`}
-                  onClick={() => {
-                    setSelectedPin(isSelected ? null : pin);
-                    setSelectedEventIdx(0);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      setSelectedPin(isSelected ? null : pin);
-                      setSelectedEventIdx(0);
-                    }
-                  }}
-                  tabIndex={0}
-                  style={{ cursor: "pointer", outline: "none" }}
-                  data-ocid={`equipment-map.pin.${i + 1}`}
-                  aria-label={`${pin.events[0].equipmentId} — ${getEventLabel(pin.events[0].eventType)}`}
-                >
-                  <circle r="20" fill="transparent" />
-                  {isSelected && (
-                    <circle
-                      r="18"
-                      fill="none"
-                      stroke={pin.color}
-                      strokeWidth="2"
-                      opacity="0.5"
-                    />
-                  )}
-                  <circle r="12" fill="rgba(0,0,0,0.4)" cy="2" />
-                  <circle
-                    r="12"
-                    fill={pin.color}
-                    stroke={isSelected ? "#ffffff" : "rgba(255,255,255,0.3)"}
-                    strokeWidth={isSelected ? "2.5" : "1.5"}
-                  />
-                  <circle r="4" fill="rgba(255,255,255,0.7)" />
-                  {count > 1 && (
-                    <>
-                      <circle
-                        cx="10"
-                        cy="-10"
-                        r="7"
-                        fill="#0078D2"
-                        stroke="#0f172a"
-                        strokeWidth="1.5"
-                      />
-                      <text
-                        x="10"
-                        y="-10"
-                        textAnchor="middle"
-                        dominantBaseline="central"
-                        fill="#ffffff"
-                        fontSize="7"
-                        fontWeight="bold"
-                        fontFamily="system-ui, sans-serif"
-                      >
-                        {count > 9 ? "9+" : count}
-                      </text>
-                    </>
-                  )}
-                </g>
-              );
-            })}
-          </svg>
         )}
 
-        {/* Legend */}
+        <MapContainer
+          center={mapCenter}
+          zoom={DEFAULT_ZOOM}
+          style={{ height: "100%", width: "100%", minHeight: "300px" }}
+          zoomControl={true}
+          scrollWheelZoom={true}
+          dragging={true}
+          touchZoom={true}
+          doubleClickZoom={true}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+
+          {/* Re-center when pin data changes */}
+          <MapRecenter center={mapCenter} zoom={DEFAULT_ZOOM} />
+
+          {pinGroups.map((pin, i) => (
+            <CircleMarker
+              key={pin.key}
+              center={[pin.lat, pin.lon]}
+              radius={12}
+              pathOptions={{
+                color: "#ffffff",
+                weight: 2,
+                opacity: 0.9,
+                fillColor: pin.color,
+                fillOpacity: 0.95,
+              }}
+              eventHandlers={{
+                click: () => {
+                  setSelectedPin(pin);
+                  setSelectedEventIdx(0);
+                },
+              }}
+              data-ocid={`equipment-map.pin.${i + 1}`}
+            >
+              <Popup
+                className="leaflet-popup-ramptrack"
+                closeButton={false}
+                autoPan={false}
+              >
+                <div
+                  style={{
+                    background: "#1e293b",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    borderRadius: "8px",
+                    padding: "10px 12px",
+                    minWidth: "180px",
+                    color: "#f1f5f9",
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        background: pin.color,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span style={{ fontWeight: 700, fontSize: "14px" }}>
+                      {pin.events[0].equipmentId}
+                    </span>
+                    {pin.events.length > 1 && (
+                      <span
+                        style={{
+                          fontSize: "11px",
+                          background: "rgba(0,120,210,0.25)",
+                          color: "#60b4ff",
+                          borderRadius: "4px",
+                          padding: "1px 5px",
+                        }}
+                      >
+                        {pin.events.length} events
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: "#94a3b8",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    <span style={{ color: "#64748b" }}>Status: </span>
+                    <span style={{ color: pin.color, fontWeight: 600 }}>
+                      {getEventLabel(pin.events[0].eventType)}
+                      {pin.events[0].outsideArea && " · Out of area"}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: "#94a3b8",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    <span style={{ color: "#64748b" }}>Operator: </span>
+                    {formatOperatorName(pin.events[0].operator) ||
+                      pin.events[0].operator}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: "#94a3b8",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <span style={{ color: "#64748b" }}>Time: </span>
+                    {formatTs(pin.events[0].timestamp)}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedPin(pin);
+                      setSelectedEventIdx(0);
+                      onViewEquipmentDetail(pin.events[0].equipmentId);
+                    }}
+                    style={{
+                      width: "100%",
+                      background: "#0078D2",
+                      color: "#ffffff",
+                      border: "none",
+                      borderRadius: "6px",
+                      padding: "6px 10px",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                    }}
+                  >
+                    View Details
+                  </button>
+                </div>
+              </Popup>
+            </CircleMarker>
+          ))}
+        </MapContainer>
+
+        {/* Legend overlay */}
         <div
-          className="absolute bottom-3 left-3 flex flex-col gap-1.5 px-3 py-2 rounded-xl text-xs"
+          className="absolute bottom-3 left-3 flex flex-col gap-1.5 px-3 py-2 rounded-xl text-xs z-[1000]"
           style={{
             background: "rgba(15,23,42,0.88)",
             border: "1px solid rgba(255,255,255,0.1)",
             backdropFilter: "blur(4px)",
+            pointerEvents: "none",
           }}
         >
           {[
@@ -413,21 +461,22 @@ export default function EquipmentMapScreen({
 
         {/* Pin count */}
         <div
-          className="absolute top-3 right-3 px-2 py-1 rounded-lg text-xs font-medium"
+          className="absolute top-3 right-3 px-2 py-1 rounded-lg text-xs font-medium z-[1000]"
           style={{
             background: "rgba(15,23,42,0.85)",
             border: "1px solid rgba(255,255,255,0.1)",
             color: "#94a3b8",
+            pointerEvents: "none",
           }}
         >
           {pinGroups.length} location{pinGroups.length !== 1 ? "s" : ""}
         </div>
       </div>
 
-      {/* Info card */}
+      {/* Info card — shows details for the last tapped pin */}
       {selectedPin && selectedEvent && (
         <div
-          className="px-4 py-3 border-t"
+          className="px-4 py-3 border-t flex-shrink-0"
           style={{
             background: "#1e293b",
             borderColor: "rgba(255,255,255,0.1)",
