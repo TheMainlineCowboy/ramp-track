@@ -45,46 +45,40 @@ export default function SignOnScreen({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="w-full max-w-md flex flex-col items-center gap-4">
+      <button
+        type="button"
+        onClick={onAgentLogin}
+        className="w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none"
+        aria-label="Agent"
+        data-ocid="signon.agent.button"
+      >
+        <img src={agentLogin} alt="Agent" className="w-full h-auto" />
+      </button>
+
+      {!isAgentOnly && hasAdminRole && (
         <button
           type="button"
-          onClick={onAgentLogin}
-          className="w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50 rounded-2xl"
-          aria-label="Agent"
-          data-ocid="signon.agent.button"
+          onClick={onAdminLogin}
+          className="w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none"
+          aria-label="Management"
+          data-ocid="signon.management.button"
         >
           <img
-            src={agentLogin}
-            alt="Agent"
-            className="w-full h-auto rounded-2xl shadow-2xl"
+            src={managementLogin}
+            alt="Management"
+            className="w-full h-auto"
           />
         </button>
+      )}
 
-        {!isAgentOnly && hasAdminRole && (
-          <button
-            type="button"
-            onClick={onAdminLogin}
-            className="w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/50 rounded-2xl"
-            aria-label="Management"
-            data-ocid="signon.management.button"
-          >
-            <img
-              src={managementLogin}
-              alt="Management"
-              className="w-full h-auto rounded-2xl shadow-2xl"
-            />
-          </button>
-        )}
-
-        <button
-          type="button"
-          onClick={onBack}
-          className="mt-4 px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 transition-colors"
-          data-ocid="signon.back.button"
-        >
-          Back to Login
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={onBack}
+        className="mt-4 px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 transition-colors"
+        data-ocid="signon.back.button"
+      >
+        Back to Login
+      </button>
     </div>
   );
 }

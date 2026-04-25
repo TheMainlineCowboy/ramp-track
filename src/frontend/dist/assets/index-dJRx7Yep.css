@@ -2146,6 +2146,9 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
+.border-white\/10 {
+  border-color: rgb(255 255 255 / 0.1);
+}
 .border-white\/30 {
   border-color: rgb(255 255 255 / 0.3);
 }
@@ -2305,9 +2308,9 @@ video {
   --tw-gradient-to: rgb(0 0 0 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), rgb(0 0 0 / 0.4) var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
-.via-black\/60 {
+.via-black\/50 {
   --tw-gradient-to: rgb(0 0 0 / 0)  var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), rgb(0 0 0 / 0.6) var(--tw-gradient-via-position), var(--tw-gradient-to);
+  --tw-gradient-stops: var(--tw-gradient-from), rgb(0 0 0 / 0.5) var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
 .to-black\/20 {
   --tw-gradient-to: rgb(0 0 0 / 0.2) var(--tw-gradient-to-position);
@@ -2555,6 +2558,10 @@ video {
 .tracking-widest {
   letter-spacing: 0.1em;
 }
+.text-\[\#0078D2\] {
+  --tw-text-opacity: 1;
+  color: rgb(0 120 210 / var(--tw-text-opacity, 1));
+}
 .text-accent-foreground {
   color: oklch(var(--accent-foreground));
 }
@@ -2644,6 +2651,9 @@ video {
 }
 .text-white\/80 {
   color: rgb(255 255 255 / 0.8);
+}
+.text-white\/85 {
+  color: rgb(255 255 255 / 0.85);
 }
 .text-white\/90 {
   color: rgb(255 255 255 / 0.9);
@@ -2961,6 +2971,12 @@ video {
 .placeholder\:text-muted-foreground::placeholder {
   --tw-text-opacity: 1;
   color: oklch(var(--muted-foreground) / var(--tw-text-opacity, 1));
+}
+.placeholder\:text-white\/75::-moz-placeholder {
+  color: rgb(255 255 255 / 0.75);
+}
+.placeholder\:text-white\/75::placeholder {
+  color: rgb(255 255 255 / 0.75);
 }
 .after\:absolute::after {
   content: var(--tw-content);

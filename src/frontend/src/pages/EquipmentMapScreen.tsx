@@ -35,8 +35,8 @@ const FILTERS: { label: string; value: MapFilter }[] = [
   { label: "Out of Area", value: "OUTSIDE_AREA" },
 ];
 
-// JFK Airport default center
-const DEFAULT_CENTER: [number, number] = [40.6413, -73.7781];
+// PHX Sky Harbor default center
+const DEFAULT_CENTER: [number, number] = [33.4342, -112.0116];
 const DEFAULT_ZOOM = 15;
 
 function getPinColor(ev: EquipmentEvent): string {

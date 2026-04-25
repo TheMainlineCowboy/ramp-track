@@ -71,13 +71,12 @@ export default function SignInScreen({
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center p-4 relative"
+      className="flex min-h-screen items-center justify-center p-0 relative"
       style={{
         backgroundImage: `url(${homescreenBackground})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
       }}
     >
       {scannerOpen && (
@@ -87,9 +86,9 @@ export default function SignInScreen({
           onClose={() => setScannerOpen(false)}
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/60 to-black/50 backdrop-blur-[2px]" />
-      <div className="relative z-10 w-full max-w-md">
-        <Card className="bg-card/95 backdrop-blur-xl shadow-2xl border-2">
+      <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/50 to-black/50 backdrop-blur-[2px]" />
+      <div className="relative z-10 w-full max-w-md px-4 py-6">
+        <Card className="bg-card/[0.97] backdrop-blur-xl shadow-2xl border border-white/10">
           <CardHeader className="text-center space-y-2">
             <div className="flex justify-center mb-4">
               <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center">
