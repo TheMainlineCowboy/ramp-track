@@ -1770,6 +1770,9 @@ video {
 .max-w-2xl {
   max-width: 42rem;
 }
+.max-w-\[220px\] {
+  max-width: 220px;
+}
 .max-w-\[260px\] {
   max-width: 260px;
 }

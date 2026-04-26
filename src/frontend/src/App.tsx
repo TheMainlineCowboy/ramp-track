@@ -34,6 +34,10 @@ function AppContent() {
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(
     null,
   );
+  // Target equipment to center on when opening the Equipment Map
+  const [equipmentMapTarget, setEquipmentMapTarget] = useState<
+    string | undefined
+  >(undefined);
   const authRef = useRef(auth);
   authRef.current = auth;
 
@@ -76,6 +80,12 @@ function AppContent() {
   const handleLogout = () => {
     logout();
     navigate("signin");
+  };
+
+  // Navigate to equipment map, optionally centering on a specific equipment
+  const handleViewMap = (equipmentId?: string) => {
+    setEquipmentMapTarget(equipmentId);
+    navigate("equipment-map");
   };
 
   if (view === "splash") return <SplashScreen />;
@@ -145,7 +155,7 @@ function AppContent() {
             setSelectedEquipmentId(id);
             navigate("equipment-detail");
           }}
-          onViewMap={() => navigate("equipment-map")}
+          onViewMap={handleViewMap}
           onBack={() => navigate("signon")}
           onLogout={handleLogout}
         />
@@ -157,6 +167,7 @@ function AppContent() {
         <EquipmentDetailScreen
           equipmentId={selectedEquipmentId || ""}
           onBack={() => navigate("admin-menu")}
+          onViewEquipmentMap={(equipmentId) => handleViewMap(equipmentId)}
         />
       );
     case "equipment-map":
@@ -167,11 +178,15 @@ function AppContent() {
       return (
         <EquipmentMapScreen
           currentUser={auth}
-          onBack={() => navigate("admin-menu")}
+          onBack={() => {
+            setEquipmentMapTarget(undefined);
+            navigate("admin-menu");
+          }}
           onViewEquipmentDetail={(id) => {
             setSelectedEquipmentId(id);
             navigate("equipment-detail");
           }}
+          initialEquipmentId={equipmentMapTarget}
         />
       );
     default:

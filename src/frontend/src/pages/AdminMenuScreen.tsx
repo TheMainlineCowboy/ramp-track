@@ -57,7 +57,7 @@ export default function AdminMenuScreen({
 }: {
   onManageEquipment: () => void;
   onViewEquipment: (id: string) => void;
-  onViewMap: () => void;
+  onViewMap: (equipmentId?: string) => void;
   onBack: () => void;
   onLogout: () => void;
   currentUser: {
@@ -223,7 +223,7 @@ export default function AdminMenuScreen({
                 data-ocid="admin.equipment_map.button"
                 className="h-16 text-lg md:col-span-2"
                 style={{ background: "rgba(0,120,210,0.85)" }}
-                onClick={onViewMap}
+                onClick={() => onViewMap()}
               >
                 &#128506; Equipment Map
               </Button>
@@ -421,16 +421,21 @@ export default function AdminMenuScreen({
                           ev.lon !== undefined &&
                           ev.lat !== 0 &&
                           ev.lon !== 0 && (
-                            <a
-                              href={`https://www.google.com/maps?q=${ev.lat},${ev.lon}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs font-medium"
-                              style={{ color: "#0078D2" }}
-                              data-ocid={`admin.events.maps_link.${i + 1}`}
+                            <button
+                              type="button"
+                              onClick={() => onViewMap(ev.equipmentId)}
+                              className="text-xs font-medium mt-0.5"
+                              style={{
+                                color: "#0078D2",
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                cursor: "pointer",
+                              }}
+                              data-ocid={`admin.events.view_map_button.${i + 1}`}
                             >
-                              &#128205; Open in Maps
-                            </a>
+                              &#128205; View on Equipment Map
+                            </button>
                           )}
                         {ev.notes && (
                           <p

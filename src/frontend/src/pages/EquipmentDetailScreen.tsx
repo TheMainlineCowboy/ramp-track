@@ -25,7 +25,12 @@ const formatEventType = (t: string) => t.replace("_", " ");
 export default function EquipmentDetailScreen({
   equipmentId,
   onBack,
-}: { equipmentId: string; onBack: () => void }) {
+  onViewEquipmentMap,
+}: {
+  equipmentId: string;
+  onBack: () => void;
+  onViewEquipmentMap?: (equipmentId: string) => void;
+}) {
   const equipment = findById(equipmentId);
   const history = getHistoryForEquipment(equipmentId);
 
@@ -239,17 +244,23 @@ export default function EquipmentDetailScreen({
                         {ev.lat !== undefined &&
                           ev.lon !== undefined &&
                           ev.lat !== 0 &&
-                          ev.lon !== 0 && (
-                            <a
-                              href={`https://www.google.com/maps?q=${ev.lat},${ev.lon}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                          ev.lon !== 0 &&
+                          onViewEquipmentMap && (
+                            <button
+                              type="button"
+                              onClick={() => onViewEquipmentMap(ev.equipmentId)}
                               className="text-xs font-medium"
-                              style={{ color: "#0078D2" }}
-                              data-ocid={`equipdetail.history.maps_link.${ev.id}`}
+                              style={{
+                                color: "#0078D2",
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                cursor: "pointer",
+                              }}
+                              data-ocid={`equipdetail.history.view_map_button.${i + 1}`}
                             >
-                              📍 Open in Maps
-                            </a>
+                              📍 View on Equipment Map
+                            </button>
                           )}
                         {ev.notes && (
                           <p className="text-sm" style={{ color: "#cbd5f5" }}>

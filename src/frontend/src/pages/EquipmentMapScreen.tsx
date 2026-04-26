@@ -1,7 +1,7 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { ChevronLeft, MapPin, Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ChevronLeft, MapPin, Navigation, Search, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -83,20 +83,70 @@ function MapRecenter({
   return null;
 }
 
+// Flies map to a target location (used for initialEquipmentId centering)
+function MapFlyTo({
+  target,
+  onDone,
+}: { target: [number, number] | null; onDone: () => void }) {
+  const map = useMap();
+  const doneRef = useRef(false);
+  useEffect(() => {
+    if (target && !doneRef.current) {
+      doneRef.current = true;
+      map.flyTo(target, DEFAULT_ZOOM + 1, { animate: true, duration: 1 });
+      onDone();
+    }
+  }, [target, map, onDone]);
+  return null;
+}
+
+// User-location blue dot rendered inside the map
+function UserLocationMarker({
+  position,
+}: { position: [number, number] | null }) {
+  if (!position) return null;
+  return (
+    <CircleMarker
+      center={position}
+      radius={10}
+      pathOptions={{
+        color: "#1d4ed8",
+        weight: 3,
+        opacity: 1,
+        fillColor: "#3b82f6",
+        fillOpacity: 0.9,
+      }}
+    />
+  );
+}
+
 export default function EquipmentMapScreen({
   currentUser,
   onBack,
   onViewEquipmentDetail,
+  initialEquipmentId,
 }: {
   currentUser: { roles: string[] };
   onBack: () => void;
   onViewEquipmentDetail: (id: string) => void;
+  initialEquipmentId?: string;
 }) {
   const [filter, setFilter] = useState<MapFilter>("ALL");
   const [search, setSearch] = useState("");
   const [recentOnly, setRecentOnly] = useState(false);
   const [selectedPin, setSelectedPin] = useState<PinGroup | null>(null);
   const [selectedEventIdx, setSelectedEventIdx] = useState(0);
+
+  // My Location state — purely visual, never saved
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(
+    null,
+  );
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  // Fly-to target derived from initialEquipmentId
+  const [flyTarget, setFlyTarget] = useState<[number, number] | null>(null);
+  const flyApplied = useRef(false);
 
   const isAdmin = currentUser.roles.includes("admin");
   const now = Date.now();
@@ -145,13 +195,78 @@ export default function EquipmentMapScreen({
     }));
   }, [filteredEvents]);
 
-  // Compute map center from pin centroid, fall back to JFK
+  // Compute map center from pin centroid, fall back to PHX
   const mapCenter = useMemo<[number, number]>(() => {
     if (pinGroups.length === 0) return DEFAULT_CENTER;
     const avgLat = pinGroups.reduce((s, p) => s + p.lat, 0) / pinGroups.length;
     const avgLon = pinGroups.reduce((s, p) => s + p.lon, 0) / pinGroups.length;
     return [avgLat, avgLon];
   }, [pinGroups]);
+
+  // Resolve the fly-to target once pin groups are available
+  useEffect(() => {
+    if (!initialEquipmentId || flyApplied.current) return;
+    // Find the most recent event for this equipment with GPS
+    const allEvs = getAllEvents().filter(
+      (e) =>
+        e.equipmentId === initialEquipmentId &&
+        e.lat !== undefined &&
+        e.lon !== undefined &&
+        e.lat !== 0 &&
+        e.lon !== 0,
+    );
+    if (allEvs.length > 0) {
+      const latest = allEvs.sort((a, b) => b.timestamp - a.timestamp)[0];
+      setFlyTarget([latest.lat!, latest.lon!]);
+    } else {
+      // No GPS data for this equipment — use PHX fallback
+      setFlyTarget(DEFAULT_CENTER);
+    }
+    // Also auto-select the pin group for this equipment if present
+    const targetGroup = pinGroups.find((pg) =>
+      pg.events.some((e) => e.equipmentId === initialEquipmentId),
+    );
+    if (targetGroup) {
+      setSelectedPin(targetGroup);
+      setSelectedEventIdx(0);
+    }
+  }, [initialEquipmentId, pinGroups]);
+
+  // Handle "My Location" button
+  const handleMyLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by this device.");
+      return;
+    }
+    setLocationLoading(true);
+    setLocationError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords: [number, number] = [
+          pos.coords.latitude,
+          pos.coords.longitude,
+        ];
+        setUserLocation(coords);
+        setLocationLoading(false);
+        // Fly the map to user's location — trigger via flyTarget
+        setFlyTarget(coords);
+        flyApplied.current = false;
+      },
+      (err) => {
+        setLocationLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setLocationError(
+            "Location access denied. Enable location permission to use this feature.",
+          );
+        } else {
+          setLocationError(
+            "Unable to retrieve your location. Please try again.",
+          );
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
 
   if (!isAdmin) {
     return (
@@ -302,6 +417,18 @@ export default function EquipmentMapScreen({
           {/* Re-center when pin data changes */}
           <MapRecenter center={mapCenter} zoom={DEFAULT_ZOOM} />
 
+          {/* Fly-to for initialEquipmentId or My Location */}
+          <MapFlyTo
+            target={flyTarget}
+            onDone={() => {
+              flyApplied.current = true;
+              setFlyTarget(null);
+            }}
+          />
+
+          {/* User location blue dot — purely visual, not saved */}
+          <UserLocationMarker position={userLocation} />
+
           {pinGroups.map((pin, i) => (
             <CircleMarker
               key={pin.key}
@@ -448,6 +575,7 @@ export default function EquipmentMapScreen({
             { color: "#ef4444", label: "Checked Out" },
             { color: "#f97316", label: "Out of Area" },
             { color: "#94a3b8", label: "Other" },
+            { color: "#3b82f6", label: "My Location" },
           ].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-2">
               <div
@@ -470,6 +598,50 @@ export default function EquipmentMapScreen({
           }}
         >
           {pinGroups.length} location{pinGroups.length !== 1 ? "s" : ""}
+        </div>
+
+        {/* My Location button */}
+        <div
+          className="absolute z-[1000] flex flex-col items-end gap-1"
+          style={{ bottom: "80px", right: "12px" }}
+        >
+          <button
+            type="button"
+            onClick={handleMyLocation}
+            disabled={locationLoading}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all"
+            style={{
+              background: userLocation
+                ? "rgba(59,130,246,0.25)"
+                : "rgba(15,23,42,0.9)",
+              border: userLocation
+                ? "1.5px solid #3b82f6"
+                : "1.5px solid rgba(255,255,255,0.18)",
+              color: userLocation ? "#93c5fd" : "#cbd5f5",
+              backdropFilter: "blur(6px)",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.4)",
+              opacity: locationLoading ? 0.6 : 1,
+              cursor: locationLoading ? "wait" : "pointer",
+            }}
+            data-ocid="equipment-map.my_location_button"
+            aria-label="Center map on my current location"
+          >
+            <Navigation className="w-4 h-4" />
+            {locationLoading ? "Locating…" : "My Location"}
+          </button>
+          {locationError && (
+            <div
+              className="text-xs px-2 py-1 rounded-lg max-w-[220px] text-center"
+              style={{
+                background: "rgba(15,23,42,0.92)",
+                border: "1px solid rgba(239,68,68,0.4)",
+                color: "#fca5a5",
+              }}
+              role="alert"
+            >
+              {locationError}
+            </div>
+          )}
         </div>
       </div>
 
@@ -606,26 +778,6 @@ export default function EquipmentMapScreen({
             >
               View Details
             </Button>
-            {selectedEvent.lat !== undefined &&
-              selectedEvent.lon !== undefined && (
-                <a
-                  href={`https://www.google.com/maps?q=${selectedEvent.lat},${selectedEvent.lon}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 rounded-md text-sm font-medium"
-                  style={{
-                    background: "rgba(255,255,255,0.08)",
-                    color: "#94a3b8",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    textDecoration: "none",
-                    minHeight: "36px",
-                  }}
-                  data-ocid="equipment-map.info_card.open_maps_link"
-                >
-                  <MapPin className="w-4 h-4" />
-                  Maps
-                </a>
-              )}
           </div>
         </div>
       )}

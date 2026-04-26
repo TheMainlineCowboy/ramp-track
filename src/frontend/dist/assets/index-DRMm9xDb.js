@@ -21214,32 +21214,44 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$b = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$b);
+const __iconNode$c = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$c);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$a = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$a);
+const __iconNode$b = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$b);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$9 = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$9);
+const __iconNode$a = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$a);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$8 = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$8);
+const __iconNode$9 = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$9);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$8);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -21248,36 +21260,24 @@ const ChevronUp = createLucideIcon("chevron-up", __iconNode$8);
  */
 const __iconNode$7 = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
-];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$7);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$6 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$6);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$7);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$5 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$5);
+const __iconNode$6 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$6);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$4 = [
+const __iconNode$5 = [
   [
     "path",
     {
@@ -21287,7 +21287,17 @@ const __iconNode$4 = [
   ],
   ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
 ];
-const MapPin = createLucideIcon("map-pin", __iconNode$4);
+const MapPin = createLucideIcon("map-pin", __iconNode$5);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
+  ["polygon", { points: "3 11 22 2 13 21 11 13 3 11", key: "1ltx0t" }]
+];
+const Navigation = createLucideIcon("navigation", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -22196,7 +22206,7 @@ function AdminMenuScreen({
                         "data-ocid": "admin.equipment_map.button",
                         className: "h-16 text-lg md:col-span-2",
                         style: { background: "rgba(0,120,210,0.85)" },
-                        onClick: onViewMap,
+                        onClick: () => onViewMap(),
                         children: "🗺 Equipment Map"
                       }
                     )
@@ -22387,15 +22397,20 @@ function AdminMenuScreen({
                             }
                           ),
                           ev.lat !== void 0 && ev.lon !== void 0 && ev.lat !== 0 && ev.lon !== 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                            "a",
+                            "button",
                             {
-                              href: `https://www.google.com/maps?q=${ev.lat},${ev.lon}`,
-                              target: "_blank",
-                              rel: "noopener noreferrer",
-                              className: "text-xs font-medium",
-                              style: { color: "#0078D2" },
-                              "data-ocid": `admin.events.maps_link.${i + 1}`,
-                              children: "📍 Open in Maps"
+                              type: "button",
+                              onClick: () => onViewMap(ev.equipmentId),
+                              className: "text-xs font-medium mt-0.5",
+                              style: {
+                                color: "#0078D2",
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                cursor: "pointer"
+                              },
+                              "data-ocid": `admin.events.view_map_button.${i + 1}`,
+                              children: "📍 View on Equipment Map"
                             }
                           ),
                           ev.notes && /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -53285,7 +53300,8 @@ const formatEquipmentType$1 = (type) => type === "ELECTRIC_TUG" ? "ELECTRIC TUG"
 const formatEventType = (t) => t.replace("_", " ");
 function EquipmentDetailScreen({
   equipmentId,
-  onBack
+  onBack,
+  onViewEquipmentMap
 }) {
   const equipment = findById(equipmentId);
   const history = getHistoryForEquipment(equipmentId);
@@ -53440,16 +53456,21 @@ function EquipmentDetailScreen({
                       }
                     )
                   ] }),
-                  ev.lat !== void 0 && ev.lon !== void 0 && ev.lat !== 0 && ev.lon !== 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "a",
+                  ev.lat !== void 0 && ev.lon !== void 0 && ev.lat !== 0 && ev.lon !== 0 && onViewEquipmentMap && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
                     {
-                      href: `https://www.google.com/maps?q=${ev.lat},${ev.lon}`,
-                      target: "_blank",
-                      rel: "noopener noreferrer",
+                      type: "button",
+                      onClick: () => onViewEquipmentMap(ev.equipmentId),
                       className: "text-xs font-medium",
-                      style: { color: "#0078D2" },
-                      "data-ocid": `equipdetail.history.maps_link.${ev.id}`,
-                      children: "📍 Open in Maps"
+                      style: {
+                        color: "#0078D2",
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer"
+                      },
+                      "data-ocid": `equipdetail.history.view_map_button.${i + 1}`,
+                      children: "📍 View on Equipment Map"
                     }
                   ),
                   ev.notes && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: [
@@ -63393,16 +63414,58 @@ function MapRecenter({
   }, [map, center, zoom]);
   return null;
 }
+function MapFlyTo({
+  target,
+  onDone
+}) {
+  const map = useMap();
+  const doneRef = reactExports.useRef(false);
+  reactExports.useEffect(() => {
+    if (target && !doneRef.current) {
+      doneRef.current = true;
+      map.flyTo(target, DEFAULT_ZOOM + 1, { animate: true, duration: 1 });
+      onDone();
+    }
+  }, [target, map, onDone]);
+  return null;
+}
+function UserLocationMarker({
+  position
+}) {
+  if (!position) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    CircleMarker,
+    {
+      center: position,
+      radius: 10,
+      pathOptions: {
+        color: "#1d4ed8",
+        weight: 3,
+        opacity: 1,
+        fillColor: "#3b82f6",
+        fillOpacity: 0.9
+      }
+    }
+  );
+}
 function EquipmentMapScreen({
   currentUser,
   onBack,
-  onViewEquipmentDetail
+  onViewEquipmentDetail,
+  initialEquipmentId
 }) {
   const [filter, setFilter] = reactExports.useState("ALL");
   const [search, setSearch] = reactExports.useState("");
   const [recentOnly, setRecentOnly] = reactExports.useState(false);
   const [selectedPin, setSelectedPin] = reactExports.useState(null);
   const [selectedEventIdx, setSelectedEventIdx] = reactExports.useState(0);
+  const [userLocation, setUserLocation] = reactExports.useState(
+    null
+  );
+  const [locationError, setLocationError] = reactExports.useState(null);
+  const [locationLoading, setLocationLoading] = reactExports.useState(false);
+  const [flyTarget, setFlyTarget] = reactExports.useState(null);
+  const flyApplied = reactExports.useRef(false);
   const isAdmin = currentUser.roles.includes("admin");
   const now2 = Date.now();
   const filteredEvents = reactExports.useMemo(() => {
@@ -63446,6 +63509,58 @@ function EquipmentMapScreen({
     const avgLon = pinGroups.reduce((s, p) => s + p.lon, 0) / pinGroups.length;
     return [avgLat, avgLon];
   }, [pinGroups]);
+  reactExports.useEffect(() => {
+    if (!initialEquipmentId || flyApplied.current) return;
+    const allEvs = getAllEvents().filter(
+      (e) => e.equipmentId === initialEquipmentId && e.lat !== void 0 && e.lon !== void 0 && e.lat !== 0 && e.lon !== 0
+    );
+    if (allEvs.length > 0) {
+      const latest = allEvs.sort((a, b) => b.timestamp - a.timestamp)[0];
+      setFlyTarget([latest.lat, latest.lon]);
+    } else {
+      setFlyTarget(DEFAULT_CENTER);
+    }
+    const targetGroup = pinGroups.find(
+      (pg) => pg.events.some((e) => e.equipmentId === initialEquipmentId)
+    );
+    if (targetGroup) {
+      setSelectedPin(targetGroup);
+      setSelectedEventIdx(0);
+    }
+  }, [initialEquipmentId, pinGroups]);
+  const handleMyLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by this device.");
+      return;
+    }
+    setLocationLoading(true);
+    setLocationError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = [
+          pos.coords.latitude,
+          pos.coords.longitude
+        ];
+        setUserLocation(coords);
+        setLocationLoading(false);
+        setFlyTarget(coords);
+        flyApplied.current = false;
+      },
+      (err) => {
+        setLocationLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setLocationError(
+            "Location access denied. Enable location permission to use this feature."
+          );
+        } else {
+          setLocationError(
+            "Unable to retrieve your location. Please try again."
+          );
+        }
+      },
+      { enableHighAccuracy: true, timeout: 1e4 }
+    );
+  };
   if (!isAdmin) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
@@ -63598,6 +63713,17 @@ function EquipmentMapScreen({
                   }
                 ),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(MapRecenter, { center: mapCenter, zoom: DEFAULT_ZOOM }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  MapFlyTo,
+                  {
+                    target: flyTarget,
+                    onDone: () => {
+                      flyApplied.current = true;
+                      setFlyTarget(null);
+                    }
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(UserLocationMarker, { position: userLocation }),
                 pinGroups.map((pin, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
                   CircleMarker,
                   {
@@ -63771,7 +63897,8 @@ function EquipmentMapScreen({
                 { color: "#22c55e", label: "Checked In" },
                 { color: "#ef4444", label: "Checked Out" },
                 { color: "#f97316", label: "Out of Area" },
-                { color: "#94a3b8", label: "Other" }
+                { color: "#94a3b8", label: "Other" },
+                { color: "#3b82f6", label: "My Location" }
               ].map(({ color, label }) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "div",
@@ -63798,6 +63925,52 @@ function EquipmentMapScreen({
                 pinGroups.length,
                 " location",
                 pinGroups.length !== 1 ? "s" : ""
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "absolute z-[1000] flex flex-col items-end gap-1",
+              style: { bottom: "80px", right: "12px" },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: handleMyLocation,
+                    disabled: locationLoading,
+                    className: "flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all",
+                    style: {
+                      background: userLocation ? "rgba(59,130,246,0.25)" : "rgba(15,23,42,0.9)",
+                      border: userLocation ? "1.5px solid #3b82f6" : "1.5px solid rgba(255,255,255,0.18)",
+                      color: userLocation ? "#93c5fd" : "#cbd5f5",
+                      backdropFilter: "blur(6px)",
+                      boxShadow: "0 2px 12px rgba(0,0,0,0.4)",
+                      opacity: locationLoading ? 0.6 : 1,
+                      cursor: locationLoading ? "wait" : "pointer"
+                    },
+                    "data-ocid": "equipment-map.my_location_button",
+                    "aria-label": "Center map on my current location",
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(Navigation, { className: "w-4 h-4" }),
+                      locationLoading ? "Locating…" : "My Location"
+                    ]
+                  }
+                ),
+                locationError && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "div",
+                  {
+                    className: "text-xs px-2 py-1 rounded-lg max-w-[220px] text-center",
+                    style: {
+                      background: "rgba(15,23,42,0.92)",
+                      border: "1px solid rgba(239,68,68,0.4)",
+                      color: "#fca5a5"
+                    },
+                    role: "alert",
+                    children: locationError
+                  }
+                )
               ]
             }
           )
@@ -63926,39 +64099,16 @@ function EquipmentMapScreen({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Button,
-                  {
-                    className: "flex-1 h-9 text-sm font-semibold",
-                    style: { background: "#0078D2", color: "#ffffff" },
-                    onClick: () => onViewEquipmentDetail(selectedEvent.equipmentId),
-                    "data-ocid": "equipment-map.info_card.view_details_button",
-                    children: "View Details"
-                  }
-                ),
-                selectedEvent.lat !== void 0 && selectedEvent.lon !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "a",
-                  {
-                    href: `https://www.google.com/maps?q=${selectedEvent.lat},${selectedEvent.lon}`,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    className: "flex items-center gap-1.5 px-3 rounded-md text-sm font-medium",
-                    style: {
-                      background: "rgba(255,255,255,0.08)",
-                      color: "#94a3b8",
-                      border: "1px solid rgba(255,255,255,0.12)",
-                      textDecoration: "none",
-                      minHeight: "36px"
-                    },
-                    "data-ocid": "equipment-map.info_card.open_maps_link",
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(MapPin, { className: "w-4 h-4" }),
-                      "Maps"
-                    ]
-                  }
-                )
-              ] })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  className: "flex-1 h-9 text-sm font-semibold",
+                  style: { background: "#0078D2", color: "#ffffff" },
+                  onClick: () => onViewEquipmentDetail(selectedEvent.equipmentId),
+                  "data-ocid": "equipment-map.info_card.view_details_button",
+                  children: "View Details"
+                }
+              ) })
             ]
           }
         )
@@ -70704,6 +70854,7 @@ function AppContent() {
   const [selectedEquipmentId, setSelectedEquipmentId] = reactExports.useState(
     null
   );
+  const [equipmentMapTarget, setEquipmentMapTarget] = reactExports.useState(void 0);
   const authRef = reactExports.useRef(auth);
   authRef.current = auth;
   reactExports.useEffect(() => {
@@ -70741,6 +70892,10 @@ function AppContent() {
   const handleLogout = () => {
     logout();
     navigate("signin");
+  };
+  const handleViewMap = (equipmentId) => {
+    setEquipmentMapTarget(equipmentId);
+    navigate("equipment-map");
   };
   if (view === "splash") return /* @__PURE__ */ jsxRuntimeExports.jsx(SplashScreen, {});
   if (view === "landing") {
@@ -70813,7 +70968,7 @@ function AppContent() {
             setSelectedEquipmentId(id);
             navigate("equipment-detail");
           },
-          onViewMap: () => navigate("equipment-map"),
+          onViewMap: handleViewMap,
           onBack: () => navigate("signon"),
           onLogout: handleLogout
         }
@@ -70825,7 +70980,8 @@ function AppContent() {
         EquipmentDetailScreen,
         {
           equipmentId: selectedEquipmentId || "",
-          onBack: () => navigate("admin-menu")
+          onBack: () => navigate("admin-menu"),
+          onViewEquipmentMap: (equipmentId) => handleViewMap(equipmentId)
         }
       );
     case "equipment-map":
@@ -70837,11 +70993,15 @@ function AppContent() {
         EquipmentMapScreen,
         {
           currentUser: auth,
-          onBack: () => navigate("admin-menu"),
+          onBack: () => {
+            setEquipmentMapTarget(void 0);
+            navigate("admin-menu");
+          },
           onViewEquipmentDetail: (id) => {
             setSelectedEquipmentId(id);
             navigate("equipment-detail");
-          }
+          },
+          initialEquipmentId: equipmentMapTarget
         }
       );
     default:
