@@ -1,6 +1,13 @@
+import { useEffect, useState } from "react";
 import checkInIcon from "../assets/Check_In_Icon.png";
 import checkOutIcon from "../assets/Check_Out_Icon.png";
 import reportIssueIcon from "../assets/Report_Issue_Icon.png";
+import ManagerNoticeModal from "../components/ManagerNoticeModal";
+import {
+  type ManagerMessage,
+  acknowledgeMessage,
+  getPendingMessagesForUser,
+} from "../lib/managerMessages";
 
 function formatUserDisplayName(user: {
   name?: string;
@@ -41,6 +48,19 @@ export default function OperatorHomeScreen({
     roles: string[];
   };
 }) {
+  const [pendingMessages, setPendingMessages] = useState<ManagerMessage[]>([]);
+
+  useEffect(() => {
+    const pending = getPendingMessagesForUser(currentUser.username);
+    setPendingMessages(pending);
+  }, [currentUser.username]);
+
+  const handleAcknowledge = (id: string) => {
+    const displayName = currentUser.name || currentUser.username;
+    acknowledgeMessage(id, currentUser.username, displayName);
+    setPendingMessages((prev) => prev.filter((m) => m.id !== id));
+  };
+
   return (
     <div
       className="min-h-screen relative"
@@ -144,6 +164,15 @@ export default function OperatorHomeScreen({
           © Jayson James & Ramp Track Systems
         </footer>
       </div>
+
+      {/* Manager notice modal — shown on top of everything, not dismissible */}
+      {pendingMessages.length > 0 && (
+        <ManagerNoticeModal
+          message={pendingMessages[0]}
+          currentUser={currentUser}
+          onAcknowledge={handleAcknowledge}
+        />
+      )}
     </div>
   );
 }

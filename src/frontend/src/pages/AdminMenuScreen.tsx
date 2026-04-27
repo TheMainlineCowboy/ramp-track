@@ -1,7 +1,7 @@
+import { MessageSquare, Search } from "lucide-react";
 import { useState } from "react";
 const homescreenBackground =
   "/assets/homescreenbackground-019d2e4a-c901-72bd-837b-8409f84ded93.jpg";
-import { Search } from "lucide-react";
 import { StatusBadge } from "../components/StatusBadge";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
@@ -51,6 +51,7 @@ export default function AdminMenuScreen({
   onManageEquipment,
   onViewEquipment,
   onViewMap,
+  onUserMessages,
   onBack,
   onLogout,
   currentUser,
@@ -58,6 +59,7 @@ export default function AdminMenuScreen({
   onManageEquipment: () => void;
   onViewEquipment: (id: string) => void;
   onViewMap: (equipmentId?: string) => void;
+  onUserMessages: () => void;
   onBack: () => void;
   onLogout: () => void;
   currentUser: {
@@ -226,6 +228,21 @@ export default function AdminMenuScreen({
                 onClick={() => onViewMap()}
               >
                 &#128506; Equipment Map
+              </Button>
+              <Button
+                data-ocid="admin.user_messages.button"
+                className="h-16 text-lg md:col-span-2 flex items-center justify-center gap-2"
+                style={{
+                  background: "rgba(30,41,59,0.9)",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                }}
+                onClick={onUserMessages}
+              >
+                <MessageSquare
+                  className="h-5 w-5"
+                  style={{ color: "#0078D2" }}
+                />
+                <span>User Messages</span>
               </Button>
             </CardContent>
           </Card>

@@ -13,6 +13,7 @@ import ManageEquipmentScreen from "./pages/ManageEquipmentScreen";
 import OperatorHomeScreen from "./pages/OperatorHomeScreen";
 import ReportIssueScreen from "./pages/ReportIssueScreen";
 import SignInScreen from "./pages/SignInScreen";
+import UserMessagesScreen from "./pages/UserMessagesScreen";
 
 type View =
   | "splash"
@@ -26,7 +27,8 @@ type View =
   | "admin-menu"
   | "manage-equipment"
   | "equipment-detail"
-  | "equipment-map";
+  | "equipment-map"
+  | "user-messages";
 
 function AppContent() {
   const { auth, logout } = useAuth();
@@ -156,6 +158,7 @@ function AppContent() {
             navigate("equipment-detail");
           }}
           onViewMap={handleViewMap}
+          onUserMessages={() => navigate("user-messages")}
           onBack={() => navigate("signon")}
           onLogout={handleLogout}
         />
@@ -187,6 +190,17 @@ function AppContent() {
             navigate("equipment-detail");
           }}
           initialEquipmentId={equipmentMapTarget}
+        />
+      );
+    case "user-messages":
+      if (!auth.roles?.includes("admin")) {
+        navigate("admin-menu");
+        return null;
+      }
+      return (
+        <UserMessagesScreen
+          currentUser={auth}
+          onBack={() => navigate("admin-menu")}
         />
       );
     default:

@@ -21214,32 +21214,63 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$c = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$c);
+const __iconNode$f = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$f);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$b = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$b);
+const __iconNode$e = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$e);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$a = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$a);
+const __iconNode$d = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$d);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$9 = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$9);
+const __iconNode$c = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$c);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$b = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$b);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$a = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+];
+const CircleCheck = createLucideIcon("circle-check", __iconNode$a);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$9);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -21247,37 +21278,6 @@ const ChevronUp = createLucideIcon("chevron-up", __iconNode$9);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$8 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
-];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$8);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$7 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
-];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$7);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$6 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$6);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$5 = [
   [
     "path",
     {
@@ -21287,7 +21287,40 @@ const __iconNode$5 = [
   ],
   ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
 ];
-const MapPin = createLucideIcon("map-pin", __iconNode$5);
+const MapPin = createLucideIcon("map-pin", __iconNode$8);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  ["path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", key: "1lielz" }]
+];
+const MessageSquare = createLucideIcon("message-square", __iconNode$7);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$6 = [
+  ["polygon", { points: "3 11 22 2 13 21 11 13 3 11", key: "1ltx0t" }]
+];
+const Navigation = createLucideIcon("navigation", __iconNode$6);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+];
+const RefreshCw = createLucideIcon("refresh-cw", __iconNode$5);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -21295,9 +21328,13 @@ const MapPin = createLucideIcon("map-pin", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["polygon", { points: "3 11 22 2 13 21 11 13 3 11", key: "1ltx0t" }]
+  ["path", { d: "M3 7V5a2 2 0 0 1 2-2h2", key: "aa7l1z" }],
+  ["path", { d: "M17 3h2a2 2 0 0 1 2 2v2", key: "4qcy5o" }],
+  ["path", { d: "M21 17v2a2 2 0 0 1-2 2h-2", key: "6vwrx8" }],
+  ["path", { d: "M7 21H5a2 2 0 0 1-2-2v-2", key: "ioqczr" }],
+  ["path", { d: "M7 12h10", key: "b7w52i" }]
 ];
-const Navigation = createLucideIcon("navigation", __iconNode$4);
+const ScanLine = createLucideIcon("scan-line", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -21305,13 +21342,10 @@ const Navigation = createLucideIcon("navigation", __iconNode$4);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$3 = [
-  ["path", { d: "M3 7V5a2 2 0 0 1 2-2h2", key: "aa7l1z" }],
-  ["path", { d: "M17 3h2a2 2 0 0 1 2 2v2", key: "4qcy5o" }],
-  ["path", { d: "M21 17v2a2 2 0 0 1-2 2h-2", key: "6vwrx8" }],
-  ["path", { d: "M7 21H5a2 2 0 0 1-2-2v-2", key: "ioqczr" }],
-  ["path", { d: "M7 12h10", key: "b7w52i" }]
+  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
 ];
-const ScanLine = createLucideIcon("scan-line", __iconNode$3);
+const Search = createLucideIcon("search", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -21319,10 +21353,16 @@ const ScanLine = createLucideIcon("scan-line", __iconNode$3);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$2 = [
-  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+  [
+    "path",
+    {
+      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
+      key: "1ffxy3"
+    }
+  ],
+  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
 ];
-const Search = createLucideIcon("search", __iconNode$2);
+const Send = createLucideIcon("send", __iconNode$2);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -21603,12 +21643,12 @@ const USERS = [
     name: "Agent"
   }
 ];
-const STORAGE_KEY$2 = "ramptrack_auth_state";
+const STORAGE_KEY$3 = "ramptrack_auth_state";
 const AuthContext = reactExports.createContext(null);
 function AuthProvider({ children }) {
   const [auth, setAuth] = reactExports.useState(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY$2);
+      const stored = localStorage.getItem(STORAGE_KEY$3);
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -21633,7 +21673,7 @@ function AuthProvider({ children }) {
       loginTime: Date.now(),
       name: user.name
     };
-    localStorage.setItem(STORAGE_KEY$2, JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY$3, JSON.stringify(state));
     setAuth(state);
   };
   const badgeLogin = async (badgeId) => {
@@ -21656,11 +21696,11 @@ function AuthProvider({ children }) {
       loginTime: Date.now(),
       name
     };
-    localStorage.setItem(STORAGE_KEY$2, JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY$3, JSON.stringify(state));
     setAuth(state);
   };
   const logout = () => {
-    localStorage.removeItem(STORAGE_KEY$2);
+    localStorage.removeItem(STORAGE_KEY$3);
     setAuth(null);
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -21681,7 +21721,7 @@ const STATUS_STYLES = {
   ASSIGNED: "bg-amber-500 text-black",
   MAINTENANCE: "bg-red-600 text-white"
 };
-function StatusBadge({
+function StatusBadge$1({
   status,
   className
 }) {
@@ -21802,17 +21842,17 @@ function Input({ className, type, ...props }) {
     }
   );
 }
-const STORAGE_KEY$1 = "ramptrack_history";
+const STORAGE_KEY$2 = "ramptrack_history";
 function load$1() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY$1);
+    const raw = localStorage.getItem(STORAGE_KEY$2);
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 function save$1(events2) {
-  localStorage.setItem(STORAGE_KEY$1, JSON.stringify(events2));
+  localStorage.setItem(STORAGE_KEY$2, JSON.stringify(events2));
 }
 function recordEvent(data) {
   const event = {
@@ -21917,7 +21957,7 @@ function getEquipmentType(id) {
   if (EQUIPMENT_LIST.sitdownPushbacks.includes(upper)) return "sitdownPushback";
   return null;
 }
-const STORAGE_KEY = "ramptrack_equipment_registry";
+const STORAGE_KEY$1 = "ramptrack_equipment_registry";
 function typeFromCategory(cat) {
   switch (cat) {
     case "dieselTug":
@@ -21961,7 +22001,7 @@ function buildSeedData() {
 const OLD_LABEL_RE = /^(Diesel Tug|Electric Tug|Standup Pushback|Sitdown Pushback) TV\d+$/i;
 function load() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY$1);
     if (raw) {
       const records = JSON.parse(raw);
       const allIds = getAllEquipmentIds();
@@ -21986,17 +22026,17 @@ function load() {
           dirty = true;
         }
       }
-      if (dirty) localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      if (dirty) localStorage.setItem(STORAGE_KEY$1, JSON.stringify(records));
       return records;
     }
   } catch {
   }
   const seed = buildSeedData();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
+  localStorage.setItem(STORAGE_KEY$1, JSON.stringify(seed));
   return seed;
 }
 function save(records) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  localStorage.setItem(STORAGE_KEY$1, JSON.stringify(records));
 }
 function getAllEquipment() {
   return load();
@@ -22061,6 +22101,7 @@ function AdminMenuScreen({
   onManageEquipment,
   onViewEquipment,
   onViewMap,
+  onUserMessages,
   onBack,
   onLogout,
   currentUser
@@ -22209,6 +22250,28 @@ function AdminMenuScreen({
                         onClick: () => onViewMap(),
                         children: "🗺 Equipment Map"
                       }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                      Button,
+                      {
+                        "data-ocid": "admin.user_messages.button",
+                        className: "h-16 text-lg md:col-span-2 flex items-center justify-center gap-2",
+                        style: {
+                          background: "rgba(30,41,59,0.9)",
+                          border: "1px solid rgba(255,255,255,0.18)"
+                        },
+                        onClick: onUserMessages,
+                        children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(
+                            MessageSquare,
+                            {
+                              className: "h-5 w-5",
+                              style: { color: "#0078D2" }
+                            }
+                          ),
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "User Messages" })
+                        ]
+                      }
                     )
                   ] })
                 ]
@@ -22330,7 +22393,7 @@ function AdminMenuScreen({
                             new Date(eq.checkoutTime).toLocaleTimeString()
                           ] })
                         ] }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: eq.status })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: eq.status })
                       ]
                     },
                     eq.id
@@ -52767,7 +52830,7 @@ function CheckInScreen({
                           "Last operator: ",
                           selected.lastOperator
                         ] }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: "ASSIGNED", className: "mt-2" })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: "ASSIGNED", className: "mt-2" })
                       ]
                     }
                   ),
@@ -53121,7 +53184,7 @@ function CheckOutScreen({
                       children: [
                         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-bold text-white", children: selected.id }),
                         selected.label && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: selected.label }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: "AVAILABLE", className: "mt-2" })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: "AVAILABLE", className: "mt-2" })
                       ]
                     }
                   ),
@@ -53356,7 +53419,7 @@ function EquipmentDetailScreen({
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border shadow-2xl", style: card, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { style: { color: "#ffffff" }, children: equipment.id }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: equipment.status })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: equipment.status })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "space-y-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -70226,7 +70289,7 @@ function ManageEquipmentScreen({
                               }
                             )
                           ] }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: eq.status })
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: eq.status })
                         ]
                       },
                       eq.id
@@ -70344,6 +70407,210 @@ function ManageEquipmentScreen({
 const checkInIcon = "/assets/Check_In_Icon-tX4u0cOc.png";
 const checkOutIcon = "/assets/Check_Out_Icon-BzcYamrN.png";
 const reportIssueIcon = "/assets/Report_Issue_Icon-xG74-3MQ.png";
+const PRESET_MESSAGES$1 = [
+  "Please return equipment to the correct designated area.",
+  "Please scan equipment back in when finished.",
+  "Please scan equipment out before using it.",
+  "Equipment appears to be outside the designated area. Please verify and correct.",
+  "Please report any equipment issue before check-in.",
+  "Reminder: equipment must be clean, fueled, and ready before check-in."
+];
+function formatTime$1(ts) {
+  return new Date(ts).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+function ManagerNoticeModal({ message, onAcknowledge }) {
+  const isPreset = PRESET_MESSAGES$1.includes(message.message);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: "fixed inset-0 z-50 flex items-center justify-center p-4",
+      style: { background: "rgba(0,0,0,0.78)" },
+      "data-ocid": "manager_notice.dialog",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          className: "w-full max-w-md rounded-2xl shadow-2xl p-6 flex flex-col gap-5",
+          style: {
+            background: "rgba(15,23,42,0.97)",
+            border: "1px solid rgba(0,120,210,0.45)",
+            boxShadow: "0 0 40px rgba(0,120,210,0.18)"
+          },
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
+                  style: {
+                    background: "rgba(0,120,210,0.2)",
+                    border: "1.5px solid #0078D2"
+                  },
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "svg",
+                    {
+                      width: "20",
+                      height: "20",
+                      viewBox: "0 0 24 24",
+                      fill: "none",
+                      stroke: "#0078D2",
+                      strokeWidth: "2.2",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      "aria-hidden": "true",
+                      role: "img",
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("title", { children: "Notice" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })
+                      ]
+                    }
+                  )
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold", style: { color: "#0078D2" }, children: "Manager Notice" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: "rounded-xl p-4 space-y-3",
+                style: {
+                  background: "rgba(30,41,59,0.7)",
+                  border: "1px solid rgba(255,255,255,0.10)"
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-xs font-semibold uppercase tracking-wide",
+                        style: { color: "#64748b" },
+                        children: "From"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-white mt-0.5", children: message.sentByName })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-xs font-semibold uppercase tracking-wide",
+                        style: { color: "#64748b" },
+                        children: "Message"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-base font-semibold mt-1 leading-snug",
+                        style: { color: isPreset ? "#93c5fd" : "#e2e8f0" },
+                        "data-ocid": "manager_notice.message_text",
+                        children: message.message
+                      }
+                    )
+                  ] }),
+                  message.equipmentId && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-xs font-semibold uppercase tracking-wide",
+                        style: { color: "#64748b" },
+                        children: "Equipment ID"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-sm font-mono font-semibold mt-0.5",
+                        style: { color: "#fbbf24" },
+                        children: message.equipmentId
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-xs font-semibold uppercase tracking-wide",
+                        style: { color: "#64748b" },
+                        children: "Sent"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm mt-0.5", style: { color: "#94a3b8" }, children: formatTime$1(message.sentTimestamp) })
+                  ] })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "manager_notice.confirm_button",
+                onClick: () => onAcknowledge(message.id),
+                className: "w-full py-4 rounded-xl text-white text-base font-bold transition-all active:scale-95 hover:brightness-110",
+                style: {
+                  background: "linear-gradient(135deg, #0078D2 0%, #0057a8 100%)",
+                  boxShadow: "0 4px 18px rgba(0,120,210,0.4)",
+                  letterSpacing: "0.02em"
+                },
+                children: "Acknowledge"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-center text-xs", style: { color: "#475569" }, children: "You must acknowledge this notice to continue." })
+          ]
+        }
+      )
+    }
+  );
+}
+const STORAGE_KEY = "ramptrack_manager_messages";
+function loadMessages() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+function saveMessages(messages) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+}
+function sendMessage(msg) {
+  const newMsg = {
+    ...msg,
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    status: "AWAITING_ACK",
+    sentTimestamp: Date.now()
+  };
+  const existing = loadMessages();
+  saveMessages([newMsg, ...existing]);
+  return newMsg;
+}
+function getPendingMessagesForUser(username) {
+  return loadMessages().filter(
+    (m) => m.status === "AWAITING_ACK" && m.sentTo === username
+  );
+}
+function acknowledgeMessage(id, acknowledgedBy, acknowledgedByName) {
+  const messages = loadMessages().map((m) => {
+    if (m.id === id) {
+      return {
+        ...m,
+        status: "ACKNOWLEDGED",
+        acknowledgedTimestamp: Date.now(),
+        acknowledgedBy,
+        acknowledgedByName
+      };
+    }
+    return m;
+  });
+  saveMessages(messages);
+}
 function formatUserDisplayName(user) {
   const raw = user.name || user.username || user.badge || "";
   if (!raw) return "";
@@ -70366,6 +70633,16 @@ function OperatorHomeScreen({
   onBack,
   currentUser
 }) {
+  const [pendingMessages, setPendingMessages] = reactExports.useState([]);
+  reactExports.useEffect(() => {
+    const pending = getPendingMessagesForUser(currentUser.username);
+    setPendingMessages(pending);
+  }, [currentUser.username]);
+  const handleAcknowledge = (id) => {
+    const displayName = currentUser.name || currentUser.username;
+    acknowledgeMessage(id, currentUser.username, displayName);
+    setPendingMessages((prev) => prev.filter((m) => m.id !== id));
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
@@ -70472,7 +70749,15 @@ function OperatorHomeScreen({
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("footer", { className: "py-6 text-center text-sm text-white/90 drop-shadow-lg", children: "© Jayson James & Ramp Track Systems" })
-        ] })
+        ] }),
+        pendingMessages.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ManagerNoticeModal,
+          {
+            message: pendingMessages[0],
+            currentUser,
+            onAcknowledge: handleAcknowledge
+          }
+        )
       ]
     }
   );
@@ -70585,7 +70870,7 @@ function ReportIssueScreen({
                           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-white", children: eq.id }),
                           eq.label && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs", style: { color: "#cbd5f5" }, children: eq.label })
                         ] }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: eq.status })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: eq.status })
                       ]
                     },
                     eq.id
@@ -70847,8 +71132,529 @@ function SignInScreen({
     }
   );
 }
+const PRESET_MESSAGES = [
+  "Please return equipment to the correct designated area.",
+  "Please scan equipment back in when finished.",
+  "Please scan equipment out before using it.",
+  "Equipment appears to be outside the designated area. Please verify and correct.",
+  "Please report any equipment issue before check-in.",
+  "Reminder: equipment must be clean, fueled, and ready before check-in."
+];
+const AGENT_USERS = [
+  { username: "agent@ramptrack.com", name: "Agent" },
+  { username: "operator@demo.com", name: "Demo Agent" },
+  { username: "100001", name: "Demo Agent (100001)" }
+];
+function formatTime(ts) {
+  return new Date(ts).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+function StatusBadge({ status }) {
+  const isAck = status === "ACKNOWLEDGED";
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "span",
+    {
+      className: "inline-block px-2.5 py-1 rounded-full text-xs font-semibold",
+      style: {
+        background: isAck ? "rgba(34,197,94,0.18)" : "rgba(245,158,11,0.18)",
+        color: isAck ? "#4ade80" : "#fbbf24",
+        border: `1px solid ${isAck ? "rgba(34,197,94,0.35)" : "rgba(245,158,11,0.35)"}`
+      },
+      children: isAck ? "Acknowledged" : "Awaiting Acknowledgment"
+    }
+  );
+}
+function UserMessagesScreen({ currentUser, onBack }) {
+  const [activeTab, setActiveTab] = reactExports.useState("send");
+  const [selectedAgent, setSelectedAgent] = reactExports.useState("");
+  const [equipmentId, setEquipmentId] = reactExports.useState("");
+  const [selectedMessage, setSelectedMessage] = reactExports.useState("");
+  const [messages, setMessages] = reactExports.useState([]);
+  const [sendSuccess, setSendSuccess] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    setMessages(loadMessages());
+  }, []);
+  const senderName = currentUser.name || currentUser.username || currentUser.badge;
+  const agentUser = AGENT_USERS.find((a) => a.username === selectedAgent);
+  const handleSend = () => {
+    if (!selectedAgent || !selectedMessage) return;
+    sendMessage({
+      sentBy: currentUser.username,
+      sentByName: senderName,
+      sentTo: selectedAgent,
+      sentToName: (agentUser == null ? void 0 : agentUser.name) ?? selectedAgent,
+      equipmentId: equipmentId.trim() || void 0,
+      message: selectedMessage
+    });
+    setSelectedAgent("");
+    setEquipmentId("");
+    setSelectedMessage("");
+    setSendSuccess(true);
+    setTimeout(() => {
+      setSendSuccess(false);
+      setActiveTab("history");
+      setMessages(loadMessages());
+    }, 1200);
+  };
+  const handleRefresh = () => {
+    setMessages(loadMessages());
+  };
+  const selectStyle = {
+    background: "rgba(30,41,59,0.7)",
+    border: "1px solid rgba(255,255,255,0.15)",
+    color: "#ffffff",
+    borderRadius: "10px",
+    padding: "12px 14px",
+    width: "100%",
+    fontSize: "15px",
+    outline: "none",
+    appearance: "none"
+  };
+  const inputStyle = {
+    background: "rgba(30,41,59,0.7)",
+    border: "1px solid rgba(255,255,255,0.15)",
+    color: "#ffffff",
+    borderRadius: "10px",
+    padding: "12px 14px",
+    width: "100%",
+    fontSize: "15px",
+    outline: "none"
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: "min-h-screen relative",
+      style: {
+        backgroundImage: "url(/assets/homescreenbackground-019d2e4a-c901-72bd-837b-8409f84ded93.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed"
+      },
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 bg-gradient-to-br from-black/30 via-black/40 to-black/30 backdrop-blur-[1px]" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 flex flex-col min-h-screen", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "header",
+            {
+              className: "border-b shadow-lg",
+              style: {
+                background: "rgba(15,23,42,0.95)",
+                borderColor: "rgba(255,255,255,0.12)"
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "container mx-auto px-4 py-4 flex items-center justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Button,
+                  {
+                    variant: "outline",
+                    onClick: onBack,
+                    "data-ocid": "user_messages.back_button",
+                    className: "border-white/20 text-white/80 hover:text-white",
+                    children: "← Back"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    MessageSquare,
+                    {
+                      className: "h-5 w-5",
+                      style: { color: "#0078D2" }
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold", style: { color: "#0078D2" }, children: "User Messages" })
+                ] })
+              ] }) })
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "flex-1 container mx-auto px-4 py-6 max-w-2xl space-y-5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: "flex rounded-xl overflow-hidden",
+                style: { border: "1px solid rgba(255,255,255,0.12)" },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      type: "button",
+                      "data-ocid": "user_messages.send_tab",
+                      onClick: () => setActiveTab("send"),
+                      className: "flex-1 py-3 text-sm font-semibold transition-all",
+                      style: {
+                        background: activeTab === "send" ? "rgba(0,120,210,0.25)" : "rgba(15,23,42,0.7)",
+                        color: activeTab === "send" ? "#60b4ff" : "#94a3b8",
+                        borderRight: "1px solid rgba(255,255,255,0.12)"
+                      },
+                      children: "Send Message"
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      type: "button",
+                      "data-ocid": "user_messages.history_tab",
+                      onClick: () => {
+                        setActiveTab("history");
+                        setMessages(loadMessages());
+                      },
+                      className: "flex-1 py-3 text-sm font-semibold transition-all",
+                      style: {
+                        background: activeTab === "history" ? "rgba(0,120,210,0.25)" : "rgba(15,23,42,0.7)",
+                        color: activeTab === "history" ? "#60b4ff" : "#94a3b8"
+                      },
+                      children: "Message History"
+                    }
+                  )
+                ]
+              }
+            ),
+            activeTab === "send" && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: "rounded-2xl p-5 space-y-5",
+                style: {
+                  background: "rgba(15,23,42,0.92)",
+                  border: "1px solid rgba(255,255,255,0.14)"
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-white", children: "Send a Reminder Notice" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1.5", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                      "label",
+                      {
+                        htmlFor: "msg-agent-select",
+                        className: "text-sm font-medium",
+                        style: { color: "#94a3b8" },
+                        children: [
+                          "Select Agent ",
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#f87171" }, children: "*" })
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                        "select",
+                        {
+                          id: "msg-agent-select",
+                          "data-ocid": "user_messages.agent.select",
+                          value: selectedAgent,
+                          onChange: (e) => setSelectedAgent(e.target.value),
+                          style: selectStyle,
+                          children: [
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", style: { background: "#0f172a" }, children: "— Choose an agent —" }),
+                            AGENT_USERS.map((a) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                              "option",
+                              {
+                                value: a.username,
+                                style: { background: "#0f172a" },
+                                children: [
+                                  a.name,
+                                  " (",
+                                  a.username,
+                                  ")"
+                                ]
+                              },
+                              a.username
+                            ))
+                          ]
+                        }
+                      ),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        "svg",
+                        {
+                          className: "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
+                          width: "16",
+                          height: "16",
+                          viewBox: "0 0 24 24",
+                          fill: "none",
+                          stroke: "#64748b",
+                          strokeWidth: "2",
+                          "aria-hidden": "true",
+                          children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" })
+                        }
+                      )
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1.5", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                      "label",
+                      {
+                        htmlFor: "msg-equip-id",
+                        className: "text-sm font-medium",
+                        style: { color: "#94a3b8" },
+                        children: [
+                          "Equipment ID",
+                          " ",
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs", style: { color: "#64748b" }, children: "(optional)" })
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "input",
+                      {
+                        id: "msg-equip-id",
+                        "data-ocid": "user_messages.equipment_id.input",
+                        type: "text",
+                        value: equipmentId,
+                        onChange: (e) => setEquipmentId(e.target.value),
+                        placeholder: "e.g. TV1042",
+                        style: inputStyle
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1.5", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                      "label",
+                      {
+                        htmlFor: "msg-preset-select",
+                        className: "text-sm font-medium",
+                        style: { color: "#94a3b8" },
+                        children: [
+                          "Select Message ",
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#f87171" }, children: "*" })
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                        "select",
+                        {
+                          id: "msg-preset-select",
+                          "data-ocid": "user_messages.message.select",
+                          value: selectedMessage,
+                          onChange: (e) => setSelectedMessage(e.target.value),
+                          style: { ...selectStyle, paddingRight: "36px" },
+                          children: [
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", style: { background: "#0f172a" }, children: "— Choose a message —" }),
+                            PRESET_MESSAGES.map((msg) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                              "option",
+                              {
+                                value: msg,
+                                style: { background: "#0f172a" },
+                                children: msg
+                              },
+                              msg
+                            ))
+                          ]
+                        }
+                      ),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        "svg",
+                        {
+                          className: "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
+                          width: "16",
+                          height: "16",
+                          viewBox: "0 0 24 24",
+                          fill: "none",
+                          stroke: "#64748b",
+                          strokeWidth: "2",
+                          "aria-hidden": "true",
+                          children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" })
+                        }
+                      )
+                    ] }),
+                    selectedMessage && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "p",
+                      {
+                        className: "text-xs mt-1.5 rounded-lg px-3 py-2",
+                        style: {
+                          color: "#93c5fd",
+                          background: "rgba(0,120,210,0.12)",
+                          border: "1px solid rgba(0,120,210,0.2)"
+                        },
+                        children: selectedMessage
+                      }
+                    )
+                  ] }),
+                  sendSuccess ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "div",
+                    {
+                      className: "w-full py-4 rounded-xl text-center text-base font-bold",
+                      style: {
+                        background: "rgba(34,197,94,0.2)",
+                        border: "1px solid rgba(34,197,94,0.4)",
+                        color: "#4ade80"
+                      },
+                      "data-ocid": "user_messages.send.success_state",
+                      children: "✓ Notice sent successfully"
+                    }
+                  ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "button",
+                    {
+                      type: "button",
+                      "data-ocid": "user_messages.send.submit_button",
+                      disabled: !selectedAgent || !selectedMessage,
+                      onClick: handleSend,
+                      className: "w-full py-4 rounded-xl text-white text-base font-bold flex items-center justify-center gap-2 transition-all active:scale-95",
+                      style: {
+                        background: !selectedAgent || !selectedMessage ? "rgba(30,41,59,0.7)" : "linear-gradient(135deg, #0078D2 0%, #0057a8 100%)",
+                        border: !selectedAgent || !selectedMessage ? "1px solid rgba(255,255,255,0.12)" : "none",
+                        color: !selectedAgent || !selectedMessage ? "#475569" : "#ffffff",
+                        cursor: !selectedAgent || !selectedMessage ? "not-allowed" : "pointer",
+                        boxShadow: !selectedAgent || !selectedMessage ? "none" : "0 4px 16px rgba(0,120,210,0.35)"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { className: "h-4 w-4" }),
+                        "Send Notice"
+                      ]
+                    }
+                  ),
+                  (!selectedAgent || !selectedMessage) && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-center text-xs", style: { color: "#475569" }, children: !selectedAgent && !selectedMessage ? "Select an agent and a message to send." : !selectedAgent ? "Select an agent." : "Select a message." })
+                ]
+              }
+            ),
+            activeTab === "history" && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: "rounded-2xl p-5 space-y-4",
+                style: {
+                  background: "rgba(15,23,42,0.92)",
+                  border: "1px solid rgba(255,255,255,0.14)"
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-white", children: "Message History" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                      "button",
+                      {
+                        type: "button",
+                        "data-ocid": "user_messages.refresh.button",
+                        onClick: handleRefresh,
+                        className: "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/10",
+                        style: {
+                          color: "#94a3b8",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          background: "rgba(30,41,59,0.5)"
+                        },
+                        children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: "h-3.5 w-3.5" }),
+                          "Refresh"
+                        ]
+                      }
+                    )
+                  ] }),
+                  messages.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "div",
+                    {
+                      "data-ocid": "user_messages.history.empty_state",
+                      className: "text-center py-12",
+                      style: { color: "#475569" },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(MessageSquare, { className: "h-10 w-10 mx-auto mb-3 opacity-30" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "No messages sent yet." })
+                      ]
+                    }
+                  ) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[60vh] overflow-y-auto pr-1", children: messages.map((msg, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "div",
+                    {
+                      "data-ocid": `user_messages.history.item.${i + 1}`,
+                      className: "rounded-xl p-4 space-y-2",
+                      style: {
+                        background: "rgba(30,41,59,0.6)",
+                        border: "1px solid rgba(255,255,255,0.10)"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-2", children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: msg.status }),
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs", style: { color: "#64748b" }, children: formatTime(msg.sentTimestamp) })
+                        ] }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs", style: { color: "#64748b" }, children: "Sent by" }),
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-white", children: msg.sentByName })
+                          ] }),
+                          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs", style: { color: "#64748b" }, children: "Sent to" }),
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-white", children: msg.sentToName })
+                          ] })
+                        ] }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs", style: { color: "#64748b" }, children: "Equipment ID" }),
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(
+                            "p",
+                            {
+                              className: "text-sm font-mono",
+                              style: {
+                                color: msg.equipmentId ? "#fbbf24" : "#475569"
+                              },
+                              children: msg.equipmentId ?? "—"
+                            }
+                          )
+                        ] }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs", style: { color: "#64748b" }, children: "Message" }),
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: msg.message })
+                        ] }),
+                        msg.status === "ACKNOWLEDGED" && msg.acknowledgedTimestamp && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                          "div",
+                          {
+                            className: "rounded-lg px-3 py-2 grid grid-cols-2 gap-2",
+                            style: {
+                              background: "rgba(34,197,94,0.08)",
+                              border: "1px solid rgba(34,197,94,0.2)"
+                            },
+                            children: [
+                              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                  "p",
+                                  {
+                                    className: "text-xs",
+                                    style: { color: "#64748b" },
+                                    children: "Acknowledged by"
+                                  }
+                                ),
+                                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                  "p",
+                                  {
+                                    className: "text-sm font-medium",
+                                    style: { color: "#4ade80" },
+                                    children: msg.acknowledgedByName ?? msg.acknowledgedBy
+                                  }
+                                )
+                              ] }),
+                              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                  "p",
+                                  {
+                                    className: "text-xs",
+                                    style: { color: "#64748b" },
+                                    children: "Acknowledged at"
+                                  }
+                                ),
+                                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                  "p",
+                                  {
+                                    className: "text-sm",
+                                    style: { color: "#4ade80" },
+                                    children: formatTime(msg.acknowledgedTimestamp)
+                                  }
+                                )
+                              ] })
+                            ]
+                          }
+                        )
+                      ]
+                    },
+                    msg.id
+                  )) })
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("footer", { className: "py-6 text-center text-sm text-white/90 drop-shadow-lg", children: "© Jayson James & Ramp Track Systems" })
+        ] })
+      ]
+    }
+  );
+}
 function AppContent() {
-  var _a3;
+  var _a3, _b2;
   const { auth, logout } = useAuth();
   const [view, setView] = reactExports.useState("splash");
   const [selectedEquipmentId, setSelectedEquipmentId] = reactExports.useState(
@@ -70969,6 +71775,7 @@ function AppContent() {
             navigate("equipment-detail");
           },
           onViewMap: handleViewMap,
+          onUserMessages: () => navigate("user-messages"),
           onBack: () => navigate("signon"),
           onLogout: handleLogout
         }
@@ -71002,6 +71809,18 @@ function AppContent() {
             navigate("equipment-detail");
           },
           initialEquipmentId: equipmentMapTarget
+        }
+      );
+    case "user-messages":
+      if (!((_b2 = auth.roles) == null ? void 0 : _b2.includes("admin"))) {
+        navigate("admin-menu");
+        return null;
+      }
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+        UserMessagesScreen,
+        {
+          currentUser: auth,
+          onBack: () => navigate("admin-menu")
         }
       );
     default:
