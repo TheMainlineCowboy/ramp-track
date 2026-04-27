@@ -150,10 +150,13 @@ export default function UserMessagesScreen({ currentUser, onBack }: Props) {
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
-                variant="outline"
                 onClick={onBack}
                 data-ocid="user_messages.back_button"
-                className="border-white/20 text-white/80 hover:text-white"
+                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+                style={{
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)",
+                }}
               >
                 ← Back
               </Button>

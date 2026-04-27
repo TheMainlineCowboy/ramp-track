@@ -58,7 +58,14 @@ export default function EquipmentDetailScreen({
               <h1 className="text-2xl font-bold" style={{ color: "#0078D2" }}>
                 Equipment Not Found
               </h1>
-              <Button variant="outline" onClick={onBack}>
+              <Button
+                onClick={onBack}
+                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+                style={{
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)",
+                }}
+              >
                 ← Back
               </Button>
             </div>
@@ -90,9 +97,13 @@ export default function EquipmentDetailScreen({
               <p className="text-sm text-muted-foreground">{equipment.id}</p>
             </div>
             <Button
-              variant="outline"
               onClick={onBack}
               data-ocid="equipdetail.back.button"
+              className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+              style={{
+                background: "rgba(10,20,50,0.75)",
+                borderColor: "rgba(0,120,210,0.4)",
+              }}
             >
               ← Back
             </Button>

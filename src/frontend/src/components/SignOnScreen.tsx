@@ -74,7 +74,11 @@ export default function SignOnScreen({
       <button
         type="button"
         onClick={onBack}
-        className="mt-4 px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 transition-colors"
+        className="mt-4 px-6 py-3 rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+        style={{
+          background: "rgba(10,20,50,0.75)",
+          borderColor: "rgba(0,120,210,0.4)",
+        }}
         data-ocid="signon.back.button"
       >
         Back to Login

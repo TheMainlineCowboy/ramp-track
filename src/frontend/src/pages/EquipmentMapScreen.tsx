@@ -296,8 +296,11 @@ export default function EquipmentMapScreen({
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-          style={{ background: "rgba(255,255,255,0.08)", color: "#cbd5f5" }}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors text-white hover:bg-[rgba(0,120,210,0.25)]"
+          style={{
+            background: "rgba(10,20,50,0.75)",
+            borderColor: "rgba(0,120,210,0.4)",
+          }}
           data-ocid="equipment-map.back_button"
           aria-label="Back to admin menu"
         >

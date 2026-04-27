@@ -146,16 +146,24 @@ export default function AdminMenuScreen({
             </div>
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
                 onClick={onBack}
                 data-ocid="admin.back.button"
+                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+                style={{
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)",
+                }}
               >
                 &larr; Back
               </Button>
               <Button
-                variant="outline"
                 onClick={onLogout}
                 data-ocid="admin.logout.button"
+                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+                style={{
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)",
+                }}
               >
                 Logout
               </Button>

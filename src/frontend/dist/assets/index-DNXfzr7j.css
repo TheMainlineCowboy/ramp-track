@@ -2139,9 +2139,6 @@ video {
 .border-dashed {
   border-style: dashed;
 }
-.border-border {
-  border-color: oklch(var(--border));
-}
 .border-input {
   border-color: oklch(var(--input));
 }
@@ -2173,9 +2170,6 @@ video {
 }
 .border-white\/10 {
   border-color: rgb(255 255 255 / 0.1);
-}
-.border-white\/20 {
-  border-color: rgb(255 255 255 / 0.2);
 }
 .border-white\/30 {
   border-color: rgb(255 255 255 / 0.3);
@@ -2306,9 +2300,6 @@ video {
 }
 .bg-transparent {
   background-color: transparent;
-}
-.bg-white\/10 {
-  background-color: rgb(255 255 255 / 0.1);
 }
 .bg-gradient-to-br {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
@@ -3064,6 +3055,9 @@ video {
   --tw-scale-y: 1.05;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
+.hover\:bg-\[rgba\(0\2c 120\2c 210\2c 0\.25\)\]:hover {
+  background-color: rgba(0,120,210,0.25);
+}
 .hover\:bg-accent:hover {
   --tw-bg-opacity: 1;
   background-color: oklch(var(--accent) / var(--tw-bg-opacity, 1));
@@ -3108,9 +3102,6 @@ video {
 }
 .hover\:bg-white\/10:hover {
   background-color: rgb(255 255 255 / 0.1);
-}
-.hover\:bg-white\/20:hover {
-  background-color: rgb(255 255 255 / 0.2);
 }
 .hover\:bg-white\/5:hover {
   background-color: rgb(255 255 255 / 0.05);

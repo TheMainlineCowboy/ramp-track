@@ -199,9 +199,13 @@ export default function ManageEquipmentScreen({
                 </div>
               )}
               <Button
-                variant="outline"
                 onClick={onBack}
                 data-ocid="manageequipment.back.button"
+                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+                style={{
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)",
+                }}
               >
                 ← Back to Admin Menu
               </Button>

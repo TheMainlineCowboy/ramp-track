@@ -21558,7 +21558,11 @@ function SignOnScreen({
           {
             type: "button",
             onClick: onBack,
-            className: "mt-4 px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 transition-colors",
+            className: "mt-4 px-6 py-3 rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+            style: {
+              background: "rgba(10,20,50,0.75)",
+              borderColor: "rgba(0,120,210,0.4)"
+            },
             "data-ocid": "signon.back.button",
             children: "Back to Login"
           }
@@ -22174,18 +22178,26 @@ function AdminMenuScreen({
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Button,
                 {
-                  variant: "outline",
                   onClick: onBack,
                   "data-ocid": "admin.back.button",
+                  className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                  style: {
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)"
+                  },
                   children: "← Back"
                 }
               ),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Button,
                 {
-                  variant: "outline",
                   onClick: onLogout,
                   "data-ocid": "admin.logout.button",
+                  className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                  style: {
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)"
+                  },
                   children: "Logout"
                 }
               )
@@ -52747,9 +52759,13 @@ function CheckInScreen({
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
-                variant: "outline",
                 onClick: onBack,
                 "data-ocid": "checkin.back.button",
+                className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                style: {
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)"
+                },
                 children: "← Back"
               }
             )
@@ -53034,9 +53050,13 @@ function CheckOutScreen({
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
-                variant: "outline",
                 onClick: onBack,
                 "data-ocid": "checkout.back.button",
+                className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                style: {
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)"
+                },
                 children: "← Back"
               }
             )
@@ -53387,7 +53407,18 @@ function EquipmentDetailScreen({
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "bg-card/95 backdrop-blur-sm border-b shadow-lg", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "container mx-auto px-4 py-4 flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold", style: { color: "#0078D2" }, children: "Equipment Not Found" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "outline", onClick: onBack, children: "← Back" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Button,
+            {
+              onClick: onBack,
+              className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+              style: {
+                background: "rgba(10,20,50,0.75)",
+                borderColor: "rgba(0,120,210,0.4)"
+              },
+              children: "← Back"
+            }
+          )
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "container mx-auto px-4 py-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { className: "border shadow-2xl", style: card, children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { className: "py-12 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#cbd5f5" }, children: [
           'Equipment "',
@@ -53408,9 +53439,13 @@ function EquipmentDetailScreen({
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           Button,
           {
-            variant: "outline",
             onClick: onBack,
             "data-ocid": "equipdetail.back.button",
+            className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+            style: {
+              background: "rgba(10,20,50,0.75)",
+              borderColor: "rgba(0,120,210,0.4)"
+            },
             children: "← Back"
           }
         )
@@ -63652,8 +63687,11 @@ function EquipmentMapScreen({
                 {
                   type: "button",
                   onClick: onBack,
-                  className: "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
-                  style: { background: "rgba(255,255,255,0.08)", color: "#cbd5f5" },
+                  className: "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors text-white hover:bg-[rgba(0,120,210,0.25)]",
+                  style: {
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)"
+                  },
                   "data-ocid": "equipment-map.back_button",
                   "aria-label": "Back to admin menu",
                   children: [
@@ -70110,9 +70148,13 @@ function ManageEquipmentScreen({
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Button,
                 {
-                  variant: "outline",
                   onClick: onBack,
                   "data-ocid": "manageequipment.back.button",
+                  className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                  style: {
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)"
+                  },
                   children: "← Back to Admin Menu"
                 }
               )
@@ -70665,8 +70707,11 @@ function OperatorHomeScreen({
                   type: "button",
                   "data-ocid": "home.back.button",
                   onClick: onBack,
-                  className: "px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-border transition-colors text-sm font-medium",
-                  style: { color: "#0078D2" },
+                  className: "px-3 py-2 rounded-lg border transition-colors text-sm font-medium text-white hover:bg-[rgba(0,120,210,0.25)]",
+                  style: {
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)"
+                  },
                   children: "← Back"
                 }
               ),
@@ -70681,7 +70726,11 @@ function OperatorHomeScreen({
                 type: "button",
                 "data-ocid": "home.logout.button",
                 onClick: onLogout,
-                className: "px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-foreground border border-border transition-colors text-sm font-medium",
+                className: "px-4 py-2 rounded-lg border transition-colors text-sm font-medium text-white hover:bg-[rgba(0,120,210,0.25)]",
+                style: {
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)"
+                },
                 children: "Logout"
               }
             )
@@ -70835,9 +70884,13 @@ function ReportIssueScreen({
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
-                variant: "outline",
                 onClick: onBack,
                 "data-ocid": "reportissue.back.button",
+                className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                style: {
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)"
+                },
                 children: "← Back"
               }
             )
@@ -71252,10 +71305,13 @@ function UserMessagesScreen({ currentUser, onBack }) {
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   Button,
                   {
-                    variant: "outline",
                     onClick: onBack,
                     "data-ocid": "user_messages.back_button",
-                    className: "border-white/20 text-white/80 hover:text-white",
+                    className: "rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                    style: {
+                      background: "rgba(10,20,50,0.75)",
+                      borderColor: "rgba(0,120,210,0.4)"
+                    },
                     children: "← Back"
                   }
                 ),
