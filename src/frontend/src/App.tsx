@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Toaster } from "sonner";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SignOnScreen from "./components/SignOnScreen";
 import SplashScreen from "./components/SplashScreen";
@@ -213,6 +214,12 @@ export default function App() {
     <ErrorBoundary>
       <AuthProvider>
         <AppContent />
+        <Toaster
+          position="bottom-center"
+          theme="dark"
+          richColors
+          toastOptions={{ duration: 3000 }}
+        />
       </AuthProvider>
     </ErrorBoundary>
   );

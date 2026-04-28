@@ -1,7 +1,10 @@
-import { MessageSquare, Search } from "lucide-react";
+import { Activity, MessageSquare, Package, Search } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 const homescreenBackground =
   "/assets/homescreenbackground-019d2e4a-c901-72bd-837b-8409f84ded93.jpg";
+import EmptyState from "../components/EmptyState";
+import PageTransition from "../components/PageTransition";
 import { StatusBadge } from "../components/StatusBadge";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
@@ -46,6 +49,14 @@ const TYPE_FILTERS: { label: string; value: TypeFilterType }[] = [
   { label: "Standup", value: "STANDUP_PUSHBACK" },
   { label: "Sitdown", value: "SITDOWN_PUSHBACK" },
 ];
+
+// Map stat label to explicit pulse animation name
+const STAT_PULSE_BY_LABEL: Record<string, string> = {
+  Total: "stat-pulse-slate",
+  Available: "stat-pulse-blue",
+  Assigned: "stat-pulse-amber",
+  Maintenance: "stat-pulse-red",
+};
 
 export default function AdminMenuScreen({
   onManageEquipment,
@@ -122,385 +133,392 @@ export default function AdminMenuScreen({
   ];
 
   return (
-    <div
-      className="min-h-screen relative"
-      style={{
-        backgroundImage: `url(${homescreenBackground})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/40 to-black/30 backdrop-blur-[1px]" />
-      <div className="relative z-10">
-        <header className="bg-card/95 backdrop-blur-sm border-b shadow-lg">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: "#0078D2" }}>
-                Admin Menu
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {formatUserDisplayName(currentUser)} &middot; Management
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={onBack}
-                data-ocid="admin.back.button"
-                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
-                style={{
-                  background: "rgba(10,20,50,0.75)",
-                  borderColor: "rgba(0,120,210,0.4)",
-                }}
-              >
-                &larr; Back
-              </Button>
-              <Button
-                onClick={onLogout}
-                data-ocid="admin.logout.button"
-                className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
-                style={{
-                  background: "rgba(10,20,50,0.75)",
-                  borderColor: "rgba(0,120,210,0.4)",
-                }}
-              >
-                Logout
-              </Button>
-            </div>
-          </div>
-        </header>
-        <main className="container mx-auto px-4 py-6 space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {stats.map((s) => (
-              <button
-                key={s.label}
-                type="button"
-                onClick={() => setActiveFilter(s.filter)}
-                className="rounded-xl p-4 border text-center transition-all cursor-pointer"
-                style={{
-                  background:
-                    activeFilter === s.filter
-                      ? "rgba(0,120,210,0.25)"
-                      : "rgba(15,23,42,0.92)",
-                  borderColor:
-                    activeFilter === s.filter
-                      ? "#0078D2"
-                      : "rgba(255,255,255,0.18)",
-                  boxShadow:
-                    activeFilter === s.filter ? "0 0 0 2px #0078D2" : undefined,
-                }}
-              >
-                <p className="text-3xl font-bold" style={{ color: s.color }}>
-                  {s.value}
+    <PageTransition>
+      <div
+        className="min-h-screen relative"
+        style={{
+          backgroundImage: `url(${homescreenBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/40 to-black/30 backdrop-blur-[1px]" />
+        <div className="relative z-10">
+          <header className="bg-card/95 backdrop-blur-sm border-b shadow-lg">
+            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold" style={{ color: "#0078D2" }}>
+                  Admin Menu
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {formatUserDisplayName(currentUser)} &middot; Management
                 </p>
-                <p className="text-sm mt-1" style={{ color: "#cbd5f5" }}>
-                  {s.label}
-                </p>
-              </button>
-            ))}
-          </div>
-          <Card
-            className="border shadow-2xl"
-            style={{
-              background: "rgba(15,23,42,0.92)",
-              borderColor: "rgba(255,255,255,0.18)",
-              borderRadius: "16px",
-            }}
-          >
-            <CardHeader>
-              <CardTitle style={{ color: "#ffffff" }}>
-                Management Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
-                data-ocid="admin.manage_equipment.button"
-                className="h-16 text-lg bg-blue-700 hover:bg-blue-600"
-                onClick={onManageEquipment}
-              >
-                &#128295; Manage Equipment
-              </Button>
-              <Button
-                data-ocid="admin.view_all.button"
-                variant="outline"
-                className="h-16 text-lg"
-                onClick={() => equipment[0] && onViewEquipment(equipment[0].id)}
-              >
-                &#128203; View Equipment Details
-              </Button>
-              <Button
-                data-ocid="admin.equipment_map.button"
-                className="h-16 text-lg md:col-span-2"
-                style={{ background: "rgba(0,120,210,0.85)" }}
-                onClick={() => onViewMap()}
-              >
-                &#128506; Equipment Map
-              </Button>
-              <Button
-                data-ocid="admin.user_messages.button"
-                className="h-16 text-lg md:col-span-2 flex items-center justify-center gap-2"
-                style={{
-                  background: "rgba(30,41,59,0.9)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                }}
-                onClick={onUserMessages}
-              >
-                <MessageSquare
-                  className="h-5 w-5"
-                  style={{ color: "#0078D2" }}
-                />
-                <span>User Messages</span>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card
-            className="border shadow-2xl"
-            style={{
-              background: "rgba(15,23,42,0.92)",
-              borderColor: "rgba(255,255,255,0.18)",
-              borderRadius: "16px",
-            }}
-          >
-            <CardHeader className="pb-3">
-              <CardTitle style={{ color: "#ffffff" }}>
-                {activeFilter === "ALL"
-                  ? "All Equipment"
-                  : `${activeFilter.charAt(0) + activeFilter.slice(1).toLowerCase()} Equipment`}
-                <span
-                  className="ml-2 text-base font-normal"
-                  style={{ color: "#94a3b8" }}
-                >
-                  ({filteredEquipment.length})
-                </span>
-              </CardTitle>
-              {/* Type filter segmented control */}
-              <div
-                className="overflow-x-auto mt-3"
-                style={{ WebkitOverflowScrolling: "touch" }}
-              >
-                <div className="flex flex-nowrap gap-2 pb-1">
-                  {TYPE_FILTERS.map((tf) => (
-                    <button
-                      key={tf.value}
-                      type="button"
-                      onClick={() => setTypeFilter(tf.value)}
-                      data-ocid={`admin.type_filter.${tf.value.toLowerCase()}.tab`}
-                      className="flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium border transition-all"
-                      style={{
-                        background:
-                          typeFilter === tf.value
-                            ? "rgba(0,120,210,0.25)"
-                            : "rgba(30,41,59,0.6)",
-                        borderColor:
-                          typeFilter === tf.value
-                            ? "#0078D2"
-                            : "rgba(255,255,255,0.15)",
-                        color: typeFilter === tf.value ? "#60b4ff" : "#94a3b8",
-                        boxShadow:
-                          typeFilter === tf.value
-                            ? "0 0 0 1px #0078D2"
-                            : undefined,
-                        minHeight: "36px",
-                      }}
-                    >
-                      {tf.label}
-                    </button>
-                  ))}
-                </div>
               </div>
-              {/* Equipment ID search */}
-              <div className="relative mt-3">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
-                  style={{ color: "#94a3b8" }}
-                />
-                <Input
-                  data-ocid="admin.equipment.search_input"
-                  value={idSearch}
-                  onChange={(e) => setIdSearch(e.target.value)}
-                  placeholder="Search equipment ID"
-                  className="pl-10"
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={onBack}
+                  data-ocid="admin.back.button"
+                  className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
                   style={{
-                    background: "rgba(30,41,59,0.6)",
-                    borderColor: "rgba(255,255,255,0.15)",
-                    color: "#ffffff",
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)",
                   }}
-                />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {filteredEquipment.length === 0 ? (
-                  <p
-                    className="text-center py-4"
-                    style={{ color: "#94a3b8" }}
-                    data-ocid="admin.equipment.empty_state"
-                  >
-                    No equipment in this category.
-                  </p>
-                ) : (
-                  filteredEquipment.map((eq, i) => (
-                    <button
-                      key={eq.id}
-                      type="button"
-                      onClick={() => onViewEquipment(eq.id)}
-                      data-ocid={`admin.equipment.item.${i + 1}`}
-                      className="w-full text-left flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
-                      style={{
-                        background: "rgba(30,41,59,0.5)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                      }}
-                    >
-                      <div>
-                        <p className="font-semibold text-white">{eq.id}</p>
-                        {eq.label && (
-                          <p className="text-xs" style={{ color: "#cbd5f5" }}>
-                            {eq.label}
-                          </p>
-                        )}
-                        {eq.status === "ASSIGNED" && eq.location && (
-                          <p
-                            className="text-xs mt-0.5"
-                            style={{ color: "#94a3b8" }}
-                          >
-                            &#128205; {eq.location}
-                          </p>
-                        )}
-                        {eq.status === "ASSIGNED" && eq.checkoutTime && (
-                          <p className="text-xs" style={{ color: "#94a3b8" }}>
-                            &#128336;{" "}
-                            {new Date(eq.checkoutTime).toLocaleTimeString()}
-                          </p>
-                        )}
-                      </div>
-                      <StatusBadge status={eq.status} />
-                    </button>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-          <Card
-            className="border shadow-2xl"
-            style={{
-              background: "rgba(15,23,42,0.92)",
-              borderColor: "rgba(255,255,255,0.18)",
-              borderRadius: "16px",
-            }}
-          >
-            <CardHeader>
-              <CardTitle style={{ color: "#ffffff" }}>
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {events.length === 0 ? (
-                <div
-                  data-ocid="admin.events.empty_state"
-                  className="text-center py-8"
-                  style={{ color: "#cbd5f5" }}
                 >
-                  <p>No events yet.</p>
+                  &larr; Back
+                </Button>
+                <Button
+                  onClick={onLogout}
+                  data-ocid="admin.logout.button"
+                  className="rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]"
+                  style={{
+                    background: "rgba(10,20,50,0.75)",
+                    borderColor: "rgba(0,120,210,0.4)",
+                  }}
+                >
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </header>
+          <main className="container mx-auto px-4 py-6 space-y-6">
+            {/* Stat cards with subtle glow pulse */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {stats.map((s) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => setActiveFilter(s.filter)}
+                  className="rounded-xl p-4 border text-center transition-all cursor-pointer"
+                  style={{
+                    background:
+                      activeFilter === s.filter
+                        ? "rgba(0,120,210,0.25)"
+                        : "rgba(15,23,42,0.92)",
+                    borderColor:
+                      activeFilter === s.filter
+                        ? "#0078D2"
+                        : "rgba(255,255,255,0.18)",
+                    boxShadow:
+                      activeFilter === s.filter
+                        ? "0 0 0 2px #0078D2"
+                        : undefined,
+                    animation: `${STAT_PULSE_BY_LABEL[s.label]} 4s ease-in-out infinite`,
+                  }}
+                >
+                  <p className="text-3xl font-bold" style={{ color: s.color }}>
+                    {s.value}
+                  </p>
+                  <p className="text-sm mt-1" style={{ color: "#cbd5f5" }}>
+                    {s.label}
+                  </p>
+                </button>
+              ))}
+            </div>
+            <Card
+              className="border shadow-2xl"
+              style={{
+                background: "rgba(15,23,42,0.92)",
+                borderColor: "rgba(255,255,255,0.18)",
+                borderRadius: "16px",
+              }}
+            >
+              <CardHeader>
+                <CardTitle style={{ color: "#ffffff" }}>
+                  Management Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  data-ocid="admin.manage_equipment.button"
+                  className="h-16 text-lg bg-blue-700 hover:bg-blue-600"
+                  onClick={onManageEquipment}
+                >
+                  &#128295; Manage Equipment
+                </Button>
+                <Button
+                  data-ocid="admin.view_all.button"
+                  variant="outline"
+                  className="h-16 text-lg"
+                  onClick={() =>
+                    equipment[0] && onViewEquipment(equipment[0].id)
+                  }
+                >
+                  &#128203; View Equipment Details
+                </Button>
+                <Button
+                  data-ocid="admin.equipment_map.button"
+                  className="h-16 text-lg md:col-span-2"
+                  style={{ background: "rgba(0,120,210,0.85)" }}
+                  onClick={() => onViewMap()}
+                >
+                  &#128506; Equipment Map
+                </Button>
+                <Button
+                  data-ocid="admin.user_messages.button"
+                  className="h-16 text-lg md:col-span-2 flex items-center justify-center gap-2"
+                  style={{
+                    background: "rgba(30,41,59,0.9)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                  }}
+                  onClick={onUserMessages}
+                >
+                  <MessageSquare
+                    className="h-5 w-5"
+                    style={{ color: "#0078D2" }}
+                  />
+                  <span>User Messages</span>
+                </Button>
+              </CardContent>
+            </Card>
+            <Card
+              className="border shadow-2xl"
+              style={{
+                background: "rgba(15,23,42,0.92)",
+                borderColor: "rgba(255,255,255,0.18)",
+                borderRadius: "16px",
+              }}
+            >
+              <CardHeader className="pb-3">
+                <CardTitle style={{ color: "#ffffff" }}>
+                  {activeFilter === "ALL"
+                    ? "All Equipment"
+                    : `${activeFilter.charAt(0) + activeFilter.slice(1).toLowerCase()} Equipment`}
+                  <span
+                    className="ml-2 text-base font-normal"
+                    style={{ color: "#94a3b8" }}
+                  >
+                    ({filteredEquipment.length})
+                  </span>
+                </CardTitle>
+                {/* Type filter segmented control */}
+                <div
+                  className="overflow-x-auto mt-3"
+                  style={{ WebkitOverflowScrolling: "touch" }}
+                >
+                  <div className="flex flex-nowrap gap-2 pb-1">
+                    {TYPE_FILTERS.map((tf) => (
+                      <button
+                        key={tf.value}
+                        type="button"
+                        onClick={() => setTypeFilter(tf.value)}
+                        data-ocid={`admin.type_filter.${tf.value.toLowerCase()}.tab`}
+                        className="flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium border transition-all"
+                        style={{
+                          background:
+                            typeFilter === tf.value
+                              ? "rgba(0,120,210,0.25)"
+                              : "rgba(30,41,59,0.6)",
+                          borderColor:
+                            typeFilter === tf.value
+                              ? "#0078D2"
+                              : "rgba(255,255,255,0.15)",
+                          color:
+                            typeFilter === tf.value ? "#60b4ff" : "#94a3b8",
+                          boxShadow:
+                            typeFilter === tf.value
+                              ? "0 0 0 1px #0078D2"
+                              : undefined,
+                          minHeight: "36px",
+                        }}
+                      >
+                        {tf.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <div className="space-y-2 max-h-80 overflow-y-auto">
-                  {events.map((ev, i) => (
-                    <div
-                      key={ev.id}
-                      data-ocid={`admin.events.item.${i + 1}`}
-                      className="flex items-start justify-between p-3 rounded-lg"
-                      style={{
-                        background: "rgba(30,41,59,0.5)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                      }}
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-white">
-                          {ev.equipmentId}
-                        </p>
-                        <p className="text-xs" style={{ color: "#cbd5f5" }}>
-                          by {formatOperatorName(ev.operator)}
-                        </p>
-                        {ev.location && (
-                          <p
-                            className="text-xs mt-0.5"
-                            style={{ color: "#94a3b8" }}
-                          >
-                            &#128205; {ev.location}
-                            {ev.outsideArea && (
-                              <span
-                                className="ml-2 inline-block px-1.5 py-0.5 rounded text-xs font-semibold"
-                                style={{
-                                  background: "rgba(217,119,6,0.2)",
-                                  color: "#fb923c",
-                                  border: "1px solid rgba(217,119,6,0.4)",
-                                }}
-                              >
-                                Out of designated area
-                              </span>
-                            )}
-                          </p>
-                        )}
-                        {ev.lat !== undefined &&
-                          ev.lon !== undefined &&
-                          ev.lat !== 0 &&
-                          ev.lon !== 0 && (
-                            <button
-                              type="button"
-                              onClick={() => onViewMap(ev.equipmentId)}
-                              className="text-xs font-medium mt-0.5"
-                              style={{
-                                color: "#0078D2",
-                                background: "none",
-                                border: "none",
-                                padding: 0,
-                                cursor: "pointer",
-                              }}
-                              data-ocid={`admin.events.view_map_button.${i + 1}`}
-                            >
-                              &#128205; View on Equipment Map
-                            </button>
+                {/* Equipment ID search */}
+                <div className="relative mt-3">
+                  <Search
+                    className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
+                    style={{ color: "#94a3b8" }}
+                  />
+                  <Input
+                    data-ocid="admin.equipment.search_input"
+                    value={idSearch}
+                    onChange={(e) => setIdSearch(e.target.value)}
+                    placeholder="Search equipment ID"
+                    className="pl-10"
+                    style={{
+                      background: "rgba(30,41,59,0.6)",
+                      borderColor: "rgba(255,255,255,0.15)",
+                      color: "#ffffff",
+                    }}
+                  />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {filteredEquipment.length === 0 ? (
+                    <EmptyState
+                      icon={Package}
+                      title="No equipment found"
+                      subtitle="Try adjusting your search or filter"
+                      data-ocid="admin.equipment.empty_state"
+                    />
+                  ) : (
+                    filteredEquipment.map((eq, i) => (
+                      <button
+                        key={eq.id}
+                        type="button"
+                        onClick={() => onViewEquipment(eq.id)}
+                        data-ocid={`admin.equipment.item.${i + 1}`}
+                        className="w-full text-left flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
+                        style={{
+                          background: "rgba(30,41,59,0.5)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                        }}
+                      >
+                        <div>
+                          <p className="font-semibold text-white">{eq.id}</p>
+                          {eq.label && (
+                            <p className="text-xs" style={{ color: "#cbd5f5" }}>
+                              {eq.label}
+                            </p>
                           )}
-                        {ev.notes && (
+                          {eq.status === "ASSIGNED" && eq.location && (
+                            <p
+                              className="text-xs mt-0.5"
+                              style={{ color: "#94a3b8" }}
+                            >
+                              &#128205; {eq.location}
+                            </p>
+                          )}
+                          {eq.status === "ASSIGNED" && eq.checkoutTime && (
+                            <p className="text-xs" style={{ color: "#94a3b8" }}>
+                              &#128336;{" "}
+                              {new Date(eq.checkoutTime).toLocaleTimeString()}
+                            </p>
+                          )}
+                        </div>
+                        <StatusBadge status={eq.status} />
+                      </button>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            <Card
+              className="border shadow-2xl"
+              style={{
+                background: "rgba(15,23,42,0.92)",
+                borderColor: "rgba(255,255,255,0.18)",
+                borderRadius: "16px",
+              }}
+            >
+              <CardHeader>
+                <CardTitle style={{ color: "#ffffff" }}>
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {events.length === 0 ? (
+                  <EmptyState
+                    icon={Activity}
+                    title="No recent activity"
+                    subtitle="Equipment transactions will appear here"
+                    data-ocid="admin.events.empty_state"
+                  />
+                ) : (
+                  <div className="space-y-2 max-h-80 overflow-y-auto">
+                    {events.map((ev, i) => (
+                      <div
+                        key={ev.id}
+                        data-ocid={`admin.events.item.${i + 1}`}
+                        className="flex items-start justify-between p-3 rounded-lg"
+                        style={{
+                          background: "rgba(30,41,59,0.5)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                        }}
+                      >
+                        <div>
+                          <p className="text-sm font-medium text-white">
+                            {ev.equipmentId}
+                          </p>
+                          <p className="text-xs" style={{ color: "#cbd5f5" }}>
+                            by {formatOperatorName(ev.operator)}
+                          </p>
+                          {ev.location && (
+                            <p
+                              className="text-xs mt-0.5"
+                              style={{ color: "#94a3b8" }}
+                            >
+                              &#128205; {ev.location}
+                              {ev.outsideArea && (
+                                <span
+                                  className="ml-2 inline-block px-1.5 py-0.5 rounded text-xs font-semibold"
+                                  style={{
+                                    background: "rgba(217,119,6,0.2)",
+                                    color: "#fb923c",
+                                    border: "1px solid rgba(217,119,6,0.4)",
+                                  }}
+                                >
+                                  Out of designated area
+                                </span>
+                              )}
+                            </p>
+                          )}
+                          {ev.lat !== undefined &&
+                            ev.lon !== undefined &&
+                            ev.lat !== 0 &&
+                            ev.lon !== 0 && (
+                              <button
+                                type="button"
+                                onClick={() => onViewMap(ev.equipmentId)}
+                                className="text-xs font-medium mt-0.5"
+                                style={{
+                                  color: "#0078D2",
+                                  background: "none",
+                                  border: "none",
+                                  padding: 0,
+                                  cursor: "pointer",
+                                }}
+                                data-ocid={`admin.events.view_map_button.${i + 1}`}
+                              >
+                                &#128205; View on Equipment Map
+                              </button>
+                            )}
+                          {ev.notes && (
+                            <p
+                              className="text-xs mt-1"
+                              style={{ color: "#cbd5f5" }}
+                            >
+                              {ev.notes}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right ml-4">
+                          <Badge
+                            variant={
+                              ev.eventType === "CHECK_OUT"
+                                ? "secondary"
+                                : ev.eventType === "CHECK_IN"
+                                  ? "default"
+                                  : "destructive"
+                            }
+                          >
+                            {ev.eventType.replace("_", " ")}
+                          </Badge>
                           <p
                             className="text-xs mt-1"
                             style={{ color: "#cbd5f5" }}
                           >
-                            {ev.notes}
+                            {new Date(ev.timestamp).toLocaleString()}
                           </p>
-                        )}
+                        </div>
                       </div>
-                      <div className="text-right ml-4">
-                        <Badge
-                          variant={
-                            ev.eventType === "CHECK_OUT"
-                              ? "secondary"
-                              : ev.eventType === "CHECK_IN"
-                                ? "default"
-                                : "destructive"
-                          }
-                        >
-                          {ev.eventType.replace("_", " ")}
-                        </Badge>
-                        <p
-                          className="text-xs mt-1"
-                          style={{ color: "#cbd5f5" }}
-                        >
-                          {new Date(ev.timestamp).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </main>
-        <footer className="py-6 text-center text-sm text-white/90 drop-shadow-lg">
-          Built by Jayson James and Ramp Track Systems.
-        </footer>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </main>
+          <footer className="py-6 text-center text-sm text-white/90 drop-shadow-lg">
+            Built by Jayson James and Ramp Track Systems.
+          </footer>
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

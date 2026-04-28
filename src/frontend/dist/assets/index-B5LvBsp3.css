@@ -2120,6 +2120,9 @@ video {
 .border-\[1\.5px\] {
   border-width: 1.5px;
 }
+.border-\[3px\] {
+  border-width: 3px;
+}
 .border-y {
   border-top-width: 1px;
   border-bottom-width: 1px;
@@ -2177,8 +2180,18 @@ video {
 .border-white\/80 {
   border-color: rgb(255 255 255 / 0.8);
 }
+.border-b-transparent {
+  border-bottom-color: transparent;
+}
 .border-l-transparent {
   border-left-color: transparent;
+}
+.border-r-transparent {
+  border-right-color: transparent;
+}
+.border-t-blue-400 {
+  --tw-border-opacity: 1;
+  border-top-color: rgb(96 165 250 / var(--tw-border-opacity, 1));
 }
 .border-t-transparent {
   border-top-color: transparent;
@@ -2451,10 +2464,6 @@ video {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
 .pb-1 {
   padding-bottom: 0.25rem;
 }
@@ -2700,14 +2709,17 @@ video {
 .opacity-100 {
   opacity: 1;
 }
-.opacity-30 {
-  opacity: 0.3;
+.opacity-25 {
+  opacity: 0.25;
 }
 .opacity-50 {
   opacity: 0.5;
 }
 .opacity-70 {
   opacity: 0.7;
+}
+.opacity-75 {
+  opacity: 0.75;
 }
 .opacity-80 {
   opacity: 0.8;
@@ -2891,6 +2903,9 @@ video {
 .ease-linear {
   transition-timing-function: linear;
 }
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
 .\@container\/card-header {
   container-type: inline-size;
   container-name: card-header;
@@ -2924,6 +2939,9 @@ video {
 .zoom-in-95 {
   --tw-enter-scale: .95;
 }
+.slide-in-from-bottom-2 {
+  --tw-enter-translate-y: 0.5rem;
+}
 .duration-1000 {
   animation-duration: 1000ms;
 }
@@ -2939,8 +2957,48 @@ video {
 .ease-linear {
   animation-timing-function: linear;
 }
+.ease-out {
+  animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
 .\[--cell-size\:--spacing\(8\)\] {
   --cell-size: var(--spacing(8));
+}
+
+@keyframes stat-pulse-blue {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 120, 210, 0);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(0, 120, 210, 0.15);
+  }
+}
+@keyframes stat-pulse-amber {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.15);
+  }
+}
+@keyframes stat-pulse-red {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.15);
+  }
+}
+@keyframes stat-pulse-slate {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(203, 213, 245, 0);
+  }
+  50% {
+    box-shadow: 0 0 6px 1px rgba(203, 213, 245, 0.1);
+  }
 }
 .selection\:bg-primary *::-moz-selection {
   --tw-bg-opacity: 1;
