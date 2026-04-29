@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import ErrorBoundary from "./components/ErrorBoundary";
+import RTSIntroScreen from "./components/RTSIntroScreen";
 import SignOnScreen from "./components/SignOnScreen";
 import SplashScreen from "./components/SplashScreen";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -17,6 +18,7 @@ import SignInScreen from "./pages/SignInScreen";
 import UserMessagesScreen from "./pages/UserMessagesScreen";
 
 type View =
+  | "rts-intro"
   | "splash"
   | "landing"
   | "signin"
@@ -33,7 +35,7 @@ type View =
 
 function AppContent() {
   const { auth, logout } = useAuth();
-  const [view, setView] = useState<View>("splash");
+  const [view, setView] = useState<View>("rts-intro");
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(
     null,
   );
@@ -45,6 +47,8 @@ function AppContent() {
   authRef.current = auth;
 
   useEffect(() => {
+    // Skip the splash timer if we're still on the RTS intro — intro handles the transition
+    if (view !== "splash") return;
     const t = setTimeout(() => {
       const currentAuth = authRef.current;
       if (currentAuth) {
@@ -56,11 +60,11 @@ function AppContent() {
       }
     }, 1500);
     return () => clearTimeout(t);
-  }, []);
+  }, [view]);
 
-  // Skip redirect to signin when on splash or landing
+  // Skip redirect to signin when on intro, splash or landing
   useEffect(() => {
-    if (view === "splash" || view === "landing") return;
+    if (view === "rts-intro" || view === "splash" || view === "landing") return;
     if (!auth) {
       setView("signin");
     }
@@ -90,6 +94,10 @@ function AppContent() {
     setEquipmentMapTarget(equipmentId);
     navigate("equipment-map");
   };
+
+  if (view === "rts-intro") {
+    return <RTSIntroScreen onComplete={() => setView("splash")} />;
+  }
 
   if (view === "splash") return <SplashScreen />;
 

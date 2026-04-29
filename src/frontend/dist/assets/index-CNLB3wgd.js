@@ -21820,6 +21820,209 @@ class ErrorBoundary extends reactExports.Component {
     return this.props.children;
   }
 }
+const HOLD_BEFORE_MS = 200;
+const SWEEP_DURATION_MS = 1600;
+const AFTER_FADE_START_OFFSET = 300;
+const AFTER_FADE_DURATION_MS = 1300;
+const HOLD_AFTER_MS = 3e3;
+const FADE_OUT_MS = 600;
+function RTSIntroScreen({
+  onComplete
+}) {
+  const [sweepActive, setSweepActive] = reactExports.useState(false);
+  const [afterOpacity, setAfterOpacity] = reactExports.useState(0);
+  const [screenOpacity, setScreenOpacity] = reactExports.useState(1);
+  const [beaconRotation, setBeaconRotation] = reactExports.useState(0);
+  const onCompleteRef = reactExports.useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  const rafRef = reactExports.useRef(0);
+  const rotStartRef = reactExports.useRef(0);
+  const animateBeacon = reactExports.useCallback((startTime) => {
+    const tick = (now2) => {
+      const elapsed = now2 - startTime;
+      if (elapsed < SWEEP_DURATION_MS) {
+        setBeaconRotation(elapsed / SWEEP_DURATION_MS * 200);
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setBeaconRotation(200);
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
+  reactExports.useEffect(() => {
+    let cancelled = false;
+    const imgBefore = new Image();
+    const imgAfter = new Image();
+    imgBefore.src = "/assets/rts_intro_before.png";
+    imgAfter.src = "/assets/rts_intro_after.png";
+    const t1 = setTimeout(() => {
+      if (cancelled) return;
+      setSweepActive(true);
+      rotStartRef.current = performance.now();
+      animateBeacon(performance.now());
+      const t2 = setTimeout(() => {
+        if (cancelled) return;
+        setAfterOpacity(1);
+      }, AFTER_FADE_START_OFFSET);
+      const t3 = setTimeout(() => {
+        if (cancelled) return;
+        setSweepActive(false);
+        const t4 = setTimeout(() => {
+          if (cancelled) return;
+          setScreenOpacity(0);
+          const t5 = setTimeout(() => {
+            if (!cancelled) onCompleteRef.current();
+          }, FADE_OUT_MS + 50);
+          return () => clearTimeout(t5);
+        }, HOLD_AFTER_MS);
+        return () => clearTimeout(t4);
+      }, SWEEP_DURATION_MS);
+      return () => {
+        clearTimeout(t2);
+        clearTimeout(t3);
+      };
+    }, HOLD_BEFORE_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(t1);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [animateBeacon]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
+        @keyframes rts-sweep {
+          0%   { transform: translateX(-120%); }
+          100% { transform: translateX(280%); }
+        }
+        @keyframes rts-beacon-pulse {
+          0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+          50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.18); }
+        }
+        .rts-sweep-bar {
+          animation: rts-sweep ${SWEEP_DURATION_MS}ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .rts-beacon-pulse {
+          animation: rts-beacon-pulse 0.7s ease-in-out infinite;
+        }
+      ` }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        "aria-hidden": "true",
+        style: {
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          backgroundColor: "#060e1e",
+          overflow: "hidden",
+          opacity: screenOpacity,
+          transition: `opacity ${FADE_OUT_MS}ms ease-out`
+        },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "img",
+            {
+              src: "/assets/rts_intro_before.png",
+              alt: "",
+              style: {
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                userSelect: "none",
+                pointerEvents: "none"
+              }
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "img",
+            {
+              src: "/assets/rts_intro_after.png",
+              alt: "Ramp Track Systems",
+              style: {
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                opacity: afterOpacity,
+                transition: `opacity ${AFTER_FADE_DURATION_MS}ms ease-in-out`,
+                userSelect: "none",
+                pointerEvents: "none"
+              }
+            }
+          ),
+          sweepActive && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              "aria-hidden": "true",
+              className: "rts-sweep-bar",
+              style: {
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: "35%",
+                background: [
+                  "linear-gradient(to right,",
+                  "  transparent 0%,",
+                  "  rgba(0, 100, 200, 0.08) 15%,",
+                  "  rgba(0, 130, 220, 0.30) 38%,",
+                  "  rgba(30, 160, 255, 0.50) 52%,",
+                  "  rgba(0, 130, 220, 0.30) 66%,",
+                  "  rgba(0, 100, 200, 0.08) 85%,",
+                  "  transparent 100%",
+                  ")"
+                ].join(""),
+                pointerEvents: "none",
+                mixBlendMode: "screen"
+              }
+            }
+          ),
+          sweepActive && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "div",
+              {
+                "aria-hidden": "true",
+                style: {
+                  position: "absolute",
+                  left: "50%",
+                  top: "32%",
+                  width: "160px",
+                  height: "160px",
+                  transform: `translate(-50%, -50%) rotate(${beaconRotation}deg)`,
+                  background: "conic-gradient(from 0deg, transparent 0deg, rgba(0, 150, 255, 0.18) 25deg, rgba(0, 180, 255, 0.28) 40deg, rgba(0, 150, 255, 0.18) 55deg, transparent 80deg)",
+                  borderRadius: "50%",
+                  pointerEvents: "none",
+                  mixBlendMode: "screen"
+                }
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "div",
+              {
+                "aria-hidden": "true",
+                className: "rts-beacon-pulse",
+                style: {
+                  position: "absolute",
+                  left: "50%",
+                  top: "32%",
+                  width: "28px",
+                  height: "28px",
+                  borderRadius: "50%",
+                  background: "radial-gradient(circle, rgba(100, 200, 255, 0.90) 0%, rgba(0, 140, 255, 0.55) 45%, transparent 75%)",
+                  pointerEvents: "none",
+                  mixBlendMode: "screen"
+                }
+              }
+            )
+          ] })
+        ]
+      }
+    )
+  ] });
+}
 const agentLogin = "/assets/agentlogin-019d2e49-69e7-73fe-8172-a52b87efe1eb.png";
 const signInBackgroundLower = "/assets/signinbackgroundlower-019d2e4a-fc0d-77ac-8d6b-f27f72365149.jpg";
 const managementLogin = "/assets/managementlogin-019d2e4a-4e21-770e-83b4-0b2873150efd.png";
@@ -71898,7 +72101,7 @@ function UserMessagesScreen({ currentUser, onBack }) {
 function AppContent() {
   var _a3, _b2;
   const { auth, logout } = useAuth();
-  const [view, setView] = reactExports.useState("splash");
+  const [view, setView] = reactExports.useState("rts-intro");
   const [selectedEquipmentId, setSelectedEquipmentId] = reactExports.useState(
     null
   );
@@ -71906,6 +72109,7 @@ function AppContent() {
   const authRef = reactExports.useRef(auth);
   authRef.current = auth;
   reactExports.useEffect(() => {
+    if (view !== "splash") return;
     const t = setTimeout(() => {
       var _a4;
       const currentAuth = authRef.current;
@@ -71918,9 +72122,9 @@ function AppContent() {
       }
     }, 1500);
     return () => clearTimeout(t);
-  }, []);
+  }, [view]);
   reactExports.useEffect(() => {
-    if (view === "splash" || view === "landing") return;
+    if (view === "rts-intro" || view === "splash" || view === "landing") return;
     if (!auth) {
       setView("signin");
     }
@@ -71945,6 +72149,9 @@ function AppContent() {
     setEquipmentMapTarget(equipmentId);
     navigate("equipment-map");
   };
+  if (view === "rts-intro") {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(RTSIntroScreen, { onComplete: () => setView("splash") });
+  }
   if (view === "splash") return /* @__PURE__ */ jsxRuntimeExports.jsx(SplashScreen, {});
   if (view === "landing") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(LandingScreen, { onLogin: () => navigate("signin") });
