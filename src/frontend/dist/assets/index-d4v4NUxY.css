@@ -2936,6 +2936,9 @@ video {
 .fade-in-0 {
   --tw-enter-opacity: 0;
 }
+.fade-out {
+  --tw-exit-opacity: 0;
+}
 .zoom-in-95 {
   --tw-enter-scale: .95;
 }

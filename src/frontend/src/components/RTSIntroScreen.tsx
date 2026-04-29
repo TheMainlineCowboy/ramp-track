@@ -124,48 +124,60 @@ export default function RTSIntroScreen({
         }
       `}</style>
 
-      {/* Full-screen intro container */}
+      {/* Full-screen fade wrapper — controls final fade-out opacity only */}
       <div
         aria-hidden="true"
         style={{
           position: "fixed",
           inset: 0,
           zIndex: 9999,
-          backgroundColor: "#060e1e",
           overflow: "hidden",
           opacity: screenOpacity,
           transition: `opacity ${FADE_OUT_MS}ms ease-out`,
+          /* No background color — images cover 100% so nothing bleeds through */
         }}
       >
-        {/* Before image — dark silhouette, always present as base */}
+        {/* Before image — true full-screen, fixed to viewport edges */}
         <img
           src="/assets/rts_intro_before.png"
           alt=""
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "fixed",
+            top: 0,
+            left: 0,
             width: "100%",
             height: "100%",
-            objectFit: "contain",
+            objectFit: "cover",
+            objectPosition: "center center",
+            display: "block",
             userSelect: "none",
             pointerEvents: "none",
+            margin: 0,
+            padding: 0,
+            border: "none",
           }}
         />
 
-        {/* After image — lit logo, cross-fades in during sweep */}
+        {/* After image — true full-screen, fixed to viewport edges, cross-fades in */}
         <img
           src="/assets/rts_intro_after.png"
           alt="Ramp Track Systems"
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "fixed",
+            top: 0,
+            left: 0,
             width: "100%",
             height: "100%",
-            objectFit: "contain",
+            objectFit: "cover",
+            objectPosition: "center center",
+            display: "block",
             opacity: afterOpacity,
             transition: `opacity ${AFTER_FADE_DURATION_MS}ms ease-in-out`,
             userSelect: "none",
             pointerEvents: "none",
+            margin: 0,
+            padding: 0,
+            border: "none",
           }}
         />
 
@@ -175,7 +187,7 @@ export default function RTSIntroScreen({
             aria-hidden="true"
             className="rts-sweep-bar"
             style={{
-              position: "absolute",
+              position: "fixed",
               top: 0,
               bottom: 0,
               left: 0,
@@ -204,7 +216,7 @@ export default function RTSIntroScreen({
             <div
               aria-hidden="true"
               style={{
-                position: "absolute",
+                position: "fixed",
                 left: "50%",
                 top: "32%",
                 width: "160px",
@@ -223,7 +235,7 @@ export default function RTSIntroScreen({
               aria-hidden="true"
               className="rts-beacon-pulse"
               style={{
-                position: "absolute",
+                position: "fixed",
                 left: "50%",
                 top: "32%",
                 width: "28px",
