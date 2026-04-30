@@ -53,12 +53,9 @@ export default function SignInScreen({
     setError("");
     try {
       await badgeLogin(badgeId);
-      const roles =
-        badgeId === "970251" || badgeId === "97025101"
-          ? ["admin", "agent"]
-          : ["agent"];
+      // Roles are set inside badgeLogin via the USERS roster — read from auth after login
       if (onLoginSuccess) {
-        onLoginSuccess(roles);
+        onLoginSuccess([]);
       }
     } catch (err: unknown) {
       setError((err as Error).message || "Badge login failed.");

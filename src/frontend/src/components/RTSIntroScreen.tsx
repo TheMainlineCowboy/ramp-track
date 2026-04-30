@@ -134,10 +134,12 @@ export default function RTSIntroScreen({
           overflow: "hidden",
           opacity: screenOpacity,
           transition: `opacity ${FADE_OUT_MS}ms ease-out`,
-          /* No background color — images cover 100% so nothing bleeds through */
+          /* Radial gradient fills any uncovered space around the contained image */
+          background:
+            "radial-gradient(circle at center, #060B16 0%, #050A14 40%, #040810 100%)",
         }}
       >
-        {/* Before image — true full-screen, fixed to viewport edges */}
+        {/* Before image — contained, centered, no crop */}
         <img
           src="/assets/rts_intro_before.png"
           alt=""
@@ -147,7 +149,7 @@ export default function RTSIntroScreen({
             left: 0,
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
             objectPosition: "center center",
             display: "block",
             userSelect: "none",
@@ -158,7 +160,7 @@ export default function RTSIntroScreen({
           }}
         />
 
-        {/* After image — true full-screen, fixed to viewport edges, cross-fades in */}
+        {/* After image — contained, centered, no crop, cross-fades in */}
         <img
           src="/assets/rts_intro_after.png"
           alt="Ramp Track Systems"
@@ -168,7 +170,7 @@ export default function RTSIntroScreen({
             left: 0,
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
             objectPosition: "center center",
             display: "block",
             opacity: afterOpacity,

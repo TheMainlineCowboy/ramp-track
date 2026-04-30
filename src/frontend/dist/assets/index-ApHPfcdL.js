@@ -21915,8 +21915,9 @@ function RTSIntroScreen({
           zIndex: 9999,
           overflow: "hidden",
           opacity: screenOpacity,
-          transition: `opacity ${FADE_OUT_MS}ms ease-out`
-          /* No background color — images cover 100% so nothing bleeds through */
+          transition: `opacity ${FADE_OUT_MS}ms ease-out`,
+          /* Radial gradient fills any uncovered space around the contained image */
+          background: "radial-gradient(circle at center, #060B16 0%, #050A14 40%, #040810 100%)"
         },
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -21930,7 +21931,7 @@ function RTSIntroScreen({
                 left: 0,
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "contain",
                 objectPosition: "center center",
                 display: "block",
                 userSelect: "none",
@@ -21952,7 +21953,7 @@ function RTSIntroScreen({
                 left: 0,
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "contain",
                 objectPosition: "center center",
                 display: "block",
                 opacity: afterOpacity,
@@ -22134,18 +22135,25 @@ const USERS = [
     name: "Demo Agent"
   },
   {
-    username: "970251",
-    password: "admin123",
-    roles: ["admin", "agent"],
-    name: "Jayson James"
-  },
-  {
     username: "100001",
     password: "test123",
     roles: ["agent"],
     name: "Demo Agent"
   },
-  // Manager demo accounts
+  // Generic agent demo account
+  {
+    username: "agent@ramptrack.com",
+    password: "test123",
+    roles: ["agent"],
+    name: "Agent"
+  },
+  // Manager accounts
+  {
+    username: "970251",
+    password: "admin123",
+    roles: ["admin", "agent"],
+    name: "Jayson James"
+  },
   {
     username: "906779",
     password: "admin123",
@@ -22176,12 +22184,53 @@ const USERS = [
     roles: ["admin"],
     name: "Wendy"
   },
-  // Generic agent demo account
   {
-    username: "agent@ramptrack.com",
-    password: "test123",
-    roles: ["agent"],
-    name: "Agent"
+    username: "792631",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Valentine"
+  },
+  {
+    username: "218231",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Connor"
+  },
+  {
+    username: "222857",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Christopher"
+  },
+  {
+    username: "264789",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Anthony"
+  },
+  {
+    username: "583943",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Mike"
+  },
+  {
+    username: "878288",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Rebecca"
+  },
+  {
+    username: "215760",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Jeremy"
+  },
+  {
+    username: "206289",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Archie"
   }
 ];
 const STORAGE_KEY$3 = "ramptrack_auth_state";
@@ -22218,10 +22267,19 @@ function AuthProvider({ children }) {
     setAuth(state);
   };
   const badgeLogin = async (badgeId) => {
+    const digitMatches = badgeId.match(/\d+/g);
+    const longestDigits = digitMatches ? digitMatches.reduce((a, b) => a.length >= b.length ? a : b, "") : badgeId;
+    const matchedUser = USERS.find(
+      (u) => /^\d+$/.test(u.username) && (longestDigits === u.username || longestDigits.includes(u.username) || u.username.includes(longestDigits))
+    );
     let username;
     let roles;
     let name;
-    if (badgeId === "970251" || badgeId === "97025101") {
+    if (matchedUser) {
+      username = matchedUser.username;
+      roles = matchedUser.roles;
+      name = matchedUser.name;
+    } else if (badgeId === "970251" || badgeId === "97025101") {
       username = "Jayson James";
       roles = ["admin", "agent"];
       name = "Jayson James";
@@ -71409,9 +71467,8 @@ function SignInScreen({
     setError("");
     try {
       await badgeLogin(badgeId);
-      const roles = badgeId === "970251" || badgeId === "97025101" ? ["admin", "agent"] : ["agent"];
       if (onLoginSuccess) {
-        onLoginSuccess(roles);
+        onLoginSuccess([]);
       }
     } catch (err) {
       setError(err.message || "Badge login failed.");

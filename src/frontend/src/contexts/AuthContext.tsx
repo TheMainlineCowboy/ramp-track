@@ -28,18 +28,25 @@ const USERS = [
     name: "Demo Agent",
   },
   {
-    username: "970251",
-    password: "admin123",
-    roles: ["admin", "agent"],
-    name: "Jayson James",
-  },
-  {
     username: "100001",
     password: "test123",
     roles: ["agent"],
     name: "Demo Agent",
   },
-  // Manager demo accounts
+  // Generic agent demo account
+  {
+    username: "agent@ramptrack.com",
+    password: "test123",
+    roles: ["agent"],
+    name: "Agent",
+  },
+  // Manager accounts
+  {
+    username: "970251",
+    password: "admin123",
+    roles: ["admin", "agent"],
+    name: "Jayson James",
+  },
   {
     username: "906779",
     password: "admin123",
@@ -70,12 +77,53 @@ const USERS = [
     roles: ["admin"],
     name: "Wendy",
   },
-  // Generic agent demo account
   {
-    username: "agent@ramptrack.com",
-    password: "test123",
-    roles: ["agent"],
-    name: "Agent",
+    username: "792631",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Valentine",
+  },
+  {
+    username: "218231",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Connor",
+  },
+  {
+    username: "222857",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Christopher",
+  },
+  {
+    username: "264789",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Anthony",
+  },
+  {
+    username: "583943",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Mike",
+  },
+  {
+    username: "878288",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Rebecca",
+  },
+  {
+    username: "215760",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Jeremy",
+  },
+  {
+    username: "206289",
+    password: "admin123",
+    roles: ["admin"],
+    name: "Archie",
   },
 ];
 
@@ -117,10 +165,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const badgeLogin = async (badgeId: string) => {
+    // Extract longest digit sequence from the scanned badge value
+    const digitMatches = badgeId.match(/\d+/g);
+    const longestDigits = digitMatches
+      ? digitMatches.reduce((a, b) => (a.length >= b.length ? a : b), "")
+      : badgeId;
+
+    // Check against USERS roster — find any user whose username (employee ID) matches
+    // or is contained within the extracted digit sequence
+    const matchedUser = USERS.find(
+      (u) =>
+        /^\d+$/.test(u.username) &&
+        (longestDigits === u.username ||
+          longestDigits.includes(u.username) ||
+          u.username.includes(longestDigits)),
+    );
+
     let username: string;
     let roles: string[];
     let name: string;
-    if (badgeId === "970251" || badgeId === "97025101") {
+
+    if (matchedUser) {
+      username = matchedUser.username;
+      roles = matchedUser.roles;
+      name = matchedUser.name;
+    } else if (badgeId === "970251" || badgeId === "97025101") {
+      // Fallback hardcoded Jayson check for backwards compatibility
       username = "Jayson James";
       roles = ["admin", "agent"];
       name = "Jayson James";
@@ -129,6 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       roles = ["agent"];
       name = badgeId;
     }
+
     const state: AuthState = {
       username,
       badge: badgeId,
