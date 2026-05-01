@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import ErrorBoundary from "./components/ErrorBoundary";
+import PageTransition from "./components/PageTransition";
 import RTSIntroScreen from "./components/RTSIntroScreen";
 import SignOnScreen from "./components/SignOnScreen";
 import SplashScreen from "./components/SplashScreen";
@@ -95,6 +96,7 @@ function AppContent() {
     navigate("equipment-map");
   };
 
+  // RTS intro and splash/landing never get page transitions — they are part of the launch sequence
   if (view === "rts-intro") {
     return <RTSIntroScreen onComplete={() => setView("splash")} />;
   }
@@ -107,114 +109,120 @@ function AppContent() {
 
   if (!auth) {
     return (
-      <SignInScreen
-        onLoginSuccess={() => {
-          navigate("signon");
-        }}
-      />
+      <PageTransition key="signin">
+        <SignInScreen
+          onLoginSuccess={() => {
+            navigate("signon");
+          }}
+        />
+      </PageTransition>
     );
   }
 
-  switch (view) {
-    case "signon":
-      return (
-        <SignOnScreen
-          currentUser={auth}
-          onAgentLogin={() => navigate("operator-home")}
-          onAdminLogin={() => navigate("admin-menu")}
-          onBack={() => navigate("signin")}
-        />
-      );
-    case "operator-home":
-      return (
-        <OperatorHomeScreen
-          currentUser={auth}
-          onCheckOut={() => navigate("checkout")}
-          onCheckIn={() => navigate("checkin")}
-          onReportIssue={() => navigate("report-issue")}
-          onLogout={handleLogout}
-          onBack={() => navigate("signon")}
-        />
-      );
-    case "checkout":
-      return (
-        <CheckOutScreen
-          currentUser={auth}
-          onBack={() => navigate("operator-home")}
-        />
-      );
-    case "checkin":
-      return (
-        <CheckInScreen
-          currentUser={auth}
-          onBack={() => navigate("operator-home")}
-        />
-      );
-    case "report-issue":
-      return (
-        <ReportIssueScreen
-          currentUser={auth}
-          onBack={() => navigate("operator-home")}
-        />
-      );
-    case "admin-menu":
-      return (
-        <AdminMenuScreen
-          currentUser={auth}
-          onManageEquipment={() => navigate("manage-equipment")}
-          onViewEquipment={(id) => {
-            setSelectedEquipmentId(id);
-            navigate("equipment-detail");
-          }}
-          onViewMap={handleViewMap}
-          onUserMessages={() => navigate("user-messages")}
-          onBack={() => navigate("signon")}
-          onLogout={handleLogout}
-        />
-      );
-    case "manage-equipment":
-      return <ManageEquipmentScreen onBack={() => navigate("admin-menu")} />;
-    case "equipment-detail":
-      return (
-        <EquipmentDetailScreen
-          equipmentId={selectedEquipmentId || ""}
-          onBack={() => navigate("admin-menu")}
-          onViewEquipmentMap={(equipmentId) => handleViewMap(equipmentId)}
-        />
-      );
-    case "equipment-map":
-      if (!auth.roles?.includes("admin")) {
-        navigate("admin-menu");
+  const renderView = () => {
+    switch (view) {
+      case "signon":
+        return (
+          <SignOnScreen
+            currentUser={auth}
+            onAgentLogin={() => navigate("operator-home")}
+            onAdminLogin={() => navigate("admin-menu")}
+            onBack={() => navigate("signin")}
+          />
+        );
+      case "operator-home":
+        return (
+          <OperatorHomeScreen
+            currentUser={auth}
+            onCheckOut={() => navigate("checkout")}
+            onCheckIn={() => navigate("checkin")}
+            onReportIssue={() => navigate("report-issue")}
+            onLogout={handleLogout}
+            onBack={() => navigate("signon")}
+          />
+        );
+      case "checkout":
+        return (
+          <CheckOutScreen
+            currentUser={auth}
+            onBack={() => navigate("operator-home")}
+          />
+        );
+      case "checkin":
+        return (
+          <CheckInScreen
+            currentUser={auth}
+            onBack={() => navigate("operator-home")}
+          />
+        );
+      case "report-issue":
+        return (
+          <ReportIssueScreen
+            currentUser={auth}
+            onBack={() => navigate("operator-home")}
+          />
+        );
+      case "admin-menu":
+        return (
+          <AdminMenuScreen
+            currentUser={auth}
+            onManageEquipment={() => navigate("manage-equipment")}
+            onViewEquipment={(id) => {
+              setSelectedEquipmentId(id);
+              navigate("equipment-detail");
+            }}
+            onViewMap={handleViewMap}
+            onUserMessages={() => navigate("user-messages")}
+            onBack={() => navigate("signon")}
+            onLogout={handleLogout}
+          />
+        );
+      case "manage-equipment":
+        return <ManageEquipmentScreen onBack={() => navigate("admin-menu")} />;
+      case "equipment-detail":
+        return (
+          <EquipmentDetailScreen
+            equipmentId={selectedEquipmentId || ""}
+            onBack={() => navigate("admin-menu")}
+            onViewEquipmentMap={(equipmentId) => handleViewMap(equipmentId)}
+          />
+        );
+      case "equipment-map":
+        if (!auth.roles?.includes("admin")) {
+          navigate("admin-menu");
+          return null;
+        }
+        return (
+          <EquipmentMapScreen
+            currentUser={auth}
+            onBack={() => {
+              setEquipmentMapTarget(undefined);
+              navigate("admin-menu");
+            }}
+            onViewEquipmentDetail={(id) => {
+              setSelectedEquipmentId(id);
+              navigate("equipment-detail");
+            }}
+            initialEquipmentId={equipmentMapTarget}
+          />
+        );
+      case "user-messages":
+        if (!auth.roles?.includes("admin")) {
+          navigate("admin-menu");
+          return null;
+        }
+        return (
+          <UserMessagesScreen
+            currentUser={auth}
+            onBack={() => navigate("admin-menu")}
+          />
+        );
+      default:
         return null;
-      }
-      return (
-        <EquipmentMapScreen
-          currentUser={auth}
-          onBack={() => {
-            setEquipmentMapTarget(undefined);
-            navigate("admin-menu");
-          }}
-          onViewEquipmentDetail={(id) => {
-            setSelectedEquipmentId(id);
-            navigate("equipment-detail");
-          }}
-          initialEquipmentId={equipmentMapTarget}
-        />
-      );
-    case "user-messages":
-      if (!auth.roles?.includes("admin")) {
-        navigate("admin-menu");
-        return null;
-      }
-      return (
-        <UserMessagesScreen
-          currentUser={auth}
-          onBack={() => navigate("admin-menu")}
-        />
-      );
-    default:
-      return null;
-  }
+    }
+  };
+
+  return <PageTransition key={view}>{renderView()}</PageTransition>;
 }
 
 export default function App() {

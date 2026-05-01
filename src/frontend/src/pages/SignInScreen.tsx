@@ -109,6 +109,7 @@ export default function SignInScreen({
               <div className="space-y-2">
                 <Label htmlFor="email">Employee ID / Email</Label>
                 <Input
+                  autoFocus
                   data-ocid="signin.email.input"
                   id="email"
                   value={email}

@@ -28,6 +28,8 @@ export default function RTSIntroScreen({
   const [afterOpacity, setAfterOpacity] = useState(0);
   const [screenOpacity, setScreenOpacity] = useState(1);
   const [beaconRotation, setBeaconRotation] = useState(0);
+  // Background fill: #030816 during dark before-phase, transitions to #060F21 as reveal starts
+  const [bgColor, setBgColor] = useState("#030816");
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
   const rafRef = useRef<number>(0);
@@ -62,6 +64,10 @@ export default function RTSIntroScreen({
     // Phase 1: Hold on silhouette
     const t1 = setTimeout(() => {
       if (cancelled) return;
+
+      // Transition background fill from before-color (#030816) to after-color (#060F21)
+      // as the sweep begins — by hold time it will be fully #060F21
+      setBgColor("#060F21");
 
       // Start sweep overlay + beacon rotation
       setSweepActive(true);
@@ -134,9 +140,11 @@ export default function RTSIntroScreen({
           overflow: "hidden",
           opacity: screenOpacity,
           transition: `opacity ${FADE_OUT_MS}ms ease-out`,
-          /* Radial gradient fills any uncovered space around the contained image */
-          background:
-            "radial-gradient(circle at center, #060B16 0%, #050A14 40%, #040810 100%)",
+          /* Phase-matched solid fill: #030816 before reveal, transitions to #060F21 */
+          background: bgColor,
+          transitionProperty: "opacity, background",
+          transitionDuration: `${FADE_OUT_MS}ms, 1600ms`,
+          transitionTimingFunction: "ease-out, ease-in-out",
         }}
       >
         {/* Before image — contained, centered, no crop */}

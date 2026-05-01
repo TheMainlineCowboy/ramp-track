@@ -21820,6 +21820,9 @@ class ErrorBoundary extends reactExports.Component {
     return this.props.children;
   }
 }
+function PageTransition({ children }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-in fade-in-0 slide-in-from-bottom-2 duration-200 ease-out", children });
+}
 const HOLD_BEFORE_MS = 200;
 const SWEEP_DURATION_MS = 1600;
 const AFTER_FADE_START_OFFSET = 300;
@@ -21833,6 +21836,7 @@ function RTSIntroScreen({
   const [afterOpacity, setAfterOpacity] = reactExports.useState(0);
   const [screenOpacity, setScreenOpacity] = reactExports.useState(1);
   const [beaconRotation, setBeaconRotation] = reactExports.useState(0);
+  const [bgColor, setBgColor] = reactExports.useState("#030816");
   const onCompleteRef = reactExports.useRef(onComplete);
   onCompleteRef.current = onComplete;
   const rafRef = reactExports.useRef(0);
@@ -21857,6 +21861,7 @@ function RTSIntroScreen({
     imgAfter.src = "/assets/rts_intro_after.png";
     const t1 = setTimeout(() => {
       if (cancelled) return;
+      setBgColor("#060F21");
       setSweepActive(true);
       rotStartRef.current = performance.now();
       animateBeacon(performance.now());
@@ -21916,8 +21921,11 @@ function RTSIntroScreen({
           overflow: "hidden",
           opacity: screenOpacity,
           transition: `opacity ${FADE_OUT_MS}ms ease-out`,
-          /* Radial gradient fills any uncovered space around the contained image */
-          background: "radial-gradient(circle at center, #060B16 0%, #050A14 40%, #040810 100%)"
+          /* Phase-matched solid fill: #030816 before reveal, transitions to #060F21 */
+          background: bgColor,
+          transitionProperty: "opacity, background",
+          transitionDuration: `${FADE_OUT_MS}ms, 1600ms`,
+          transitionTimingFunction: "ease-out, ease-in-out"
         },
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -22339,9 +22347,6 @@ function EmptyState({
       ]
     }
   );
-}
-function PageTransition({ children }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-in fade-in-0 slide-in-from-bottom-2 duration-200 ease-out", children });
 }
 const STATUS_STYLES = {
   AVAILABLE: "bg-green-600 text-white",
@@ -71518,6 +71523,7 @@ function SignInScreen({
                   /* @__PURE__ */ jsxRuntimeExports.jsx(
                     Input,
                     {
+                      autoFocus: true,
                       "data-ocid": "signin.email.input",
                       id: "email",
                       value: email,
@@ -72168,7 +72174,6 @@ function UserMessagesScreen({ currentUser, onBack }) {
   ) });
 }
 function AppContent() {
-  var _a3, _b2;
   const { auth, logout } = useAuth();
   const [view, setView] = reactExports.useState("rts-intro");
   const [selectedEquipmentId, setSelectedEquipmentId] = reactExports.useState(
@@ -72180,11 +72185,11 @@ function AppContent() {
   reactExports.useEffect(() => {
     if (view !== "splash") return;
     const t = setTimeout(() => {
-      var _a4;
+      var _a3;
       const currentAuth = authRef.current;
       if (currentAuth) {
         setView(
-          ((_a4 = currentAuth.roles) == null ? void 0 : _a4.includes("admin")) ? "admin-menu" : "operator-home"
+          ((_a3 = currentAuth.roles) == null ? void 0 : _a3.includes("admin")) ? "admin-menu" : "operator-home"
         );
       } else {
         setView("landing");
@@ -72226,124 +72231,128 @@ function AppContent() {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(LandingScreen, { onLogin: () => navigate("signin") });
   }
   if (!auth) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(PageTransition, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       SignInScreen,
       {
         onLoginSuccess: () => {
           navigate("signon");
         }
       }
-    );
+    ) }, "signin");
   }
-  switch (view) {
-    case "signon":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        SignOnScreen,
-        {
-          currentUser: auth,
-          onAgentLogin: () => navigate("operator-home"),
-          onAdminLogin: () => navigate("admin-menu"),
-          onBack: () => navigate("signin")
+  const renderView = () => {
+    var _a3, _b2;
+    switch (view) {
+      case "signon":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          SignOnScreen,
+          {
+            currentUser: auth,
+            onAgentLogin: () => navigate("operator-home"),
+            onAdminLogin: () => navigate("admin-menu"),
+            onBack: () => navigate("signin")
+          }
+        );
+      case "operator-home":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          OperatorHomeScreen,
+          {
+            currentUser: auth,
+            onCheckOut: () => navigate("checkout"),
+            onCheckIn: () => navigate("checkin"),
+            onReportIssue: () => navigate("report-issue"),
+            onLogout: handleLogout,
+            onBack: () => navigate("signon")
+          }
+        );
+      case "checkout":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          CheckOutScreen,
+          {
+            currentUser: auth,
+            onBack: () => navigate("operator-home")
+          }
+        );
+      case "checkin":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          CheckInScreen,
+          {
+            currentUser: auth,
+            onBack: () => navigate("operator-home")
+          }
+        );
+      case "report-issue":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ReportIssueScreen,
+          {
+            currentUser: auth,
+            onBack: () => navigate("operator-home")
+          }
+        );
+      case "admin-menu":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          AdminMenuScreen,
+          {
+            currentUser: auth,
+            onManageEquipment: () => navigate("manage-equipment"),
+            onViewEquipment: (id) => {
+              setSelectedEquipmentId(id);
+              navigate("equipment-detail");
+            },
+            onViewMap: handleViewMap,
+            onUserMessages: () => navigate("user-messages"),
+            onBack: () => navigate("signon"),
+            onLogout: handleLogout
+          }
+        );
+      case "manage-equipment":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(ManageEquipmentScreen, { onBack: () => navigate("admin-menu") });
+      case "equipment-detail":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          EquipmentDetailScreen,
+          {
+            equipmentId: selectedEquipmentId || "",
+            onBack: () => navigate("admin-menu"),
+            onViewEquipmentMap: (equipmentId) => handleViewMap(equipmentId)
+          }
+        );
+      case "equipment-map":
+        if (!((_a3 = auth.roles) == null ? void 0 : _a3.includes("admin"))) {
+          navigate("admin-menu");
+          return null;
         }
-      );
-    case "operator-home":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        OperatorHomeScreen,
-        {
-          currentUser: auth,
-          onCheckOut: () => navigate("checkout"),
-          onCheckIn: () => navigate("checkin"),
-          onReportIssue: () => navigate("report-issue"),
-          onLogout: handleLogout,
-          onBack: () => navigate("signon")
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          EquipmentMapScreen,
+          {
+            currentUser: auth,
+            onBack: () => {
+              setEquipmentMapTarget(void 0);
+              navigate("admin-menu");
+            },
+            onViewEquipmentDetail: (id) => {
+              setSelectedEquipmentId(id);
+              navigate("equipment-detail");
+            },
+            initialEquipmentId: equipmentMapTarget
+          }
+        );
+      case "user-messages":
+        if (!((_b2 = auth.roles) == null ? void 0 : _b2.includes("admin"))) {
+          navigate("admin-menu");
+          return null;
         }
-      );
-    case "checkout":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        CheckOutScreen,
-        {
-          currentUser: auth,
-          onBack: () => navigate("operator-home")
-        }
-      );
-    case "checkin":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        CheckInScreen,
-        {
-          currentUser: auth,
-          onBack: () => navigate("operator-home")
-        }
-      );
-    case "report-issue":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        ReportIssueScreen,
-        {
-          currentUser: auth,
-          onBack: () => navigate("operator-home")
-        }
-      );
-    case "admin-menu":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        AdminMenuScreen,
-        {
-          currentUser: auth,
-          onManageEquipment: () => navigate("manage-equipment"),
-          onViewEquipment: (id) => {
-            setSelectedEquipmentId(id);
-            navigate("equipment-detail");
-          },
-          onViewMap: handleViewMap,
-          onUserMessages: () => navigate("user-messages"),
-          onBack: () => navigate("signon"),
-          onLogout: handleLogout
-        }
-      );
-    case "manage-equipment":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(ManageEquipmentScreen, { onBack: () => navigate("admin-menu") });
-    case "equipment-detail":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        EquipmentDetailScreen,
-        {
-          equipmentId: selectedEquipmentId || "",
-          onBack: () => navigate("admin-menu"),
-          onViewEquipmentMap: (equipmentId) => handleViewMap(equipmentId)
-        }
-      );
-    case "equipment-map":
-      if (!((_a3 = auth.roles) == null ? void 0 : _a3.includes("admin"))) {
-        navigate("admin-menu");
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          UserMessagesScreen,
+          {
+            currentUser: auth,
+            onBack: () => navigate("admin-menu")
+          }
+        );
+      default:
         return null;
-      }
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        EquipmentMapScreen,
-        {
-          currentUser: auth,
-          onBack: () => {
-            setEquipmentMapTarget(void 0);
-            navigate("admin-menu");
-          },
-          onViewEquipmentDetail: (id) => {
-            setSelectedEquipmentId(id);
-            navigate("equipment-detail");
-          },
-          initialEquipmentId: equipmentMapTarget
-        }
-      );
-    case "user-messages":
-      if (!((_b2 = auth.roles) == null ? void 0 : _b2.includes("admin"))) {
-        navigate("admin-menu");
-        return null;
-      }
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        UserMessagesScreen,
-        {
-          currentUser: auth,
-          onBack: () => navigate("admin-menu")
-        }
-      );
-    default:
-      return null;
-  }
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PageTransition, { children: renderView() }, view);
 }
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorBoundary, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(AuthProvider, { children: [

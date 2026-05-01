@@ -129,3 +129,12 @@
     box-shadow: 0 0 6px 1px rgba(203, 213, 245, 0.1);
   }
 }
+
+/* Button press feedback — subtle scale-down on active press */
+button:not([disabled]) {
+  transition: transform 120ms ease-out;
+}
+button:active:not([disabled]) {
+  transform: scale(0.98);
+  transition: transform 120ms ease-out;
+}
