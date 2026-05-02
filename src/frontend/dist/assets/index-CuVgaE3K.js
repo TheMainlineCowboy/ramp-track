@@ -21820,9 +21820,6 @@ class ErrorBoundary extends reactExports.Component {
     return this.props.children;
   }
 }
-function PageTransition({ children }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-in fade-in-0 slide-in-from-bottom-2 duration-200 ease-out", children });
-}
 const HOLD_BEFORE_MS = 200;
 const SWEEP_DURATION_MS = 1600;
 const AFTER_FADE_START_OFFSET = 300;
@@ -21841,6 +21838,14 @@ function RTSIntroScreen({
   onCompleteRef.current = onComplete;
   const rafRef = reactExports.useRef(0);
   const rotStartRef = reactExports.useRef(0);
+  reactExports.useEffect(() => {
+    document.documentElement.style.backgroundColor = "#030816";
+    document.body.style.backgroundColor = "#030816";
+    return () => {
+      document.documentElement.style.backgroundColor = "";
+      document.body.style.backgroundColor = "";
+    };
+  }, []);
   const animateBeacon = reactExports.useCallback((startTime) => {
     const tick = (now2) => {
       const elapsed = now2 - startTime;
@@ -21862,6 +21867,8 @@ function RTSIntroScreen({
     const t1 = setTimeout(() => {
       if (cancelled) return;
       setBgColor("#060F21");
+      document.documentElement.style.backgroundColor = "#060F21";
+      document.body.style.backgroundColor = "#060F21";
       setSweepActive(true);
       rotStartRef.current = performance.now();
       animateBeacon(performance.now());
@@ -21920,12 +21927,10 @@ function RTSIntroScreen({
           zIndex: 9999,
           overflow: "hidden",
           opacity: screenOpacity,
-          transition: `opacity ${FADE_OUT_MS}ms ease-out`,
-          /* Phase-matched solid fill: #030816 before reveal, transitions to #060F21 */
-          background: bgColor,
-          transitionProperty: "opacity, background",
-          transitionDuration: `${FADE_OUT_MS}ms, 1600ms`,
-          transitionTimingFunction: "ease-out, ease-in-out"
+          // Use separate transition declarations to avoid shorthand conflicts:
+          // opacity fades on exit; background-color transitions during reveal
+          backgroundColor: bgColor,
+          transition: `opacity ${FADE_OUT_MS}ms ease-out, background-color 1600ms ease-in-out`
         },
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -21934,7 +21939,7 @@ function RTSIntroScreen({
               src: "/assets/rts_intro_before.png",
               alt: "",
               style: {
-                position: "fixed",
+                position: "absolute",
                 top: 0,
                 left: 0,
                 width: "100%",
@@ -21956,7 +21961,7 @@ function RTSIntroScreen({
               src: "/assets/rts_intro_after.png",
               alt: "Ramp Track Systems",
               style: {
-                position: "fixed",
+                position: "absolute",
                 top: 0,
                 left: 0,
                 width: "100%",
@@ -21980,7 +21985,7 @@ function RTSIntroScreen({
               "aria-hidden": "true",
               className: "rts-sweep-bar",
               style: {
-                position: "fixed",
+                position: "absolute",
                 top: 0,
                 bottom: 0,
                 left: 0,
@@ -22007,7 +22012,7 @@ function RTSIntroScreen({
               {
                 "aria-hidden": "true",
                 style: {
-                  position: "fixed",
+                  position: "absolute",
                   left: "50%",
                   top: "32%",
                   width: "160px",
@@ -22026,7 +22031,7 @@ function RTSIntroScreen({
                 "aria-hidden": "true",
                 className: "rts-beacon-pulse",
                 style: {
-                  position: "fixed",
+                  position: "absolute",
                   left: "50%",
                   top: "32%",
                   width: "28px",
@@ -22053,67 +22058,90 @@ function SignOnScreen({
   onAdminLogin,
   onBack
 }) {
+  const [bgReady, setBgReady] = reactExports.useState(false);
   reactExports.useEffect(() => {
-    if (!currentUser) onBack();
+    if (!currentUser) {
+      onBack();
+      return;
+    }
+    const img = new Image();
+    img.src = signInBackgroundLower;
+    img.onload = () => setBgReady(true);
+    img.onerror = () => setBgReady(true);
   }, [currentUser, onBack]);
   if (!currentUser) return null;
   const hasAdminRole = currentUser.roles.includes("admin");
   const isAgentOnly = currentUser.roles.length === 1 && currentUser.roles[0] === "agent";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       className: "fixed inset-0 flex flex-col items-center justify-center p-6",
       style: {
-        backgroundImage: `url(${signInBackgroundLower})`,
+        // Always-dark fallback — eliminates white flash before image loads
+        backgroundColor: "#030816",
+        backgroundImage: bgReady ? `url(${signInBackgroundLower})` : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat"
       },
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            onClick: onAgentLogin,
-            className: "w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none",
-            "aria-label": "Agent",
-            "data-ocid": "signon.agent.button",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: agentLogin, alt: "Agent", className: "w-full h-auto" })
-          }
-        ),
-        !isAgentOnly && hasAdminRole && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            onClick: onAdminLogin,
-            className: "w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none",
-            "aria-label": "Management",
-            "data-ocid": "signon.management.button",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "img",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          style: {
+            opacity: bgReady ? 1 : 0,
+            transition: bgReady ? "opacity 150ms ease-in" : "none",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%"
+          },
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
               {
-                src: managementLogin,
-                alt: "Management",
-                className: "w-full h-auto"
+                type: "button",
+                onClick: onAgentLogin,
+                className: "w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none",
+                "aria-label": "Agent",
+                "data-ocid": "signon.agent.button",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: agentLogin, alt: "Agent", className: "w-full h-auto" })
+              }
+            ),
+            !isAgentOnly && hasAdminRole && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: onAdminLogin,
+                className: "w-[60%] max-w-[260px] transition-transform active:scale-95 hover:scale-105 focus:outline-none",
+                "aria-label": "Management",
+                "data-ocid": "signon.management.button",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "img",
+                  {
+                    src: managementLogin,
+                    alt: "Management",
+                    className: "w-full h-auto"
+                  }
+                )
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: onBack,
+                className: "mt-4 px-6 py-3 rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
+                style: {
+                  background: "rgba(10,20,50,0.75)",
+                  borderColor: "rgba(0,120,210,0.4)"
+                },
+                "data-ocid": "signon.back.button",
+                children: "Back to Login"
               }
             )
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            onClick: onBack,
-            className: "mt-4 px-6 py-3 rounded-lg border text-white transition-colors hover:bg-[rgba(0,120,210,0.25)]",
-            style: {
-              background: "rgba(10,20,50,0.75)",
-              borderColor: "rgba(0,120,210,0.4)"
-            },
-            "data-ocid": "signon.back.button",
-            children: "Back to Login"
-          }
-        )
-      ]
+          ]
+        }
+      )
     }
   );
 }
@@ -22347,6 +22375,9 @@ function EmptyState({
       ]
     }
   );
+}
+function PageTransition({ children }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-in fade-in-0 slide-in-from-bottom-2 duration-200 ease-out", children });
 }
 const STATUS_STYLES = {
   AVAILABLE: "bg-green-600 text-white",
@@ -72231,14 +72262,14 @@ function AppContent() {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(LandingScreen, { onLogin: () => navigate("signin") });
   }
   if (!auth) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(PageTransition, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       SignInScreen,
       {
         onLoginSuccess: () => {
           navigate("signon");
         }
       }
-    ) }, "signin");
+    );
   }
   const renderView = () => {
     var _a3, _b2;
@@ -72352,7 +72383,7 @@ function AppContent() {
         return null;
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PageTransition, { children: renderView() }, view);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: renderView() });
 }
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorBoundary, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(AuthProvider, { children: [

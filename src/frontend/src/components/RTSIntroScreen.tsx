@@ -35,6 +35,16 @@ export default function RTSIntroScreen({
   const rafRef = useRef<number>(0);
   const rotStartRef = useRef<number>(0);
 
+  // Set document/body background on mount and clean up on unmount
+  useEffect(() => {
+    document.documentElement.style.backgroundColor = "#030816";
+    document.body.style.backgroundColor = "#030816";
+    return () => {
+      document.documentElement.style.backgroundColor = "";
+      document.body.style.backgroundColor = "";
+    };
+  }, []);
+
   // Animate beacon rotation during sweep
   const animateBeacon = useCallback((startTime: number) => {
     const tick = (now: number) => {
@@ -68,6 +78,8 @@ export default function RTSIntroScreen({
       // Transition background fill from before-color (#030816) to after-color (#060F21)
       // as the sweep begins — by hold time it will be fully #060F21
       setBgColor("#060F21");
+      document.documentElement.style.backgroundColor = "#060F21";
+      document.body.style.backgroundColor = "#060F21";
 
       // Start sweep overlay + beacon rotation
       setSweepActive(true);
@@ -139,12 +151,10 @@ export default function RTSIntroScreen({
           zIndex: 9999,
           overflow: "hidden",
           opacity: screenOpacity,
-          transition: `opacity ${FADE_OUT_MS}ms ease-out`,
-          /* Phase-matched solid fill: #030816 before reveal, transitions to #060F21 */
-          background: bgColor,
-          transitionProperty: "opacity, background",
-          transitionDuration: `${FADE_OUT_MS}ms, 1600ms`,
-          transitionTimingFunction: "ease-out, ease-in-out",
+          // Use separate transition declarations to avoid shorthand conflicts:
+          // opacity fades on exit; background-color transitions during reveal
+          backgroundColor: bgColor,
+          transition: `opacity ${FADE_OUT_MS}ms ease-out, background-color 1600ms ease-in-out`,
         }}
       >
         {/* Before image — contained, centered, no crop */}
@@ -152,7 +162,7 @@ export default function RTSIntroScreen({
           src="/assets/rts_intro_before.png"
           alt=""
           style={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
             left: 0,
             width: "100%",
@@ -173,7 +183,7 @@ export default function RTSIntroScreen({
           src="/assets/rts_intro_after.png"
           alt="Ramp Track Systems"
           style={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
             left: 0,
             width: "100%",
@@ -197,7 +207,7 @@ export default function RTSIntroScreen({
             aria-hidden="true"
             className="rts-sweep-bar"
             style={{
-              position: "fixed",
+              position: "absolute",
               top: 0,
               bottom: 0,
               left: 0,
@@ -226,7 +236,7 @@ export default function RTSIntroScreen({
             <div
               aria-hidden="true"
               style={{
-                position: "fixed",
+                position: "absolute",
                 left: "50%",
                 top: "32%",
                 width: "160px",
@@ -245,7 +255,7 @@ export default function RTSIntroScreen({
               aria-hidden="true"
               className="rts-beacon-pulse"
               style={{
-                position: "fixed",
+                position: "absolute",
                 left: "50%",
                 top: "32%",
                 width: "28px",

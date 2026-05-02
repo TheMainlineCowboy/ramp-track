@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import ErrorBoundary from "./components/ErrorBoundary";
-import PageTransition from "./components/PageTransition";
 import RTSIntroScreen from "./components/RTSIntroScreen";
 import SignOnScreen from "./components/SignOnScreen";
 import SplashScreen from "./components/SplashScreen";
@@ -109,13 +108,11 @@ function AppContent() {
 
   if (!auth) {
     return (
-      <PageTransition key="signin">
-        <SignInScreen
-          onLoginSuccess={() => {
-            navigate("signon");
-          }}
-        />
-      </PageTransition>
+      <SignInScreen
+        onLoginSuccess={() => {
+          navigate("signon");
+        }}
+      />
     );
   }
 
@@ -222,7 +219,7 @@ function AppContent() {
     }
   };
 
-  return <PageTransition key={view}>{renderView()}</PageTransition>;
+  return <>{renderView()}</>;
 }
 
 export default function App() {
