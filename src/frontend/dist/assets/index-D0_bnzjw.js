@@ -21833,17 +21833,20 @@ function RTSIntroScreen({
   const [afterOpacity, setAfterOpacity] = reactExports.useState(0);
   const [screenOpacity, setScreenOpacity] = reactExports.useState(1);
   const [beaconRotation, setBeaconRotation] = reactExports.useState(0);
-  const [bgColor, setBgColor] = reactExports.useState("#030816");
+  const [bgGradient, setBgGradient] = reactExports.useState(
+    "linear-gradient(to bottom, #010407 0%, #020810 30%, #020810 70%, #010407 100%)"
+  );
   const onCompleteRef = reactExports.useRef(onComplete);
   onCompleteRef.current = onComplete;
   const rafRef = reactExports.useRef(0);
   const rotStartRef = reactExports.useRef(0);
   reactExports.useEffect(() => {
-    document.documentElement.style.backgroundColor = "#030816";
-    document.body.style.backgroundColor = "#030816";
+    const beforeGradient = "linear-gradient(to bottom, #010407 0%, #020810 30%, #020810 70%, #010407 100%)";
+    document.documentElement.style.background = beforeGradient;
+    document.body.style.background = beforeGradient;
     return () => {
-      document.documentElement.style.backgroundColor = "";
-      document.body.style.backgroundColor = "";
+      document.documentElement.style.background = "";
+      document.body.style.background = "";
     };
   }, []);
   const animateBeacon = reactExports.useCallback((startTime) => {
@@ -21866,9 +21869,10 @@ function RTSIntroScreen({
     imgAfter.src = "/assets/rts_intro_after.png";
     const t1 = setTimeout(() => {
       if (cancelled) return;
-      setBgColor("#060F21");
-      document.documentElement.style.backgroundColor = "#060F21";
-      document.body.style.backgroundColor = "#060F21";
+      const afterGradient = "linear-gradient(to bottom, #030B18 0%, #050E1F 30%, #050E1F 70%, #030B18 100%)";
+      setBgGradient(afterGradient);
+      document.documentElement.style.background = afterGradient;
+      document.body.style.background = afterGradient;
       setSweepActive(true);
       rotStartRef.current = performance.now();
       animateBeacon(performance.now());
@@ -21929,8 +21933,8 @@ function RTSIntroScreen({
           opacity: screenOpacity,
           // Use separate transition declarations to avoid shorthand conflicts:
           // opacity fades on exit; background-color transitions during reveal
-          backgroundColor: bgColor,
-          transition: `opacity ${FADE_OUT_MS}ms ease-out, background-color 1600ms ease-in-out`
+          background: bgGradient,
+          transition: `opacity ${FADE_OUT_MS}ms ease-out, background 1600ms ease-in-out`
         },
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(

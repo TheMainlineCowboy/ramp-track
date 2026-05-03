@@ -1214,7 +1214,15 @@ video {
 
   * {
   border-color: oklch(var(--border));
+    border-color: transparent;
 }
+  html,
+  body,
+  #root {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
   html,
   body {
     background-color: #0a0f1c;

@@ -76,6 +76,14 @@
 
   * {
     @apply border-border;
+    border-color: transparent;
+  }
+  html,
+  body,
+  #root {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
   html,
   body {

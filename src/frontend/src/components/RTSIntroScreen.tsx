@@ -28,8 +28,10 @@ export default function RTSIntroScreen({
   const [afterOpacity, setAfterOpacity] = useState(0);
   const [screenOpacity, setScreenOpacity] = useState(1);
   const [beaconRotation, setBeaconRotation] = useState(0);
-  // Background fill: #030816 during dark before-phase, transitions to #060F21 as reveal starts
-  const [bgColor, setBgColor] = useState("#030816");
+  // Background gradient: matches actual image edge colors to blend seamlessly with contained image
+  const [bgGradient, setBgGradient] = useState(
+    "linear-gradient(to bottom, #010407 0%, #020810 30%, #020810 70%, #010407 100%)",
+  );
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
   const rafRef = useRef<number>(0);
@@ -37,11 +39,13 @@ export default function RTSIntroScreen({
 
   // Set document/body background on mount and clean up on unmount
   useEffect(() => {
-    document.documentElement.style.backgroundColor = "#030816";
-    document.body.style.backgroundColor = "#030816";
+    const beforeGradient =
+      "linear-gradient(to bottom, #010407 0%, #020810 30%, #020810 70%, #010407 100%)";
+    document.documentElement.style.background = beforeGradient;
+    document.body.style.background = beforeGradient;
     return () => {
-      document.documentElement.style.backgroundColor = "";
-      document.body.style.backgroundColor = "";
+      document.documentElement.style.background = "";
+      document.body.style.background = "";
     };
   }, []);
 
@@ -75,11 +79,13 @@ export default function RTSIntroScreen({
     const t1 = setTimeout(() => {
       if (cancelled) return;
 
-      // Transition background fill from before-color (#030816) to after-color (#060F21)
-      // as the sweep begins — by hold time it will be fully #060F21
-      setBgColor("#060F21");
-      document.documentElement.style.backgroundColor = "#060F21";
-      document.body.style.backgroundColor = "#060F21";
+      // Transition background gradient from before-phase to after-phase
+      // in sync with the image reveal (same 1600ms duration)
+      const afterGradient =
+        "linear-gradient(to bottom, #030B18 0%, #050E1F 30%, #050E1F 70%, #030B18 100%)";
+      setBgGradient(afterGradient);
+      document.documentElement.style.background = afterGradient;
+      document.body.style.background = afterGradient;
 
       // Start sweep overlay + beacon rotation
       setSweepActive(true);
@@ -153,8 +159,8 @@ export default function RTSIntroScreen({
           opacity: screenOpacity,
           // Use separate transition declarations to avoid shorthand conflicts:
           // opacity fades on exit; background-color transitions during reveal
-          backgroundColor: bgColor,
-          transition: `opacity ${FADE_OUT_MS}ms ease-out, background-color 1600ms ease-in-out`,
+          background: bgGradient,
+          transition: `opacity ${FADE_OUT_MS}ms ease-out, background 1600ms ease-in-out`,
         }}
       >
         {/* Before image — contained, centered, no crop */}
