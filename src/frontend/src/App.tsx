@@ -97,7 +97,21 @@ function AppContent() {
 
   // RTS intro and splash/landing never get page transitions — they are part of the launch sequence
   if (view === "rts-intro") {
-    return <RTSIntroScreen onComplete={() => setView("splash")} />;
+    return (
+      <RTSIntroScreen
+        onComplete={() => {
+          if (authRef.current) {
+            setView(
+              authRef.current.roles?.includes("admin")
+                ? "admin-menu"
+                : "operator-home",
+            );
+          } else {
+            setView("landing");
+          }
+        }}
+      />
+    );
   }
 
   if (view === "splash") return <SplashScreen />;

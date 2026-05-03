@@ -72259,7 +72259,21 @@ function AppContent() {
     navigate("equipment-map");
   };
   if (view === "rts-intro") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(RTSIntroScreen, { onComplete: () => setView("splash") });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      RTSIntroScreen,
+      {
+        onComplete: () => {
+          var _a3;
+          if (authRef.current) {
+            setView(
+              ((_a3 = authRef.current.roles) == null ? void 0 : _a3.includes("admin")) ? "admin-menu" : "operator-home"
+            );
+          } else {
+            setView("landing");
+          }
+        }
+      }
+    );
   }
   if (view === "splash") return /* @__PURE__ */ jsxRuntimeExports.jsx(SplashScreen, {});
   if (view === "landing") {
