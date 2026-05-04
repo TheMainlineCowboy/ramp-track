@@ -11,6 +11,16 @@ export interface EquipmentEvent {
   lat?: number;
   lon?: number;
   outsideArea?: boolean;
+  // Part 2 — check-in acknowledgment (optional; older records omit these)
+  acknowledged?: boolean;
+  acknowledgedAt?: number;
+  acknowledgedBy?: { name: string; id: string };
+  // Part 3 — report issue selection method (optional; older records omit these)
+  selectionMethod?: "qr_scan" | "manual";
+  scannedEquipmentId?: string;
+  selectedEquipmentId?: string;
+  manualSelectionReason?: string;
+  reportedBy?: { name: string; id: string };
 }
 
 const STORAGE_KEY = "ramptrack_history";

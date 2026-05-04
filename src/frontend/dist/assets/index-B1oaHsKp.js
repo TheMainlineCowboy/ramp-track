@@ -22727,20 +22727,35 @@ function updateEquipment(id, updates) {
   save(records);
   return { success: true };
 }
-function formatOperatorName(raw) {
-  if (!raw) return "";
-  const trimmed = raw.trim();
-  if (!trimmed) return "";
-  const parts = trimmed.split(/\s+/);
-  if (parts.length >= 2) {
-    const first = parts[0];
-    const last = parts[parts.length - 1];
-    if (/[a-zA-Z]/.test(first)) {
-      return first;
-    }
-    return `${first.charAt(0).toUpperCase()}. ${last}`;
-  }
+const OPERATOR_NAME_MAP = {
+  "970251": "Jayson",
+  "906779": "Ramon",
+  "259254": "Geoffrey",
+  "255580": "Ernie",
+  "812329": "Joshua",
+  "933130": "Wendy",
+  "792631": "Valentine",
+  "218231": "Connor",
+  "222857": "Christopher",
+  "264789": "Anthony",
+  "583943": "Mike",
+  "878288": "Rebecca",
+  "215760": "Jeremy",
+  "206289": "Archie"
+};
+function resolveOperatorDisplay(operatorRaw) {
+  if (!operatorRaw) return "Unknown";
+  const trimmed = operatorRaw.trim();
+  if (!trimmed) return "Unknown";
+  const name = OPERATOR_NAME_MAP[trimmed];
+  if (name) return `${name} (${trimmed})`;
   return trimmed;
+}
+function resolveOperatorName(operatorRaw) {
+  if (!operatorRaw) return "Unknown";
+  const trimmed = operatorRaw.trim();
+  if (!trimmed) return "Unknown";
+  return OPERATOR_NAME_MAP[trimmed] ?? trimmed;
 }
 const homescreenBackground$6 = "/assets/homescreenbackground-019d2e4a-c901-72bd-837b-8409f84ded93.jpg";
 function formatUserDisplayName$1(user) {
@@ -23116,7 +23131,7 @@ function AdminMenuScreen({
                           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-white", children: ev.equipmentId }),
                           /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs", style: { color: "#cbd5f5" }, children: [
                             "by ",
-                            formatOperatorName(ev.operator)
+                            resolveOperatorDisplay(ev.operator)
                           ] }),
                           ev.location && /* @__PURE__ */ jsxRuntimeExports.jsxs(
                             "p",
@@ -52678,7 +52693,7 @@ function extractBadge(raw) {
   );
   return longest.length >= 4 ? longest : null;
 }
-function beepAndVibrate() {
+function beepAndVibrate$1() {
   var _a3;
   try {
     const ctx = new AudioContext();
@@ -52712,7 +52727,7 @@ function BarcodeScanner({
     (raw) => {
       if (hasResultRef.current) return;
       hasResultRef.current = true;
-      beepAndVibrate();
+      beepAndVibrate$1();
       let normalized;
       if (mode === "equipment") {
         normalized = normalizeEquipment(raw);
@@ -53073,6 +53088,10 @@ function CheckInScreen({
   const [locationLabel, setLocationLabel] = reactExports.useState(null);
   const [outsideArea, setOutsideArea] = reactExports.useState(false);
   const [successId, setSuccessId] = reactExports.useState(null);
+  const [ackLine1, setAckLine1] = reactExports.useState(false);
+  const [ackLine2, setAckLine2] = reactExports.useState(false);
+  const [ackLine3, setAckLine3] = reactExports.useState(false);
+  const allAcknowledged = ackLine1 && ackLine2 && ackLine3;
   reactExports.useEffect(() => {
     setScannerOpen(true);
   }, []);
@@ -53090,15 +53109,22 @@ function CheckInScreen({
       const geoResult = await getLocationWithGeofence();
       setLocationLabel(geoResult.locationLabel);
       setOutsideArea(!geoResult.insideArea);
+      const now2 = Date.now();
       recordEvent({
         equipmentId: selected.id,
         eventType: "CHECK_IN",
         operator: currentUser.badge,
-        timestamp: Date.now(),
+        timestamp: now2,
         location: geoResult.locationLabel,
         lat: geoResult.lat,
         lon: geoResult.lon,
-        outsideArea: !geoResult.insideArea
+        outsideArea: !geoResult.insideArea,
+        acknowledged: true,
+        acknowledgedAt: now2,
+        acknowledgedBy: {
+          name: resolveOperatorName(currentUser.badge),
+          id: currentUser.badge
+        }
       });
       updateEquipment(selected.id, {
         status: "AVAILABLE",
@@ -53238,8 +53264,9 @@ function CheckInScreen({
                         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-bold text-white", children: selected.id }),
                         selected.label && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: selected.label }),
                         selected.lastOperator && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm mt-1", style: { color: "#cbd5f5" }, children: [
-                          "Last operator: ",
-                          selected.lastOperator
+                          "Last operator:",
+                          " ",
+                          resolveOperatorDisplay(selected.lastOperator)
                         ] }),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: "ASSIGNED", className: "mt-2" })
                       ]
@@ -53248,7 +53275,7 @@ function CheckInScreen({
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#cbd5f5" }, children: [
                     "Returning as:",
                     " ",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-medium", children: currentUser.badge })
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-medium", children: resolveOperatorDisplay(currentUser.badge) })
                   ] }),
                   locationLabel && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#94a3b8" }, className: "text-sm", children: [
                     "📍 ",
@@ -53270,6 +53297,100 @@ function CheckInScreen({
                       ]
                     }
                   ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "div",
+                    {
+                      className: "p-4 rounded-lg space-y-3",
+                      style: {
+                        background: "rgba(20,30,55,0.7)",
+                        border: "1px solid rgba(0,120,210,0.35)"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          "p",
+                          {
+                            className: "text-sm font-semibold mb-2",
+                            style: { color: "#93c5fd" },
+                            children: "Before confirming, please acknowledge:"
+                          }
+                        ),
+                        [
+                          {
+                            id: "ack1",
+                            checked: ackLine1,
+                            set: setAckLine1,
+                            label: "Equipment has been returned to the correct fueling line / designated return area.",
+                            ocid: "checkin.ack1.checkbox"
+                          },
+                          {
+                            id: "ack2",
+                            checked: ackLine2,
+                            set: setAckLine2,
+                            label: "Equipment is free of trash and loose items.",
+                            ocid: "checkin.ack2.checkbox"
+                          },
+                          {
+                            id: "ack3",
+                            checked: ackLine3,
+                            set: setAckLine3,
+                            label: "Any damage, mechanical issue, low fuel, or operational concern has been reported.",
+                            ocid: "checkin.ack3.checkbox"
+                          }
+                        ].map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                          "button",
+                          {
+                            type: "button",
+                            "data-ocid": item.ocid,
+                            onClick: () => item.set((v2) => !v2),
+                            className: "flex items-start gap-3 w-full text-left",
+                            children: [
+                              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                "span",
+                                {
+                                  className: "mt-0.5 flex-shrink-0 h-5 w-5 rounded flex items-center justify-center transition-all",
+                                  style: {
+                                    background: item.checked ? "rgba(0,120,210,0.8)" : "rgba(30,41,59,0.8)",
+                                    border: item.checked ? "2px solid #0078D2" : "2px solid rgba(255,255,255,0.25)"
+                                  },
+                                  children: item.checked && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                    "svg",
+                                    {
+                                      viewBox: "0 0 12 12",
+                                      width: "12",
+                                      height: "12",
+                                      fill: "none",
+                                      "aria-hidden": "true",
+                                      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                        "path",
+                                        {
+                                          d: "M2 6l3 3 5-5",
+                                          stroke: "white",
+                                          strokeWidth: "2",
+                                          strokeLinecap: "round",
+                                          strokeLinejoin: "round"
+                                        }
+                                      )
+                                    }
+                                  )
+                                }
+                              ),
+                              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                "span",
+                                {
+                                  className: "text-sm leading-snug",
+                                  style: {
+                                    color: item.checked ? "#e2e8f0" : "#94a3b8"
+                                  },
+                                  children: item.label
+                                }
+                              )
+                            ]
+                          },
+                          item.id
+                        ))
+                      ]
+                    }
+                  ),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx(
                       Button,
@@ -53287,8 +53408,12 @@ function CheckInScreen({
                       {
                         className: "flex-1 bg-green-700 hover:bg-green-600",
                         onClick: handleConfirm,
-                        disabled: isProcessing,
+                        disabled: isProcessing || !allAcknowledged,
                         "data-ocid": "checkin.confirm.button",
+                        style: {
+                          opacity: allAcknowledged ? 1 : 0.45,
+                          cursor: allAcknowledged ? "pointer" : "not-allowed"
+                        },
                         children: isProcessing ? "Getting location..." : "✓ Confirm Return"
                       }
                     )
@@ -53607,7 +53732,7 @@ function CheckOutScreen({
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#cbd5f5" }, children: [
                     "Operator:",
                     " ",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-medium", children: currentUser.badge })
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-medium", children: resolveOperatorDisplay(currentUser.badge) })
                   ] }),
                   locationLabel && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#94a3b8" }, className: "text-sm", children: [
                     "📍 ",
@@ -53874,7 +53999,7 @@ function EquipmentDetailScreen({
             ] }),
             equipment.lastOperator && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { style: { color: "#cbd5f5" }, children: "Last Operator" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1", style: { color: "#ffffff" }, children: formatOperatorName(equipment.lastOperator) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1", style: { color: "#ffffff" }, children: resolveOperatorDisplay(equipment.lastOperator) })
             ] }),
             equipment.checkoutTime && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { style: { color: "#cbd5f5" }, children: "Last Checkout" }),
@@ -53928,7 +54053,7 @@ function EquipmentDetailScreen({
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "Operator:" }),
                     " ",
-                    formatOperatorName(ev.operator)
+                    resolveOperatorDisplay(ev.operator)
                   ] }),
                   ev.location && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "Location:" }),
@@ -53968,7 +54093,19 @@ function EquipmentDetailScreen({
                     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "Notes:" }),
                     " ",
                     ev.notes
-                  ] })
+                  ] }),
+                  ev.selectionMethod && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm mt-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "span",
+                    {
+                      className: "inline-block px-2 py-0.5 rounded text-xs font-semibold",
+                      style: {
+                        background: ev.selectionMethod === "qr_scan" ? "rgba(0,120,210,0.2)" : "rgba(120,80,0,0.25)",
+                        color: ev.selectionMethod === "qr_scan" ? "#60b4ff" : "#fbbf24",
+                        border: ev.selectionMethod === "qr_scan" ? "1px solid rgba(0,120,210,0.4)" : "1px solid rgba(217,119,6,0.4)"
+                      },
+                      children: ev.selectionMethod === "qr_scan" ? "Selected by QR scan" : `Manual selection: ${ev.manualSelectionReason ?? "manual"}`
+                    }
+                  ) })
                 ] })
               ]
             },
@@ -63889,6 +64026,21 @@ function LoadingSpinner({
     }
   );
 }
+function formatOperatorName(raw) {
+  if (!raw) return "";
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+  const parts = trimmed.split(/\s+/);
+  if (parts.length >= 2) {
+    const first = parts[0];
+    const last = parts[parts.length - 1];
+    if (/[a-zA-Z]/.test(first)) {
+      return first;
+    }
+    return `${first.charAt(0).toUpperCase()}. ${last}`;
+  }
+  return trimmed;
+}
 delete L$1.Icon.Default.prototype._getIconUrl;
 L$1.Icon.Default.mergeOptions({
   iconRetinaUrl: new URL("/assets/marker-icon-2x-_ZA0WGCc.png", import.meta.url).href,
@@ -71283,34 +71435,187 @@ function Textarea({ className, ...props }) {
   );
 }
 const homescreenBackground$1 = "/assets/homescreenbackground-019d2e4a-c901-72bd-837b-8409f84ded93.jpg";
+const ISSUE_CATEGORIES = [
+  "Low fuel / needs refueling",
+  "Mechanical issue / won't start",
+  "Brake issue",
+  "Electrical / battery issue",
+  "Damage — body / exterior",
+  "Tire / wheel issue",
+  "Hydraulic system issue",
+  "Safety concern",
+  "Other operational concern"
+];
+const MANUAL_REASONS = [
+  "Equipment missing",
+  "QR code damaged / unscannable"
+];
+function normalizeEquipmentId(raw) {
+  const cleaned = raw.trim().toUpperCase().replace(/\s+/g, "");
+  const match = cleaned.match(/TV\d{4}/);
+  return match ? match[0] : cleaned;
+}
+function beepAndVibrate() {
+  var _a3;
+  try {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(1e-3, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.1);
+  } catch {
+  }
+  try {
+    (_a3 = navigator.vibrate) == null ? void 0 : _a3.call(navigator, 200);
+  } catch {
+  }
+}
 function ReportIssueScreen({
   onBack,
   currentUser
 }) {
+  const [step, setStep] = reactExports.useState("scan");
   const [selected, setSelected] = reactExports.useState(null);
+  const [selectionMethod, setSelectionMethod] = reactExports.useState(
+    "qr_scan"
+  );
+  const [manualSelectionReason, setManualSelectionReason] = reactExports.useState("");
+  const [scanError, setScanError] = reactExports.useState("");
+  const [manualExpanded, setManualExpanded] = reactExports.useState(false);
+  const [manualEquipmentId, setManualEquipmentId] = reactExports.useState("");
+  const allEquipment = getAllEquipment();
+  const [issueCategory, setIssueCategory] = reactExports.useState("");
   const [notes, setNotes] = reactExports.useState("");
   const [notesError, setNotesError] = reactExports.useState("");
   const [isProcessing, setIsProcessing] = reactExports.useState(false);
-  const equipment = getAllEquipment();
+  const [cameraActive, setCameraActive] = reactExports.useState(true);
+  const [torchOn, setTorchOn] = reactExports.useState(false);
+  const videoRef = reactExports.useRef(null);
+  const streamRef = reactExports.useRef(null);
+  const readerRef = reactExports.useRef(null);
+  const hasResultRef = reactExports.useRef(false);
+  const stopCamera = reactExports.useCallback(() => {
+    if (streamRef.current) {
+      for (const t of streamRef.current.getTracks()) t.stop();
+      streamRef.current = null;
+    }
+  }, []);
+  const handleScanResult = reactExports.useCallback(
+    (rawText) => {
+      if (hasResultRef.current) return;
+      hasResultRef.current = true;
+      beepAndVibrate();
+      const normalized = normalizeEquipmentId(rawText);
+      const eq = findById(normalized);
+      if (!eq) {
+        setScanError(
+          `Equipment "${normalized}" not found. Try scanning again.`
+        );
+        hasResultRef.current = false;
+        return;
+      }
+      stopCamera();
+      setCameraActive(false);
+      setScanError("");
+      setSelected(eq);
+      setSelectionMethod("qr_scan");
+      setStep("form");
+    },
+    [stopCamera]
+  );
+  reactExports.useEffect(() => {
+    if (step !== "scan" || !cameraActive) return;
+    const reader = new BrowserMultiFormatReader();
+    readerRef.current = reader;
+    hasResultRef.current = false;
+    let stopped = false;
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then((stream) => {
+      if (stopped) {
+        for (const t of stream.getTracks()) t.stop();
+        return;
+      }
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(() => {
+        });
+      }
+      reader.decodeFromStream(stream, videoRef.current, (result, err) => {
+        if (stopped) return;
+        if (result) handleScanResult(result.getText());
+      });
+    }).catch(() => {
+      setScanError("Camera not available. Use manual selection below.");
+    });
+    return () => {
+      stopped = true;
+      stopCamera();
+    };
+  }, [step, cameraActive, handleScanResult, stopCamera]);
+  reactExports.useEffect(() => () => stopCamera(), [stopCamera]);
+  const toggleTorch = async () => {
+    const stream = streamRef.current;
+    if (!stream) return;
+    const track2 = stream.getVideoTracks()[0];
+    if (!track2) return;
+    try {
+      await track2.applyConstraints({
+        advanced: [{ torch: !torchOn }]
+      });
+      setTorchOn((v2) => !v2);
+    } catch {
+    }
+  };
+  const handleManualContinue = () => {
+    if (!manualEquipmentId || !manualSelectionReason) return;
+    const eq = findById(manualEquipmentId);
+    if (!eq) {
+      ue.error("Equipment not found");
+      return;
+    }
+    stopCamera();
+    setCameraActive(false);
+    setSelected(eq);
+    setSelectionMethod("manual");
+    setStep("form");
+  };
   const handleSubmit = async () => {
     if (!selected) return;
+    if (!issueCategory) {
+      setNotesError("Please select an issue category.");
+      return;
+    }
     if (!notes.trim()) {
-      setNotesError("Notes are required to report an issue");
+      setNotesError("Please describe the issue.");
       return;
     }
     setNotesError("");
     setIsProcessing(true);
     try {
+      const fullNotes = `[${issueCategory}] ${notes.trim()}`;
       recordEvent({
         equipmentId: selected.id,
         eventType: "REPORT_ISSUE",
         operator: currentUser.badge,
         timestamp: Date.now(),
-        notes: notes.trim()
+        notes: fullNotes,
+        selectionMethod,
+        scannedEquipmentId: selectionMethod === "qr_scan" ? selected.id : void 0,
+        selectedEquipmentId: selectionMethod === "manual" ? selected.id : void 0,
+        manualSelectionReason: selectionMethod === "manual" ? manualSelectionReason : void 0,
+        reportedBy: {
+          name: resolveOperatorName(currentUser.badge),
+          id: currentUser.badge
+        }
       });
       updateEquipment(selected.id, {
         status: "MAINTENANCE",
-        maintenanceNotes: notes.trim()
+        maintenanceNotes: fullNotes
       });
       ue.success(`Issue reported for ${selected.id}`);
       onBack();
@@ -71319,6 +71624,11 @@ function ReportIssueScreen({
     } finally {
       setIsProcessing(false);
     }
+  };
+  const card = {
+    background: "rgba(15,23,42,0.92)",
+    borderColor: "rgba(255,255,255,0.18)",
+    borderRadius: "16px"
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(PageTransition, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
@@ -71353,121 +71663,336 @@ function ReportIssueScreen({
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "container mx-auto px-4 py-6 space-y-6", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              Card,
-              {
-                className: "border shadow-2xl",
-                style: {
-                  background: "rgba(15,23,42,0.92)",
-                  borderColor: "rgba(255,255,255,0.18)",
-                  borderRadius: "16px"
-                },
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { style: { color: "#ffffff" }, children: "Select Equipment" }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: equipment.map((eq, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
-                    {
-                      type: "button",
-                      "data-ocid": `reportissue.item.${i + 1}`,
-                      className: `w-full text-left flex items-center justify-between p-3 rounded-lg transition-colors ${(selected == null ? void 0 : selected.id) === eq.id ? "ring-2 ring-orange-400" : "hover:bg-white/5"}`,
-                      style: {
-                        background: (selected == null ? void 0 : selected.id) === eq.id ? "rgba(194,65,12,0.3)" : "rgba(30,41,59,0.5)",
-                        border: "1px solid rgba(255,255,255,0.1)"
-                      },
-                      onClick: () => setSelected(eq),
-                      children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-white", children: eq.id }),
-                          eq.label && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs", style: { color: "#cbd5f5" }, children: eq.label })
-                        ] }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: eq.status })
-                      ]
+          /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "container mx-auto px-4 py-6 space-y-6", children: step === "scan" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border shadow-2xl", style: card, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { style: { color: "#ffffff" }, children: "Scan Equipment QR Code" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "div",
+                  {
+                    className: "relative rounded-xl overflow-hidden",
+                    style: {
+                      background: "#000",
+                      border: "2px solid rgba(0,120,210,0.5)",
+                      minHeight: "240px"
                     },
-                    eq.id
-                  )) }) })
-                ]
-              }
-            ),
-            selected && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              Card,
-              {
-                className: "border shadow-2xl",
-                style: {
-                  background: "rgba(15,23,42,0.92)",
-                  borderColor: "rgba(255,255,255,0.18)",
-                  borderRadius: "16px"
-                },
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { style: { color: "#ffffff" }, children: [
-                    "Issue Details — ",
-                    selected.id
-                  ] }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "space-y-4", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "notes", style: { color: "#cbd5f5" }, children: "Description of Issue *" }),
+                    children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        Textarea,
+                        "video",
                         {
-                          "data-ocid": "reportissue.notes.textarea",
-                          id: "notes",
-                          value: notes,
-                          onChange: (e) => {
-                            setNotes(e.target.value);
-                            setNotesError("");
+                          ref: videoRef,
+                          className: "w-full object-cover",
+                          style: { minHeight: "240px", maxHeight: "320px" },
+                          muted: true,
+                          playsInline: true
+                        }
+                      ),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 flex items-center pointer-events-none", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full h-0.5 bg-orange-500 opacity-80" }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "px-4 py-1.5 rounded-full bg-black/60 text-orange-400 text-xs font-bold tracking-widest", children: "SCANNING..." }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        "button",
+                        {
+                          type: "button",
+                          "data-ocid": "reportissue.scanner.torch_button",
+                          onClick: toggleTorch,
+                          className: "absolute top-3 right-3 h-10 w-10 rounded-full flex items-center justify-center bg-black/50 border border-white/30 text-white",
+                          "aria-label": "Toggle flashlight",
+                          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                            Zap,
+                            {
+                              className: `h-5 w-5 ${torchOn ? "text-yellow-400" : "text-white"}`
+                            }
+                          )
+                        }
+                      )
+                    ]
+                  }
+                ),
+                scanError && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "div",
+                  {
+                    "data-ocid": "reportissue.scanner.error_state",
+                    className: "flex items-center gap-2 p-3 rounded-lg text-sm",
+                    style: {
+                      background: "rgba(239,68,68,0.12)",
+                      border: "1px solid rgba(239,68,68,0.4)",
+                      color: "#f87171"
+                    },
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "h-4 w-4 flex-shrink-0" }),
+                      scanError
+                    ]
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border shadow-2xl", style: card, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "reportissue.manual_fallback.toggle",
+                  className: "flex items-center justify-between w-full text-left",
+                  onClick: () => setManualExpanded((v2) => !v2),
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { style: { color: "#94a3b8", fontSize: "1rem" }, children: "Can't scan QR code?" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      ChevronDown,
+                      {
+                        className: `h-5 w-5 transition-transform ${manualExpanded ? "rotate-180" : ""}`,
+                        style: { color: "#94a3b8" }
+                      }
+                    )
+                  ]
+                }
+              ) }),
+              manualExpanded && /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#94a3b8" }, children: "Manual entry is only allowed when the QR code cannot be scanned." }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { style: { color: "#cbd5f5" }, children: "Equipment *" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "select",
+                    {
+                      "data-ocid": "reportissue.manual.equipment_select",
+                      value: manualEquipmentId,
+                      onChange: (e) => setManualEquipmentId(e.target.value),
+                      className: "mt-1 w-full rounded-lg px-3 py-2 text-white text-sm",
+                      style: {
+                        background: "rgba(30,41,59,0.8)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        outline: "none"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: "— Select equipment —" }),
+                        allEquipment.map((eq) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                          "option",
+                          {
+                            value: eq.id,
+                            style: { background: "#1e293b", color: "#fff" },
+                            children: [
+                              eq.id,
+                              eq.label ? ` — ${eq.label}` : ""
+                            ]
                           },
-                          placeholder: "Describe the issue in detail...",
-                          rows: 4,
-                          className: "mt-1",
-                          disabled: isProcessing
-                        }
+                          eq.id
+                        ))
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { style: { color: "#cbd5f5" }, children: "Reason for manual selection *" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "select",
+                    {
+                      "data-ocid": "reportissue.manual.reason_select",
+                      value: manualSelectionReason,
+                      onChange: (e) => setManualSelectionReason(
+                        e.target.value
                       ),
-                      notesError && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "div",
+                      className: "mt-1 w-full rounded-lg px-3 py-2 text-white text-sm",
+                      style: {
+                        background: "rgba(30,41,59,0.8)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        outline: "none"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: "— Select reason —" }),
+                        MANUAL_REASONS.map((r2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          "option",
+                          {
+                            value: r2,
+                            style: { background: "#1e293b", color: "#fff" },
+                            children: r2
+                          },
+                          r2
+                        ))
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Button,
+                  {
+                    "data-ocid": "reportissue.manual.continue_button",
+                    className: "w-full",
+                    style: {
+                      background: manualEquipmentId && manualSelectionReason ? "rgba(0,120,210,0.85)" : "rgba(30,41,59,0.6)",
+                      opacity: manualEquipmentId && manualSelectionReason ? 1 : 0.5,
+                      cursor: manualEquipmentId && manualSelectionReason ? "pointer" : "not-allowed"
+                    },
+                    disabled: !manualEquipmentId || !manualSelectionReason,
+                    onClick: handleManualContinue,
+                    children: "Continue with Manual Selection"
+                  }
+                )
+              ] })
+            ] })
+          ] }) : (
+            /* FORM STEP */
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border shadow-2xl", style: card, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { style: { color: "#ffffff" }, children: "Issue Details" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    type: "button",
+                    "data-ocid": "reportissue.form.back_button",
+                    onClick: () => {
+                      setStep("scan");
+                      setSelected(null);
+                      setScanError("");
+                      setIssueCategory("");
+                      setNotes("");
+                      setNotesError("");
+                      setCameraActive(true);
+                      hasResultRef.current = false;
+                    },
+                    className: "text-xs px-3 py-1.5 rounded-lg border",
+                    style: {
+                      background: "rgba(30,41,59,0.7)",
+                      borderColor: "rgba(255,255,255,0.2)",
+                      color: "#94a3b8"
+                    },
+                    children: "← Rescan"
+                  }
+                )
+              ] }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "div",
+                  {
+                    className: "p-4 rounded-lg",
+                    style: {
+                      background: "rgba(30,41,59,0.5)",
+                      border: "1px solid rgba(255,255,255,0.1)"
+                    },
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-bold text-white", children: selected == null ? void 0 : selected.id }),
+                          (selected == null ? void 0 : selected.label) && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#cbd5f5" }, children: selected.label })
+                        ] }),
+                        selected && /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge$1, { status: selected.status })
+                      ] }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        "span",
                         {
-                          "data-ocid": "reportissue.notes.error_state",
-                          className: "flex items-center gap-2 mt-2 text-red-400 text-sm",
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "h-4 w-4" }),
-                            notesError
-                          ]
+                          className: "inline-block px-2 py-0.5 rounded text-xs font-semibold",
+                          style: {
+                            background: selectionMethod === "qr_scan" ? "rgba(0,120,210,0.2)" : "rgba(120,80,0,0.25)",
+                            color: selectionMethod === "qr_scan" ? "#60b4ff" : "#fbbf24",
+                            border: selectionMethod === "qr_scan" ? "1px solid rgba(0,120,210,0.4)" : "1px solid rgba(217,119,6,0.4)"
+                          },
+                          children: selectionMethod === "qr_scan" ? "Selected by QR scan" : `Manual selection: ${manualSelectionReason}`
                         }
-                      )
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#cbd5f5" }, children: [
-                      "Reported by:",
-                      " ",
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-medium", children: currentUser.badge })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#f87171" }, children: "⚠️ This will set equipment status to MAINTENANCE" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        Button,
-                        {
-                          variant: "outline",
-                          className: "flex-1",
-                          onClick: () => setSelected(null),
-                          disabled: isProcessing,
-                          "data-ocid": "reportissue.cancel.button",
-                          children: "Cancel"
-                        }
-                      ),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        Button,
-                        {
-                          className: "flex-1 bg-orange-700 hover:bg-orange-600",
-                          onClick: handleSubmit,
-                          disabled: isProcessing || !notes.trim(),
-                          "data-ocid": "reportissue.submit_button",
-                          children: isProcessing ? "Submitting..." : "⚠️ Submit Report"
-                        }
-                      )
-                    ] })
-                  ] })
-                ]
-              }
-            )
-          ] }),
+                      ) })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { style: { color: "#cbd5f5" }, children: "Issue Category *" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "select",
+                    {
+                      "data-ocid": "reportissue.issue_category.select",
+                      value: issueCategory,
+                      onChange: (e) => {
+                        setIssueCategory(e.target.value);
+                        setNotesError("");
+                      },
+                      className: "mt-1 w-full rounded-lg px-3 py-2 text-white text-sm",
+                      style: {
+                        background: "rgba(30,41,59,0.8)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        outline: "none"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: "— Select issue category —" }),
+                        ISSUE_CATEGORIES.map((cat) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          "option",
+                          {
+                            value: cat,
+                            style: { background: "#1e293b", color: "#fff" },
+                            children: cat
+                          },
+                          cat
+                        ))
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "notes", style: { color: "#cbd5f5" }, children: "Description *" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Textarea,
+                    {
+                      "data-ocid": "reportissue.notes.textarea",
+                      id: "notes",
+                      value: notes,
+                      onChange: (e) => {
+                        setNotes(e.target.value);
+                        setNotesError("");
+                      },
+                      placeholder: "Describe the issue in detail...",
+                      rows: 4,
+                      className: "mt-1",
+                      disabled: isProcessing
+                    }
+                  ),
+                  notesError && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "div",
+                    {
+                      "data-ocid": "reportissue.notes.error_state",
+                      className: "flex items-center gap-2 mt-2 text-red-400 text-sm",
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "h-4 w-4" }),
+                        notesError
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { color: "#cbd5f5" }, children: [
+                  "Reported by:",
+                  " ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-medium", children: resolveOperatorDisplay(currentUser.badge) })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "#f87171" }, children: "⚠️ This will set equipment status to MAINTENANCE" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Button,
+                    {
+                      variant: "outline",
+                      className: "flex-1",
+                      onClick: () => {
+                        setStep("scan");
+                        setSelected(null);
+                        setScanError("");
+                        setIssueCategory("");
+                        setNotes("");
+                        setNotesError("");
+                        setCameraActive(true);
+                        hasResultRef.current = false;
+                      },
+                      disabled: isProcessing,
+                      "data-ocid": "reportissue.cancel.button",
+                      children: "Cancel"
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Button,
+                    {
+                      className: "flex-1 bg-orange-700 hover:bg-orange-600",
+                      onClick: handleSubmit,
+                      disabled: isProcessing || !issueCategory || !notes.trim(),
+                      "data-ocid": "reportissue.submit_button",
+                      children: isProcessing ? "Submitting..." : "⚠️ Submit Report"
+                    }
+                  )
+                ] })
+              ] })
+            ] })
+          ) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("footer", { className: "py-6 text-center text-sm text-white/90 drop-shadow-lg", children: "Built by Jayson James and Ramp Track Systems." })
         ] })
       ]

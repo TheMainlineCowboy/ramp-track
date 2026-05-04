@@ -18,7 +18,7 @@ import { Input } from "../components/ui/input";
 import { getAllEvents } from "../lib/equipmentHistory";
 import { getAllEquipment } from "../lib/equipmentRegistry";
 import type { EquipmentType } from "../lib/equipmentRegistry";
-import { formatOperatorName } from "../lib/formatOperatorName";
+import { resolveOperatorDisplay } from "../lib/resolveOperatorName";
 
 type FilterType = "ALL" | "AVAILABLE" | "ASSIGNED" | "MAINTENANCE";
 type TypeFilterType = "ALL" | EquipmentType;
@@ -437,7 +437,7 @@ export default function AdminMenuScreen({
                             {ev.equipmentId}
                           </p>
                           <p className="text-xs" style={{ color: "#cbd5f5" }}>
-                            by {formatOperatorName(ev.operator)}
+                            by {resolveOperatorDisplay(ev.operator)}
                           </p>
                           {ev.location && (
                             <p

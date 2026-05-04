@@ -21,6 +21,7 @@ import {
   updateEquipment,
 } from "../lib/equipmentRegistry";
 import { getLocationWithGeofence } from "../lib/gateLocator";
+import { resolveOperatorDisplay } from "../lib/resolveOperatorName";
 
 export default function CheckOutScreen({
   onBack,
@@ -278,7 +279,7 @@ export default function CheckOutScreen({
                   <p style={{ color: "#cbd5f5" }}>
                     Operator:{" "}
                     <span className="text-white font-medium">
-                      {currentUser.badge}
+                      {resolveOperatorDisplay(currentUser.badge)}
                     </span>
                   </p>
                   {locationLabel && (

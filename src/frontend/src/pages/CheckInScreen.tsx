@@ -21,6 +21,10 @@ import {
   updateEquipment,
 } from "../lib/equipmentRegistry";
 import { getLocationWithGeofence } from "../lib/gateLocator";
+import {
+  resolveOperatorDisplay,
+  resolveOperatorName,
+} from "../lib/resolveOperatorName";
 
 export default function CheckInScreen({
   onBack,
@@ -32,6 +36,10 @@ export default function CheckInScreen({
   const [locationLabel, setLocationLabel] = useState<string | null>(null);
   const [outsideArea, setOutsideArea] = useState(false);
   const [successId, setSuccessId] = useState<string | null>(null);
+  const [ackLine1, setAckLine1] = useState(false);
+  const [ackLine2, setAckLine2] = useState(false);
+  const [ackLine3, setAckLine3] = useState(false);
+  const allAcknowledged = ackLine1 && ackLine2 && ackLine3;
 
   // Auto-open scanner on mount
   useEffect(() => {
@@ -54,15 +62,22 @@ export default function CheckInScreen({
       const geoResult = await getLocationWithGeofence();
       setLocationLabel(geoResult.locationLabel);
       setOutsideArea(!geoResult.insideArea);
+      const now = Date.now();
       recordEvent({
         equipmentId: selected.id,
         eventType: "CHECK_IN",
         operator: currentUser.badge,
-        timestamp: Date.now(),
+        timestamp: now,
         location: geoResult.locationLabel,
         lat: geoResult.lat,
         lon: geoResult.lon,
         outsideArea: !geoResult.insideArea,
+        acknowledged: true,
+        acknowledgedAt: now,
+        acknowledgedBy: {
+          name: resolveOperatorName(currentUser.badge),
+          id: currentUser.badge,
+        },
       });
       updateEquipment(selected.id, {
         status: "AVAILABLE",
@@ -206,7 +221,8 @@ export default function CheckInScreen({
                     )}
                     {selected.lastOperator && (
                       <p className="text-sm mt-1" style={{ color: "#cbd5f5" }}>
-                        Last operator: {selected.lastOperator}
+                        Last operator:{" "}
+                        {resolveOperatorDisplay(selected.lastOperator)}
                       </p>
                     )}
                     <StatusBadge status="ASSIGNED" className="mt-2" />
@@ -214,7 +230,7 @@ export default function CheckInScreen({
                   <p style={{ color: "#cbd5f5" }}>
                     Returning as:{" "}
                     <span className="text-white font-medium">
-                      {currentUser.badge}
+                      {resolveOperatorDisplay(currentUser.badge)}
                     </span>
                   </p>
                   {locationLabel && (
@@ -239,6 +255,92 @@ export default function CheckInScreen({
                       </span>
                     </div>
                   )}
+                  {/* Acknowledgment checkboxes */}
+                  <div
+                    className="p-4 rounded-lg space-y-3"
+                    style={{
+                      background: "rgba(20,30,55,0.7)",
+                      border: "1px solid rgba(0,120,210,0.35)",
+                    }}
+                  >
+                    <p
+                      className="text-sm font-semibold mb-2"
+                      style={{ color: "#93c5fd" }}
+                    >
+                      Before confirming, please acknowledge:
+                    </p>
+                    {[
+                      {
+                        id: "ack1",
+                        checked: ackLine1,
+                        set: setAckLine1,
+                        label:
+                          "Equipment has been returned to the correct fueling line / designated return area.",
+                        ocid: "checkin.ack1.checkbox",
+                      },
+                      {
+                        id: "ack2",
+                        checked: ackLine2,
+                        set: setAckLine2,
+                        label: "Equipment is free of trash and loose items.",
+                        ocid: "checkin.ack2.checkbox",
+                      },
+                      {
+                        id: "ack3",
+                        checked: ackLine3,
+                        set: setAckLine3,
+                        label:
+                          "Any damage, mechanical issue, low fuel, or operational concern has been reported.",
+                        ocid: "checkin.ack3.checkbox",
+                      },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        data-ocid={item.ocid}
+                        onClick={() => item.set((v) => !v)}
+                        className="flex items-start gap-3 w-full text-left"
+                      >
+                        <span
+                          className="mt-0.5 flex-shrink-0 h-5 w-5 rounded flex items-center justify-center transition-all"
+                          style={{
+                            background: item.checked
+                              ? "rgba(0,120,210,0.8)"
+                              : "rgba(30,41,59,0.8)",
+                            border: item.checked
+                              ? "2px solid #0078D2"
+                              : "2px solid rgba(255,255,255,0.25)",
+                          }}
+                        >
+                          {item.checked && (
+                            <svg
+                              viewBox="0 0 12 12"
+                              width="12"
+                              height="12"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M2 6l3 3 5-5"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </span>
+                        <span
+                          className="text-sm leading-snug"
+                          style={{
+                            color: item.checked ? "#e2e8f0" : "#94a3b8",
+                          }}
+                        >
+                          {item.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                   <div className="flex gap-3">
                     <Button
                       variant="outline"
@@ -252,8 +354,12 @@ export default function CheckInScreen({
                     <Button
                       className="flex-1 bg-green-700 hover:bg-green-600"
                       onClick={handleConfirm}
-                      disabled={isProcessing}
+                      disabled={isProcessing || !allAcknowledged}
                       data-ocid="checkin.confirm.button"
+                      style={{
+                        opacity: allAcknowledged ? 1 : 0.45,
+                        cursor: allAcknowledged ? "pointer" : "not-allowed",
+                      }}
                     >
                       {isProcessing
                         ? "Getting location..."

@@ -15,7 +15,7 @@ import {
 import { Label } from "../components/ui/label";
 import { getHistoryForEquipment } from "../lib/equipmentHistory";
 import { findById } from "../lib/equipmentRegistry";
-import { formatOperatorName } from "../lib/formatOperatorName";
+import { resolveOperatorDisplay } from "../lib/resolveOperatorName";
 
 const formatEquipmentType = (type: string) =>
   type === "ELECTRIC_TUG"
@@ -153,7 +153,7 @@ export default function EquipmentDetailScreen({
                   <div>
                     <Label style={{ color: "#cbd5f5" }}>Last Operator</Label>
                     <p className="mt-1" style={{ color: "#ffffff" }}>
-                      {formatOperatorName(equipment.lastOperator)}
+                      {resolveOperatorDisplay(equipment.lastOperator)}
                     </p>
                   </div>
                 )}
@@ -238,7 +238,7 @@ export default function EquipmentDetailScreen({
                         <div className="space-y-1">
                           <p className="text-sm" style={{ color: "#cbd5f5" }}>
                             <span className="font-medium">Operator:</span>{" "}
-                            {formatOperatorName(ev.operator)}
+                            {resolveOperatorDisplay(ev.operator)}
                           </p>
                           {ev.location && (
                             <p className="text-sm" style={{ color: "#cbd5f5" }}>
@@ -285,6 +285,31 @@ export default function EquipmentDetailScreen({
                             <p className="text-sm" style={{ color: "#cbd5f5" }}>
                               <span className="font-medium">Notes:</span>{" "}
                               {ev.notes}
+                            </p>
+                          )}
+                          {ev.selectionMethod && (
+                            <p className="text-sm mt-1">
+                              <span
+                                className="inline-block px-2 py-0.5 rounded text-xs font-semibold"
+                                style={{
+                                  background:
+                                    ev.selectionMethod === "qr_scan"
+                                      ? "rgba(0,120,210,0.2)"
+                                      : "rgba(120,80,0,0.25)",
+                                  color:
+                                    ev.selectionMethod === "qr_scan"
+                                      ? "#60b4ff"
+                                      : "#fbbf24",
+                                  border:
+                                    ev.selectionMethod === "qr_scan"
+                                      ? "1px solid rgba(0,120,210,0.4)"
+                                      : "1px solid rgba(217,119,6,0.4)",
+                                }}
+                              >
+                                {ev.selectionMethod === "qr_scan"
+                                  ? "Selected by QR scan"
+                                  : `Manual selection: ${ev.manualSelectionReason ?? "manual"}`}
+                              </span>
                             </p>
                           )}
                         </div>
