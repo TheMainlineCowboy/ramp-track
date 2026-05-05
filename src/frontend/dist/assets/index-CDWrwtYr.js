@@ -21820,238 +21820,226 @@ class ErrorBoundary extends reactExports.Component {
     return this.props.children;
   }
 }
-const HOLD_BEFORE_MS = 200;
-const SWEEP_DURATION_MS = 1600;
-const AFTER_FADE_START_OFFSET = 300;
-const AFTER_FADE_DURATION_MS = 1300;
-const HOLD_AFTER_MS = 3e3;
-const FADE_OUT_MS = 600;
 function RTSIntroScreen({
   onComplete
 }) {
-  const [sweepActive, setSweepActive] = reactExports.useState(false);
-  const [afterOpacity, setAfterOpacity] = reactExports.useState(0);
-  const [screenOpacity, setScreenOpacity] = reactExports.useState(1);
-  const [beaconRotation, setBeaconRotation] = reactExports.useState(0);
-  const [bgGradient, setBgGradient] = reactExports.useState(
-    "linear-gradient(to bottom, #010407 0%, #020810 30%, #020810 70%, #010407 100%)"
-  );
-  const onCompleteRef = reactExports.useRef(onComplete);
-  onCompleteRef.current = onComplete;
-  const rafRef = reactExports.useRef(0);
-  const rotStartRef = reactExports.useRef(0);
+  const [sweepProgress, setSweepProgress] = reactExports.useState(0);
+  const [fadeOpacity, setFadeOpacity] = reactExports.useState(0);
+  const [bgProgress, setBgProgress] = reactExports.useState(0);
   reactExports.useEffect(() => {
-    const beforeGradient = "linear-gradient(to bottom, #010407 0%, #020810 30%, #020810 70%, #010407 100%)";
-    document.documentElement.style.background = beforeGradient;
-    document.body.style.background = beforeGradient;
+    document.documentElement.style.background = "#030816";
+    document.body.style.background = "#030816";
     return () => {
       document.documentElement.style.background = "";
       document.body.style.background = "";
     };
   }, []);
-  const animateBeacon = reactExports.useCallback((startTime) => {
-    const tick = (now2) => {
-      const elapsed = now2 - startTime;
-      if (elapsed < SWEEP_DURATION_MS) {
-        setBeaconRotation(elapsed / SWEEP_DURATION_MS * 200);
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        setBeaconRotation(200);
-      }
-    };
-    rafRef.current = requestAnimationFrame(tick);
-  }, []);
   reactExports.useEffect(() => {
-    let cancelled = false;
-    const imgBefore = new Image();
-    const imgAfter = new Image();
-    imgBefore.src = "/assets/rts_intro_before.png";
-    imgAfter.src = "/assets/rts_intro_after.png";
-    const t1 = setTimeout(() => {
-      if (cancelled) return;
-      const afterGradient = "linear-gradient(to bottom, #030B18 0%, #050E1F 30%, #050E1F 70%, #030B18 100%)";
-      setBgGradient(afterGradient);
-      document.documentElement.style.background = afterGradient;
-      document.body.style.background = afterGradient;
-      setSweepActive(true);
-      rotStartRef.current = performance.now();
-      animateBeacon(performance.now());
-      const t2 = setTimeout(() => {
-        if (cancelled) return;
-        setAfterOpacity(1);
-      }, AFTER_FADE_START_OFFSET);
-      const t3 = setTimeout(() => {
-        if (cancelled) return;
-        setSweepActive(false);
-        const t4 = setTimeout(() => {
-          if (cancelled) return;
-          setScreenOpacity(0);
-          const t5 = setTimeout(() => {
-            if (!cancelled) onCompleteRef.current();
-          }, FADE_OUT_MS + 50);
-          return () => clearTimeout(t5);
-        }, HOLD_AFTER_MS);
-        return () => clearTimeout(t4);
-      }, SWEEP_DURATION_MS);
-      return () => {
-        clearTimeout(t2);
-        clearTimeout(t3);
-      };
-    }, HOLD_BEFORE_MS);
-    return () => {
-      cancelled = true;
-      clearTimeout(t1);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [animateBeacon]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-        @keyframes rts-sweep {
-          0%   { transform: translateX(-120%); }
-          100% { transform: translateX(280%); }
-        }
-        @keyframes rts-beacon-pulse {
-          0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-          50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.18); }
-        }
-        .rts-sweep-bar {
-          animation: rts-sweep ${SWEEP_DURATION_MS}ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        .rts-beacon-pulse {
-          animation: rts-beacon-pulse 0.7s ease-in-out infinite;
-        }
-      ` }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        "aria-hidden": "true",
-        style: {
-          position: "fixed",
-          inset: 0,
-          zIndex: 9999,
-          overflow: "hidden",
-          opacity: screenOpacity,
-          // Use separate transition declarations to avoid shorthand conflicts:
-          // opacity fades on exit; background-color transitions during reveal
-          background: bgGradient,
-          transition: `opacity ${FADE_OUT_MS}ms ease-out, background 1600ms ease-in-out`
-        },
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "img",
-            {
-              src: "/assets/rts_intro_before.png",
-              alt: "",
-              style: {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                objectPosition: "center center",
-                display: "block",
-                userSelect: "none",
-                pointerEvents: "none",
-                margin: 0,
-                padding: 0,
-                border: "none"
-              }
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "img",
-            {
-              src: "/assets/rts_intro_after.png",
-              alt: "Ramp Track Systems",
-              style: {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                objectPosition: "center center",
-                display: "block",
-                opacity: afterOpacity,
-                transition: `opacity ${AFTER_FADE_DURATION_MS}ms ease-in-out`,
-                userSelect: "none",
-                pointerEvents: "none",
-                margin: 0,
-                padding: 0,
-                border: "none"
-              }
-            }
-          ),
-          sweepActive && /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
-            {
-              "aria-hidden": "true",
-              className: "rts-sweep-bar",
-              style: {
-                position: "absolute",
-                top: 0,
-                bottom: 0,
-                left: 0,
-                width: "35%",
-                background: [
-                  "linear-gradient(to right,",
-                  "  transparent 0%,",
-                  "  rgba(0, 100, 200, 0.08) 15%,",
-                  "  rgba(0, 130, 220, 0.30) 38%,",
-                  "  rgba(30, 160, 255, 0.50) 52%,",
-                  "  rgba(0, 130, 220, 0.30) 66%,",
-                  "  rgba(0, 100, 200, 0.08) 85%,",
-                  "  transparent 100%",
-                  ")"
-                ].join(""),
-                pointerEvents: "none",
-                mixBlendMode: "screen"
-              }
-            }
-          ),
-          sweepActive && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "div",
-              {
-                "aria-hidden": "true",
-                style: {
-                  position: "absolute",
-                  left: "50%",
-                  top: "32%",
-                  width: "160px",
-                  height: "160px",
-                  transform: `translate(-50%, -50%) rotate(${beaconRotation}deg)`,
-                  background: "conic-gradient(from 0deg, transparent 0deg, rgba(0, 150, 255, 0.18) 25deg, rgba(0, 180, 255, 0.28) 40deg, rgba(0, 150, 255, 0.18) 55deg, transparent 80deg)",
-                  borderRadius: "50%",
-                  pointerEvents: "none",
-                  mixBlendMode: "screen"
-                }
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "div",
-              {
-                "aria-hidden": "true",
-                className: "rts-beacon-pulse",
-                style: {
-                  position: "absolute",
-                  left: "50%",
-                  top: "32%",
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle, rgba(100, 200, 255, 0.90) 0%, rgba(0, 140, 255, 0.55) 45%, transparent 75%)",
-                  pointerEvents: "none",
-                  mixBlendMode: "screen"
-                }
-              }
-            )
-          ] })
-        ]
+    let animFrameId;
+    let startTime = null;
+    const DARK_HOLD = 200;
+    const SWEEP_DURATION = 1600;
+    const FINAL_HOLD = 3e3;
+    const FADE_DURATION = 400;
+    const TOTAL = DARK_HOLD + SWEEP_DURATION + FINAL_HOLD + FADE_DURATION;
+    const tick = (now2) => {
+      if (!startTime) startTime = now2;
+      const elapsed = now2 - startTime;
+      if (elapsed < DARK_HOLD) {
+        setSweepProgress(0);
+        setFadeOpacity(0);
+        setBgProgress(0);
+      } else if (elapsed < DARK_HOLD + SWEEP_DURATION) {
+        const raw = (elapsed - DARK_HOLD) / SWEEP_DURATION;
+        const t2 = Math.min(1, raw);
+        setSweepProgress(t2);
+        setFadeOpacity(0);
+        setBgProgress(t2);
+      } else if (elapsed < DARK_HOLD + SWEEP_DURATION + FINAL_HOLD) {
+        setSweepProgress(1);
+        setFadeOpacity(0);
+        setBgProgress(1);
+      } else if (elapsed < TOTAL) {
+        const ft = (elapsed - DARK_HOLD - SWEEP_DURATION - FINAL_HOLD) / FADE_DURATION;
+        setSweepProgress(1);
+        setFadeOpacity(Math.min(1, ft));
+        setBgProgress(1);
+      } else {
+        setFadeOpacity(1);
+        onComplete();
+        return;
       }
-    )
-  ] });
+      animFrameId = requestAnimationFrame(tick);
+    };
+    animFrameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animFrameId);
+  }, [onComplete]);
+  const t = sweepProgress;
+  const sweepX = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  const isFullyRevealed = t >= 1;
+  const maskStyle = isFullyRevealed ? { maskImage: "none", WebkitMaskImage: "none", opacity: 1 } : {
+    maskImage: `linear-gradient(to right, white 0%, white calc(${Math.max(0, sweepX - 0.05) * 100}%), rgba(255,255,255,0.6) calc(${sweepX * 100}%), transparent calc(${Math.min(1, sweepX + 0.1) * 100}%))`,
+    WebkitMaskImage: `linear-gradient(to right, white 0%, white calc(${Math.max(0, sweepX - 0.05) * 100}%), rgba(255,255,255,0.6) calc(${sweepX * 100}%), transparent calc(${Math.min(1, sweepX + 0.1) * 100}%))`,
+    opacity: 1
+  };
+  const coneOpacity = Math.sin(t * Math.PI) * 0.6;
+  const beamOpacity = Math.sin(t * Math.PI) * 0.9;
+  const beaconOpacity = t < 0.3 ? t / 0.3 * 0.8 : t < 0.7 ? 0.8 : 0.8 * (1 - (t - 0.7) / 0.3);
+  const bgLayerBOpacity = bgProgress;
+  const coneLeftPct = sweepX * 100;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      "aria-hidden": "true",
+      style: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        zIndex: 9999
+      },
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            style: {
+              position: "absolute",
+              inset: 0,
+              background: "#030816",
+              zIndex: 0
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            style: {
+              position: "absolute",
+              inset: 0,
+              background: "#060F21",
+              opacity: bgLayerBOpacity,
+              zIndex: 1
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "img",
+          {
+            src: "/assets/rts_intro_dark.png",
+            alt: "",
+            style: {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              objectPosition: "center",
+              display: "block",
+              userSelect: "none",
+              pointerEvents: "none",
+              zIndex: 2
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "img",
+          {
+            src: "/assets/rts_intro_light.png",
+            alt: "Ramp Track Systems",
+            style: {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              objectPosition: "center",
+              display: "block",
+              userSelect: "none",
+              pointerEvents: "none",
+              zIndex: 3,
+              ...maskStyle
+            }
+          }
+        ),
+        t > 0 && t < 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            "aria-hidden": "true",
+            style: {
+              position: "absolute",
+              top: "12%",
+              // Place the cone's left edge at the sweep origin, clip trailing side
+              left: `${Math.max(0, coneLeftPct - 30)}%`,
+              width: "60%",
+              height: "40%",
+              background: "radial-gradient(ellipse 80% 60% at 20% 50%, rgba(100, 160, 255, 0.22) 0%, rgba(80, 140, 240, 0.12) 40%, transparent 75%)",
+              opacity: coneOpacity,
+              pointerEvents: "none",
+              zIndex: 4,
+              mixBlendMode: "screen"
+            }
+          }
+        ),
+        t > 0 && t < 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            "aria-hidden": "true",
+            style: {
+              position: "absolute",
+              top: 0,
+              left: `calc(${sweepX * 100}% - 60px)`,
+              width: "120px",
+              height: "100%",
+              background: "linear-gradient(to right, transparent 0%, rgba(120, 180, 255, 0.06) 20%, rgba(140, 200, 255, 0.18) 40%, rgba(150, 210, 255, 0.22) 50%, rgba(140, 200, 255, 0.18) 60%, rgba(120, 180, 255, 0.06) 80%, transparent 100%)",
+              filter: "blur(4px)",
+              opacity: beamOpacity,
+              pointerEvents: "none",
+              zIndex: 5,
+              mixBlendMode: "screen"
+            }
+          }
+        ),
+        t > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            "aria-hidden": "true",
+            style: {
+              position: "absolute",
+              left: "calc(50% - 24px)",
+              top: "calc(32% - 24px)",
+              width: "48px",
+              height: "48px",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(100, 180, 255, 0.9) 0%, rgba(60, 120, 220, 0.4) 40%, transparent 70%)",
+              filter: "blur(6px)",
+              opacity: beaconOpacity,
+              pointerEvents: "none",
+              zIndex: 6,
+              mixBlendMode: "screen"
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            "aria-hidden": "true",
+            style: {
+              position: "fixed",
+              inset: 0,
+              background: "#000",
+              opacity: fadeOpacity,
+              pointerEvents: fadeOpacity > 0 ? "auto" : "none",
+              zIndex: 10
+            }
+          }
+        )
+      ]
+    }
+  );
 }
 const agentLogin = "/assets/agentlogin-019d2e49-69e7-73fe-8172-a52b87efe1eb.png";
 const signInBackgroundLower = "/assets/signinbackgroundlower-019d2e4a-fc0d-77ac-8d6b-f27f72365149.jpg";
