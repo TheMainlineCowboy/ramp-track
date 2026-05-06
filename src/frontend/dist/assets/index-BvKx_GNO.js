@@ -21820,227 +21820,319 @@ class ErrorBoundary extends reactExports.Component {
     return this.props.children;
   }
 }
-function RTSIntroScreen({
-  onComplete
-}) {
-  const [sweepProgress, setSweepProgress] = reactExports.useState(0);
-  const [fadeOpacity, setFadeOpacity] = reactExports.useState(0);
-  const [bgProgress, setBgProgress] = reactExports.useState(0);
+const FOG_PARTICLES = [
+  { relAngle: -0.22, relDist: 0.28, size: 38 },
+  { relAngle: 0.15, relDist: 0.45, size: 30 },
+  { relAngle: -0.08, relDist: 0.6, size: 42 },
+  { relAngle: 0.27, relDist: 0.32, size: 25 },
+  { relAngle: -0.18, relDist: 0.52, size: 34 }
+];
+const easeInOut = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+function lerpColor(a, b, t) {
+  const pa = Number.parseInt(a.slice(1), 16);
+  const pb = Number.parseInt(b.slice(1), 16);
+  const ar = pa >> 16 & 255;
+  const ag = pa >> 8 & 255;
+  const ab = pa & 255;
+  const br = pb >> 16 & 255;
+  const bg = pb >> 8 & 255;
+  const bb = pb & 255;
+  const r2 = Math.round(ar + (br - ar) * t);
+  const g = Math.round(ag + (bg - ag) * t);
+  const bl = Math.round(ab + (bb - ab) * t);
+  return `rgb(${r2},${g},${bl})`;
+}
+const RTSIntroScreen = ({ onComplete }) => {
+  const canvasRef = reactExports.useRef(null);
+  const containerRef = reactExports.useRef(null);
+  const beforeImgRef = reactExports.useRef(null);
+  const afterImgRef = reactExports.useRef(null);
+  const rafRef = reactExports.useRef(0);
+  const startTimeRef = reactExports.useRef(null);
+  const imagesLoadedRef = reactExports.useRef(0);
+  const containerOpacityRef = reactExports.useRef(1);
+  const doneRef = reactExports.useRef(false);
+  const layoutRef = reactExports.useRef({
+    drawWidth: 0,
+    drawHeight: 0,
+    imgOffsetX: 0,
+    imgOffsetY: 0
+  });
+  const computeLayout = reactExports.useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !beforeImgRef.current) return;
+    const dpr = window.devicePixelRatio || 1;
+    const cw = canvas.width / dpr;
+    const ch = canvas.height / dpr;
+    const naturalW = beforeImgRef.current.naturalWidth || 1200;
+    const naturalH = beforeImgRef.current.naturalHeight || 675;
+    const scale = Math.min(cw / naturalW, ch / naturalH);
+    const drawWidth = naturalW * scale;
+    const drawHeight = naturalH * scale;
+    layoutRef.current = {
+      drawWidth,
+      drawHeight,
+      imgOffsetX: (cw - drawWidth) / 2,
+      imgOffsetY: (ch - drawHeight) / 2
+    };
+  }, []);
+  const resizeCanvas = reactExports.useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    computeLayout();
+  }, [computeLayout]);
+  const drawFrame = reactExports.useCallback((progress, beamFade) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const beforeImg = beforeImgRef.current;
+    const afterImg = afterImgRef.current;
+    if (!beforeImg || !afterImg) return;
+    const dpr = window.devicePixelRatio || 1;
+    const cw = canvas.width / dpr;
+    const ch = canvas.height / dpr;
+    const { drawWidth, drawHeight, imgOffsetX, imgOffsetY } = layoutRef.current;
+    if (drawWidth === 0) return;
+    ctx.fillStyle = lerpColor("#030816", "#060F21", progress);
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.drawImage(beforeImg, imgOffsetX, imgOffsetY, drawWidth, drawHeight);
+    {
+      const easedProgress2 = easeInOut(Math.min(1, progress));
+      const revealX = imgOffsetX + drawWidth * easedProgress2;
+      const penumbraWidth = drawWidth * 0.12;
+      ctx.save();
+      ctx.drawImage(afterImg, imgOffsetX, imgOffsetY, drawWidth, drawHeight);
+      const maskGrad = ctx.createLinearGradient(
+        revealX - penumbraWidth,
+        0,
+        revealX + penumbraWidth,
+        0
+      );
+      maskGrad.addColorStop(0, "rgba(0,0,0,0)");
+      maskGrad.addColorStop(0.5, "rgba(0,0,0,0.5)");
+      maskGrad.addColorStop(1, "rgba(0,0,0,1)");
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = maskGrad;
+      const fillLeft = revealX - penumbraWidth;
+      const fillWidth = cw - fillLeft + penumbraWidth;
+      ctx.fillRect(fillLeft, imgOffsetY, fillWidth, drawHeight);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.restore();
+    }
+    const beamAlpha = beamFade;
+    if (beamAlpha <= 0) return;
+    const easedProgress = easeInOut(Math.min(1, progress));
+    const beamIntensity = Math.sin(easedProgress * Math.PI) * beamAlpha;
+    const beaconX = imgOffsetX + drawWidth * 0.5;
+    const beaconY = imgOffsetY + drawHeight * 0.385;
+    const SWEEP_START = -1.2217;
+    const SWEEP_RANGE = 2.4435;
+    const currentAngle = SWEEP_START + easedProgress * SWEEP_RANGE;
+    const coneHalfAngle = 0.384;
+    const beamLength = Math.max(cw, ch) * 1.5;
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.beginPath();
+    ctx.moveTo(beaconX, beaconY);
+    const leftAngle = currentAngle - coneHalfAngle;
+    const rightAngle = currentAngle + coneHalfAngle;
+    ctx.lineTo(
+      beaconX + Math.cos(leftAngle) * beamLength,
+      beaconY + Math.sin(leftAngle) * beamLength
+    );
+    ctx.arc(beaconX, beaconY, beamLength, leftAngle, rightAngle);
+    ctx.closePath();
+    ctx.clip();
+    const beamGrad = ctx.createRadialGradient(
+      beaconX,
+      beaconY,
+      0,
+      beaconX,
+      beaconY,
+      beamLength
+    );
+    beamGrad.addColorStop(0, `rgba(120, 200, 255, ${0.55 * beamAlpha})`);
+    beamGrad.addColorStop(0.08, `rgba(80, 160, 255, ${0.4 * beamAlpha})`);
+    beamGrad.addColorStop(0.25, `rgba(60, 130, 255, ${0.25 * beamAlpha})`);
+    beamGrad.addColorStop(0.55, `rgba(40, 100, 220, ${0.12 * beamAlpha})`);
+    beamGrad.addColorStop(1, "rgba(20, 60, 180, 0)");
+    ctx.fillStyle = beamGrad;
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.restore();
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.globalAlpha = 0.18 * beamIntensity;
+    ctx.beginPath();
+    ctx.moveTo(beaconX, beaconY);
+    const innerLeftAngle = currentAngle - coneHalfAngle * 0.45;
+    const innerRightAngle = currentAngle + coneHalfAngle * 0.45;
+    ctx.lineTo(
+      beaconX + Math.cos(innerLeftAngle) * beamLength,
+      beaconY + Math.sin(innerLeftAngle) * beamLength
+    );
+    ctx.arc(beaconX, beaconY, beamLength, innerLeftAngle, innerRightAngle);
+    ctx.closePath();
+    const innerGrad = ctx.createRadialGradient(
+      beaconX,
+      beaconY,
+      0,
+      beaconX,
+      beaconY,
+      beamLength * 0.4
+    );
+    innerGrad.addColorStop(0, "rgba(180, 220, 255, 1)");
+    innerGrad.addColorStop(1, "rgba(100, 160, 255, 0)");
+    ctx.fillStyle = innerGrad;
+    ctx.fill();
+    ctx.restore();
+    for (const p of FOG_PARTICLES) {
+      const pAngle = currentAngle + p.relAngle;
+      const pX = beaconX + Math.cos(pAngle) * beamLength * p.relDist;
+      const pY = beaconY + Math.sin(pAngle) * beamLength * p.relDist;
+      const scaledSize = p.size * (drawWidth / 800);
+      const grad = ctx.createRadialGradient(pX, pY, 0, pX, pY, scaledSize);
+      grad.addColorStop(0, `rgba(100, 180, 255, ${0.12 * beamIntensity})`);
+      grad.addColorStop(1, "rgba(100, 180, 255, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(pX, pY, scaledSize, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const glowSize = drawWidth * (0.04 + beamIntensity * 0.04);
+    const glowGrad = ctx.createRadialGradient(
+      beaconX,
+      beaconY,
+      0,
+      beaconX,
+      beaconY,
+      glowSize
+    );
+    glowGrad.addColorStop(0, `rgba(150, 210, 255, ${0.85 * beamIntensity})`);
+    glowGrad.addColorStop(0.3, `rgba(80, 160, 255, ${0.45 * beamIntensity})`);
+    glowGrad.addColorStop(1, "rgba(40, 100, 220, 0)");
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath();
+    ctx.arc(beaconX, beaconY, glowSize, 0, Math.PI * 2);
+    ctx.fill();
+  }, []);
+  const tick = reactExports.useCallback(
+    (now2) => {
+      if (doneRef.current) return;
+      if (!startTimeRef.current) startTimeRef.current = now2;
+      const elapsed = now2 - startTimeRef.current;
+      const DARK_HOLD = 200;
+      const SWEEP_DURATION = 1600;
+      const FINAL_HOLD = 3e3;
+      const FADE_DURATION = 400;
+      const BEAM_FADE_DURATION = 400;
+      let progress = 0;
+      let beamFade = 1;
+      if (elapsed < DARK_HOLD) {
+        progress = 0;
+        beamFade = 0;
+      } else if (elapsed < DARK_HOLD + SWEEP_DURATION) {
+        progress = (elapsed - DARK_HOLD) / SWEEP_DURATION;
+        beamFade = 1;
+      } else if (elapsed < DARK_HOLD + SWEEP_DURATION + FINAL_HOLD) {
+        progress = 1;
+        const holdElapsed = elapsed - DARK_HOLD - SWEEP_DURATION;
+        beamFade = Math.max(0, 1 - holdElapsed / BEAM_FADE_DURATION);
+      } else if (elapsed < DARK_HOLD + SWEEP_DURATION + FINAL_HOLD + FADE_DURATION) {
+        progress = 1;
+        beamFade = 0;
+        const ft = (elapsed - DARK_HOLD - SWEEP_DURATION - FINAL_HOLD) / FADE_DURATION;
+        containerOpacityRef.current = Math.max(0, 1 - ft);
+        if (containerRef.current) {
+          containerRef.current.style.opacity = String(
+            containerOpacityRef.current
+          );
+        }
+      } else {
+        progress = 1;
+        beamFade = 0;
+        if (containerRef.current) containerRef.current.style.opacity = "0";
+        if (!doneRef.current) {
+          doneRef.current = true;
+          onComplete();
+        }
+        return;
+      }
+      drawFrame(progress, beamFade);
+      rafRef.current = requestAnimationFrame(tick);
+    },
+    [drawFrame, onComplete]
+  );
   reactExports.useEffect(() => {
     document.documentElement.style.background = "#030816";
     document.body.style.background = "#030816";
+    const beforeImg = new Image();
+    const afterImg = new Image();
+    beforeImgRef.current = beforeImg;
+    afterImgRef.current = afterImg;
+    const onImageLoad = () => {
+      imagesLoadedRef.current += 1;
+      if (imagesLoadedRef.current === 2) {
+        resizeCanvas();
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    beforeImg.onload = onImageLoad;
+    afterImg.onload = onImageLoad;
+    beforeImg.onerror = onImageLoad;
+    afterImg.onerror = onImageLoad;
+    beforeImg.src = "/assets/rts_intro_before.png";
+    afterImg.src = "/assets/rts_intro_after.png";
+    const handleResize = () => {
+      resizeCanvas();
+    };
+    window.addEventListener("resize", handleResize);
     return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", handleResize);
       document.documentElement.style.background = "";
       document.body.style.background = "";
     };
-  }, []);
-  reactExports.useEffect(() => {
-    let animFrameId;
-    let startTime = null;
-    const DARK_HOLD = 200;
-    const SWEEP_DURATION = 1600;
-    const FINAL_HOLD = 3e3;
-    const FADE_DURATION = 400;
-    const TOTAL = DARK_HOLD + SWEEP_DURATION + FINAL_HOLD + FADE_DURATION;
-    const tick = (now2) => {
-      if (!startTime) startTime = now2;
-      const elapsed = now2 - startTime;
-      if (elapsed < DARK_HOLD) {
-        setSweepProgress(0);
-        setFadeOpacity(0);
-        setBgProgress(0);
-      } else if (elapsed < DARK_HOLD + SWEEP_DURATION) {
-        const raw = (elapsed - DARK_HOLD) / SWEEP_DURATION;
-        const t2 = Math.min(1, raw);
-        setSweepProgress(t2);
-        setFadeOpacity(0);
-        setBgProgress(t2);
-      } else if (elapsed < DARK_HOLD + SWEEP_DURATION + FINAL_HOLD) {
-        setSweepProgress(1);
-        setFadeOpacity(0);
-        setBgProgress(1);
-      } else if (elapsed < TOTAL) {
-        const ft = (elapsed - DARK_HOLD - SWEEP_DURATION - FINAL_HOLD) / FADE_DURATION;
-        setSweepProgress(1);
-        setFadeOpacity(Math.min(1, ft));
-        setBgProgress(1);
-      } else {
-        setFadeOpacity(1);
-        onComplete();
-        return;
-      }
-      animFrameId = requestAnimationFrame(tick);
-    };
-    animFrameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animFrameId);
-  }, [onComplete]);
-  const t = sweepProgress;
-  const sweepX = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-  const isFullyRevealed = t >= 1;
-  const maskStyle = isFullyRevealed ? { maskImage: "none", WebkitMaskImage: "none", opacity: 1 } : {
-    maskImage: `linear-gradient(to right, white 0%, white calc(${Math.max(0, sweepX - 0.05) * 100}%), rgba(255,255,255,0.6) calc(${sweepX * 100}%), transparent calc(${Math.min(1, sweepX + 0.1) * 100}%))`,
-    WebkitMaskImage: `linear-gradient(to right, white 0%, white calc(${Math.max(0, sweepX - 0.05) * 100}%), rgba(255,255,255,0.6) calc(${sweepX * 100}%), transparent calc(${Math.min(1, sweepX + 0.1) * 100}%))`,
-    opacity: 1
-  };
-  const coneOpacity = Math.sin(t * Math.PI) * 0.6;
-  const beamOpacity = Math.sin(t * Math.PI) * 0.9;
-  const beaconOpacity = t < 0.3 ? t / 0.3 * 0.8 : t < 0.7 ? 0.8 : 0.8 * (1 - (t - 0.7) / 0.3);
-  const bgLayerBOpacity = bgProgress;
-  const coneLeftPct = sweepX * 100;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  }, [tick, resizeCanvas]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
+      ref: containerRef,
       "aria-hidden": "true",
       style: {
         position: "fixed",
         top: 0,
         left: 0,
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        zIndex: 9999
+        width: "100vw",
+        height: "100vh",
+        zIndex: 9999,
+        background: "#030816",
+        opacity: 1,
+        transition: "none"
+        // opacity controlled imperatively for performance
       },
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            style: {
-              position: "absolute",
-              inset: 0,
-              background: "#030816",
-              zIndex: 0
-            }
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "canvas",
+        {
+          ref: canvasRef,
+          style: {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "block"
           }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            style: {
-              position: "absolute",
-              inset: 0,
-              background: "#060F21",
-              opacity: bgLayerBOpacity,
-              zIndex: 1
-            }
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "img",
-          {
-            src: "/assets/rts_intro_dark.png",
-            alt: "",
-            style: {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              objectPosition: "center",
-              display: "block",
-              userSelect: "none",
-              pointerEvents: "none",
-              zIndex: 2
-            }
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "img",
-          {
-            src: "/assets/rts_intro_light.png",
-            alt: "Ramp Track Systems",
-            style: {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              objectPosition: "center",
-              display: "block",
-              userSelect: "none",
-              pointerEvents: "none",
-              zIndex: 3,
-              ...maskStyle
-            }
-          }
-        ),
-        t > 0 && t < 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            "aria-hidden": "true",
-            style: {
-              position: "absolute",
-              top: "12%",
-              // Place the cone's left edge at the sweep origin, clip trailing side
-              left: `${Math.max(0, coneLeftPct - 30)}%`,
-              width: "60%",
-              height: "40%",
-              background: "radial-gradient(ellipse 80% 60% at 20% 50%, rgba(100, 160, 255, 0.22) 0%, rgba(80, 140, 240, 0.12) 40%, transparent 75%)",
-              opacity: coneOpacity,
-              pointerEvents: "none",
-              zIndex: 4,
-              mixBlendMode: "screen"
-            }
-          }
-        ),
-        t > 0 && t < 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            "aria-hidden": "true",
-            style: {
-              position: "absolute",
-              top: 0,
-              left: `calc(${sweepX * 100}% - 60px)`,
-              width: "120px",
-              height: "100%",
-              background: "linear-gradient(to right, transparent 0%, rgba(120, 180, 255, 0.06) 20%, rgba(140, 200, 255, 0.18) 40%, rgba(150, 210, 255, 0.22) 50%, rgba(140, 200, 255, 0.18) 60%, rgba(120, 180, 255, 0.06) 80%, transparent 100%)",
-              filter: "blur(4px)",
-              opacity: beamOpacity,
-              pointerEvents: "none",
-              zIndex: 5,
-              mixBlendMode: "screen"
-            }
-          }
-        ),
-        t > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            "aria-hidden": "true",
-            style: {
-              position: "absolute",
-              left: "calc(50% - 24px)",
-              top: "calc(32% - 24px)",
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(100, 180, 255, 0.9) 0%, rgba(60, 120, 220, 0.4) 40%, transparent 70%)",
-              filter: "blur(6px)",
-              opacity: beaconOpacity,
-              pointerEvents: "none",
-              zIndex: 6,
-              mixBlendMode: "screen"
-            }
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            "aria-hidden": "true",
-            style: {
-              position: "fixed",
-              inset: 0,
-              background: "#000",
-              opacity: fadeOpacity,
-              pointerEvents: fadeOpacity > 0 ? "auto" : "none",
-              zIndex: 10
-            }
-          }
-        )
-      ]
+        }
+      )
     }
   );
-}
+};
 const agentLogin = "/assets/agentlogin-019d2e49-69e7-73fe-8172-a52b87efe1eb.png";
 const signInBackgroundLower = "/assets/signinbackgroundlower-019d2e4a-fc0d-77ac-8d6b-f27f72365149.jpg";
 const managementLogin = "/assets/managementlogin-019d2e4a-4e21-770e-83b4-0b2873150efd.png";
